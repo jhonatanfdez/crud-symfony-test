@@ -15,20 +15,25 @@ class ProductoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            // Campos básicos del producto
             ->add('nombre')
             ->add('precio')
             ->add('fecha')
+            
+            // Campo categoria: select con las categorías disponibles
             ->add('categoria', EntityType::class, [
                 'class' => Categoria::class,
-                'choice_label' => 'nombre',  // Mostrar el nombre de la categoría
+                'choice_label' => 'nombre',  // Mostrar el nombre de la categoría en lugar del ID
             ])
         ;
         
-        // Solo agregar el campo user si show_user es true (en EDIT)
+        // CAMPO CONDICIONAL: Solo mostrar el campo user en modo EDICIÓN
+        // Cuando show_user es false (en creación), este campo NO aparece en el formulario
+        // Cuando show_user es true (en edición), este campo SÍ aparece y permite cambiar el usuario
         if ($options['show_user']) {
             $builder->add('user', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'email',  // Mostrar el email del usuario
+                'choice_label' => 'email',  // Mostrar el email del usuario en lugar del ID
             ]);
         }
     }
@@ -37,7 +42,11 @@ class ProductoType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Producto::class,
-            'show_user' => false,  // Por defecto NO mostrar el campo user
+            
+            // OPCIÓN PERSONALIZADA: show_user
+            // Por defecto es false, lo que significa que el campo user NO se muestra
+            // En el controlador, al editar pasamos ['show_user' => true] para mostrarlo
+            'show_user' => false,
         ]);
     }
 }

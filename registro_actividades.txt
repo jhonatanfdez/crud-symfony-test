@@ -1786,3 +1786,258 @@ Próximo paso:
 
 ---
 
+[13/11/2025 04:43:48 p.m.] Comandos ejecutados: Commit, versionado y push de mejoras en formulario
+
+Comandos:
+1. git add .
+2. git commit -m "Mejoras en formulario de Producto: Campo user condicional y labels descriptivos..."
+3. git tag -a v1.8.1 -m "v1.8.1: Mejoras en formulario de Producto..."
+4. git push origin main
+5. git push origin v1.8.1
+
+¿Qué se busca?
+- Guardar las mejoras del formulario de Producto
+- Crear una nueva versión del proyecto (v1.8.1)
+- Documentar las mejoras de usabilidad
+- Subir cambios al repositorio remoto en GitHub
+
+Resultado:
+- Commit creado exitosamente con hash 2b00600
+- 3 archivos modificados, 144 inserciones, 6 eliminaciones
+- Archivos principales:
+  * crud-symfony/src/Form/ProductoType.php (opciones personalizadas)
+  * crud-symfony/src/Controller/ProductoController.php (asignación automática user)
+  * registro_actividades.txt (documentación actualizada)
+- Tag v1.8.1 creado con descripción completa
+- Cambios subidos exitosamente a GitHub
+- Formulario de Producto mejorado significativamente
+
+Versiones del proyecto actualizadas:
+- v1.0.0: Inicialización de proyecto Symfony 7.1
+- v1.1.0: Entidad User y migración de autenticación
+- v1.2.0: LoginFormAuthenticator con remember me
+- v1.3.0: RegistrationController con auto-autenticación
+- v1.3.1: Links de navegación entre login y registro
+- v1.4.0: HomeController y entidad Categoria
+- v1.4.1: Redirect de logout y migración de Categoria
+- v1.5.0: Entidad Producto con relaciones ManyToOne
+- v1.6.0: Sistema de roles automático (ADMIN/USER)
+- v1.6.1: Mejoras UX (redirección mediante controlador y fondo blanco)
+- v1.7.0: CRUD de Categoria implementado y funcional
+- v1.8.0: CRUD de Producto con relaciones implementado y funcional
+- v1.8.1: Mejoras en formulario de Producto (campo user condicional, labels descriptivos)
+
+Estado actual del proyecto:
+- Sistema de autenticación completo
+- Sistema de roles automático
+- CRUD de Categoria completo
+- CRUD de Producto mejorado con:
+  * Campo user condicional (solo en edit)
+  * Asignación automática de usuario en creación
+  * Labels descriptivos (nombres/emails en lugar de IDs)
+  * Mejor experiencia de usuario
+
+Próximo paso:
+- Continuar con mejoras adicionales según necesidades del proyecto
+
+---
+
+[13/11/2025 05:00:39 p.m.] SOLUCIÓN IMPLEMENTADA: Asignación automática de usuario y protección de rutas
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                      EXPLICACIÓN DETALLADA DE LA SOLUCIÓN                     ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+PROBLEMA INICIAL:
+- Error: "Column 'user_id' cannot be null" al crear un producto
+- El campo user_id es obligatorio (NOT NULL) en la base de datos
+- El formulario no mostraba el campo user en creación
+- $this->getUser() devolvía null porque no había autenticación requerida
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                          SOLUCIÓN IMPLEMENTADA                                 ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+1. PROTECCIÓN DE RUTAS CON AUTENTICACIÓN
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Archivo: src/Controller/ProductoController.php
+   
+   ✅ Agregado en TODOS los métodos del CRUD:
+   
+   $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+   
+   ¿Qué hace?
+   - Verifica que el usuario esté autenticado (logueado)
+   - Si NO está autenticado, Symfony redirige automáticamente al login
+   - Esto garantiza que $this->getUser() NUNCA sea null
+   
+   Métodos protegidos:
+   ✓ index()  - Listar productos
+   ✓ new()    - Crear producto
+   ✓ show()   - Ver producto
+   ✓ edit()   - Editar producto
+   ✓ delete() - Eliminar producto
+
+2. ASIGNACIÓN AUTOMÁTICA DEL USUARIO EN CREACIÓN
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Archivo: src/Controller/ProductoController.php
+   Método: new()
+   
+   Flujo de ejecución:
+   
+   Paso 1: Verificar autenticación
+   └─> $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+   
+   Paso 2: Crear producto vacío
+   └─> $producto = new Producto();
+   
+   Paso 3: Crear formulario SIN campo user
+   └─> $form = $this->createForm(ProductoType::class, $producto);
+       // show_user = false por defecto, el campo user NO aparece
+   
+   Paso 4: Procesar formulario
+   └─> $form->handleRequest($request);
+   
+   Paso 5: Si es válido, asignar usuario y guardar
+   └─> if ($form->isSubmitted() && $form->isValid()) {
+           // CLAVE: Asignar el usuario actual automáticamente
+           $producto->setUser($this->getUser());
+           
+           $entityManager->persist($producto);
+           $entityManager->flush();
+       }
+   
+   ¿Por qué funciona?
+   - El formulario NO tiene campo user, así que no lo sobrescribe
+   - Asignamos el usuario DESPUÉS de validar el formulario
+   - $this->getUser() devuelve el usuario logueado (nunca null porque está protegido)
+   - El producto se guarda con el user_id del usuario actual
+
+3. FORMULARIO CON CAMPO CONDICIONAL
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Archivo: src/Form/ProductoType.php
+   
+   Opción personalizada agregada:
+   
+   'show_user' => false  // Por defecto NO mostrar campo user
+   
+   Lógica condicional en buildForm():
+   
+   if ($options['show_user']) {
+       $builder->add('user', EntityType::class, [
+           'class' => User::class,
+           'choice_label' => 'email',  // Mostrar email en lugar de ID
+       ]);
+   }
+   
+   Uso en controladores:
+   
+   CREACIÓN (new):
+   - No pasa show_user, usa el valor por defecto: false
+   - Campo user NO aparece en el formulario
+   - Usuario se asigna automáticamente en el controlador
+   
+   EDICIÓN (edit):
+   - Pasa ['show_user' => true]
+   - Campo user SÍ aparece en el formulario
+   - Permite cambiar el usuario asignado si es necesario
+   - Symfony mapea automáticamente el valor seleccionado
+
+4. EDICIÓN SIMPLIFICADA
+   ━━━━━━━━━━━━━━━━━━━━━
+   Archivo: src/Controller/ProductoController.php
+   Método: edit()
+   
+   Código:
+   
+   $form = $this->createForm(ProductoType::class, $producto, [
+       'show_user' => true  // Mostrar el campo user
+   ]);
+   
+   $form->handleRequest($request);
+   
+   if ($form->isSubmitted() && $form->isValid()) {
+       // Symfony automáticamente actualiza el user del producto
+       // porque el campo está mapeado normalmente
+       $entityManager->flush();
+   }
+   
+   ¿Por qué es simple?
+   - El campo user está mapeado normalmente (no tiene 'mapped' => false)
+   - Symfony carga automáticamente el usuario actual del producto
+   - Al enviar, Symfony actualiza automáticamente el usuario
+   - No necesitamos código manual para setear el usuario
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                           MEJORAS ADICIONALES                                  ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+✅ choice_label en campos EntityType:
+   - Categoria: muestra 'nombre' en lugar de ID
+   - User: muestra 'email' en lugar de ID
+   - Mejora significativa de la experiencia de usuario
+
+✅ Comentarios detallados en el código:
+   - Cada línea importante tiene explicación
+   - Facilita el mantenimiento futuro
+   - Sirve como documentación para aprendizaje
+
+✅ Seguridad mejorada:
+   - Todas las rutas protegidas con autenticación
+   - Token CSRF en eliminación
+   - Previene accesos no autorizados
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                          CÓMO USAR EL SISTEMA                                  ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+PASO 1: Iniciar sesión
+└─> Visitar: http://127.0.0.1:8000/login
+    Ingresar credenciales de usuario
+
+PASO 2: Crear un producto
+└─> Visitar: http://127.0.0.1:8000/producto/new
+    - El campo "user" NO aparece
+    - Completar: nombre, precio, fecha, categoría
+    - Al guardar, se asigna automáticamente el usuario logueado
+
+PASO 3: Editar un producto
+└─> Visitar: http://127.0.0.1:8000/producto/{id}/edit
+    - El campo "user" SÍ aparece
+    - Muestra el usuario actual asignado
+    - Se puede cambiar si es necesario
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         ARCHIVOS MODIFICADOS                                   ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+1. src/Controller/ProductoController.php
+   - Agregada protección de autenticación en todos los métodos
+   - Asignación automática de usuario en new()
+   - Simplificado el método edit()
+   - Comentarios detallados en cada método
+
+2. src/Form/ProductoType.php
+   - Opción personalizada 'show_user'
+   - Campo condicional para user
+   - choice_label mejorados
+   - Comentarios explicativos
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         PRÓXIMOS PASOS                                         ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+✓ CRUD de Producto funcional con asignación automática de usuario
+✓ Protección de rutas implementada
+✓ Formularios condicionales funcionando
+
+Pendiente:
+- Aplicar misma protección a CategoriaController
+- Implementar Bootstrap para mejorar UI
+- Agregar control de acceso por roles (ADMIN/USER)
+- Agregar mensajes flash informativos
+- Implementar búsqueda de productos
+- Crear sistema API
+
+---
+
