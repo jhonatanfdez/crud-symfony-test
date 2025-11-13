@@ -725,3 +725,146 @@ Nota: No existe comando de Symfony para esto, debe hacerse manualmente editando 
 
 ---
 
+[12/11/2025 10:07:16 p.m.] Comandos ejecutados: Commit, versionado y push de mejoras UX
+
+Comandos:
+1. git add .
+2. git commit -m "Mejora UX: Enlaces de navegación entre login y registro"
+3. git tag -a v1.3.1 -m "v1.3.1: Mejora de navegación - Enlaces entre login y registro"
+4. git push origin main
+5. git push origin v1.3.1
+
+¿Qué se busca?
+- Guardar las mejoras de navegación entre login y registro
+- Crear una nueva versión del proyecto (v1.3.1)
+- Subir todos los cambios al repositorio remoto en GitHub
+
+Resultado:
+- Commit creado exitosamente con hash 1cfc732
+- 3 archivos modificados, 74 inserciones
+- Archivos modificados:
+  * crud-symfony/templates/security/login.html.twig (enlace a registro)
+  * crud-symfony/templates/registration/register.html.twig (enlace a login)
+  * registro_actividades.txt
+- Tag v1.3.1 creado y subido exitosamente a GitHub
+- Mejora de experiencia de usuario documentada y respaldada
+
+---
+
+[12/11/2025 10:11:27 p.m.] Comando ejecutado: php bin/console make:entity Categoria
+
+Preguntas y respuestas durante la ejecución:
+
+Campo 1 - nombre:
+- New property name (press <return> to stop adding fields): nombre
+- Field type (enter ? to see all types): string
+- Field length [255]: (presionar Enter para default)
+- Can this field be null in the database (nullable) (yes/no) [no]: no
+
+- Add another property? (presionar Enter para terminar)
+
+¿Qué se busca?
+- Crear la entidad Categoria antes de Producto
+- Permitir que los productos tengan categorías (mejor organización)
+- Enseñar relaciones múltiples en una entidad
+- Crear un ejemplo más realista de aplicación
+
+Archivos creados:
+1. src/Entity/Categoria.php
+   - Entidad con campos: id, nombre
+   - Representa una categoría de productos
+   - Tendrá relación OneToMany con Producto
+
+2. src/Repository/CategoriaRepository.php
+   - Repositorio para consultas de categorías
+   - Métodos para buscar y gestionar categorías
+
+Resultado:
+- Entidad Categoria creada exitosamente
+- Campo nombre tipo string(255) configurado
+- Repository generado automáticamente
+- Lista para crear la relación con Producto
+
+Próximo paso:
+- Crear la entidad Producto con relaciones a User y Categoria
+
+---
+
+[12/11/2025 10:17:07 p.m.] Comando ejecutado: php bin/console make:controller HomeController
+
+¿Qué se busca?
+- Crear una página de inicio (home) para la aplicación
+- Tener una ruta principal donde redirigir después del login exitoso
+- Proporcionar un punto de entrada para usuarios autenticados
+
+Archivos creados:
+1. src/Controller/HomeController.php
+   - Controlador con método index()
+   - Ruta por defecto: /home
+   - Renderiza la plantilla home/index.html.twig
+
+2. templates/home/index.html.twig
+   - Plantilla de la página de inicio
+   - Extiende de base.html.twig
+   - Contenido básico de bienvenida
+
+Resultado:
+- Página de inicio creada exitosamente
+- Ruta /home disponible
+- Lista para usar como redirección después del login
+
+Próximo paso:
+- Modificar LoginFormAuthenticator para redirigir a la ruta home después del login exitoso
+
+---
+
+[12/11/2025 10:17:42 p.m.] Modificación: LoginFormAuthenticator - Redirección a home
+
+Archivo modificado: src/Security/LoginFormAuthenticator.php
+
+Cambio realizado:
+- Línea 54: Cambiado de `app_login` a `app_home`
+- return new RedirectResponse($this->urlGenerator->generate('app_home'));
+
+¿Qué se busca?
+- Corregir el error "TODO: provide a valid redirect"
+- Redirigir a la página de inicio después de un login exitoso
+- Evitar el loop de login → login
+- Proporcionar mejor experiencia de usuario
+
+Resultado:
+- LoginFormAuthenticator ahora redirige correctamente a /home
+- Error HTTP 500 solucionado
+- Usuarios autenticados verán la página de inicio después del login
+- Registro de usuarios funciona correctamente
+
+---
+
+[12/11/2025 10:20:31 p.m.] Modificación: Moviendo mensaje de usuario a home
+
+Archivos modificados:
+
+1. templates/home/index.html.twig
+   - Agregado bloque de usuario logueado al inicio
+   - Muestra email del usuario y enlace de logout
+   - Mejor ubicación para esta información
+
+2. templates/security/login.html.twig
+   - Eliminado bloque de usuario logueado
+   - El login solo debe mostrar el formulario
+   - Si ya está logueado, será redirigido a home
+
+¿Qué se busca?
+- Mejorar la lógica de la interfaz
+- Separar correctamente login (para no autenticados) de home (para autenticados)
+- Mostrar información del usuario en la página principal, no en login
+- Mejor experiencia de usuario
+
+Resultado:
+- Página de login más limpia y enfocada
+- Página home muestra información del usuario logueado
+- Enlace de logout disponible en home
+- Separación lógica correcta entre páginas públicas y privadas
+
+---
+
