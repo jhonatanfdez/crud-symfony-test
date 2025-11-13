@@ -1497,3 +1497,164 @@ Próximo paso:
 
 ---
 
+[13/11/2025 04:06:31 p.m.] Comandos ejecutados: Commit, versionado y push del CRUD de Categoria
+
+Comandos:
+1. git add .
+2. git commit -m "CRUD de Categoria: Sistema completo de gestión de categorías..."
+3. git tag -a v1.7.0 -m "v1.7.0: CRUD de Categoria implementado..."
+4. git push origin main
+5. git push origin v1.7.0
+
+¿Qué se busca?
+- Guardar todos los archivos generados por make:crud
+- Crear una nueva versión del proyecto (v1.7.0)
+- Documentar el sistema CRUD de Categoria
+- Subir cambios al repositorio remoto en GitHub
+
+Resultado:
+- Commit creado exitosamente con hash 54cce8d
+- 9 archivos modificados/creados, 338 inserciones
+- Archivos principales:
+  * crud-symfony/src/Controller/CategoriaController.php (nuevo)
+  * crud-symfony/src/Form/CategoriaType.php (nuevo)
+  * crud-symfony/templates/categoria/*.html.twig (6 templates nuevos)
+  * registro_actividades.txt (documentación actualizada)
+- Tag v1.7.0 creado con descripción completa
+- Cambios subidos exitosamente a GitHub
+- Sistema CRUD de Categoria completo y operativo
+
+Versiones del proyecto actualizadas:
+- v1.0.0: Inicialización de proyecto Symfony 7.1
+- v1.1.0: Entidad User y migración de autenticación
+- v1.2.0: LoginFormAuthenticator con remember me
+- v1.3.0: RegistrationController con auto-autenticación
+- v1.3.1: Links de navegación entre login y registro
+- v1.4.0: HomeController y entidad Categoria
+- v1.4.1: Redirect de logout y migración de Categoria
+- v1.5.0: Entidad Producto con relaciones ManyToOne
+- v1.6.0: Sistema de roles automático (ADMIN/USER)
+- v1.6.1: Mejoras UX (redirección mediante controlador y fondo blanco)
+- v1.7.0: CRUD de Categoria implementado y funcional
+
+Próximo paso:
+- Generar el CRUD de Producto con make:crud
+
+---
+
+[13/11/2025 04:10:56 p.m.] Comando ejecutado: php bin/console make:crud Producto
+
+Preguntas y respuestas durante la ejecución:
+
+1. Choose a name for your controller class (e.g. ProductoController) [ProductoController]:
+   Respuesta: ProductoController (Enter para aceptar default)
+
+2. Do you want to generate PHPUnit tests? [Experimental] (yes/no) [no]:
+   Respuesta: no
+
+¿Qué se busca?
+- Generar automáticamente el CRUD completo para la entidad Producto
+- Crear el controlador con todos los métodos (index, new, show, edit, delete)
+- Crear el formulario de Producto con campos y relaciones
+- Crear todas las plantillas Twig necesarias
+- Tener un sistema completo para gestionar productos con sus categorías y usuarios
+
+Archivos CREADOS:
+
+1. src/Controller/ProductoController.php
+   - Controlador con 5 métodos principales:
+   - index() - Lista todos los productos (ruta: /producto/)
+   - new() - Crear nuevo producto (ruta: /producto/new)
+   - show() - Ver detalles de un producto (ruta: /producto/{id})
+   - edit() - Editar producto existente (ruta: /producto/{id}/edit)
+   - delete() - Eliminar producto (ruta: /producto/{id})
+
+2. src/Form/ProductoType.php
+   - Clase de formulario para Producto
+   - Define los campos: nombre, precio, fecha, categoria, user
+   - Configuración automática basada en la entidad
+   - EntityType para las relaciones (categoria y user)
+
+3. templates/producto/index.html.twig
+   - Plantilla para listar todos los productos
+   - Tabla con productos y sus relaciones
+   - Botones de acciones para cada producto
+   - Enlaces a crear, ver, editar y eliminar
+
+4. templates/producto/new.html.twig
+   - Plantilla para crear nuevo producto
+   - Renderiza el formulario de ProductoType
+   - Selects para categoria y user
+   - Botón para guardar y enlace para volver al listado
+
+5. templates/producto/show.html.twig
+   - Plantilla para mostrar detalles de un producto
+   - Muestra todos los campos incluyendo relaciones
+   - Enlaces a editar, eliminar y volver al listado
+
+6. templates/producto/edit.html.twig
+   - Plantilla para editar producto existente
+   - Renderiza el formulario con datos pre-cargados
+   - Botones para guardar cambios y volver
+
+7. templates/producto/_form.html.twig
+   - Partial del formulario reutilizable
+   - Usado en new.html.twig y edit.html.twig
+   - Campos: nombre, precio, fecha, categoria, user
+   - Evita duplicación de código
+
+8. templates/producto/_delete_form.html.twig
+   - Partial del formulario de eliminación
+   - Botón para confirmar eliminación con CSRF
+   - Usado en show.html.twig y edit.html.twig
+
+Resultado:
+- CRUD de Producto completamente funcional
+- Ruta principal: /producto/
+- Sistema completo: crear, leer, actualizar y eliminar productos
+- Formularios con validaciones automáticas
+- Relaciones ManyToOne con Categoria y User manejadas automáticamente
+- Selects dropdown para elegir categoría y usuario
+- Interfaz con SimpleCSS aplicado automáticamente
+- Flash messages para operaciones exitosas
+- Confirmación antes de eliminar
+- CSRF protection en todas las operaciones
+
+Funcionalidades incluidas:
+- Listar todos los productos con categoría y usuario
+- Crear nuevos productos asignando categoría y usuario
+- Ver detalles completos de cada producto
+- Editar productos existentes
+- Eliminar productos con confirmación
+- Validaciones de campos (nombre, precio, fecha requeridos)
+- Validaciones de relaciones (categoria y user obligatorios)
+- Redirecciones apropiadas después de cada operación
+- Mensajes de éxito/error (flash messages)
+
+Próximo paso:
+- Probar el CRUD accediendo a /producto/
+- Crear algunos productos de ejemplo
+- Verificar las relaciones con Categoria y User
+- Hacer commit y versionar estos cambios
+
+---
+
+[13/11/2025 04:12:26 p.m.] Preparación para commit del CRUD de Producto
+
+¿Qué se busca?
+- Guardar todos los archivos generados por make:crud Producto
+- Crear una nueva versión del proyecto (v1.8.0)
+- Documentar el sistema CRUD de Producto con relaciones
+- Subir cambios al repositorio remoto en GitHub
+
+Archivos a incluir en el commit:
+- ProductoController.php con 5 métodos CRUD
+- ProductoType.php con formulario y relaciones
+- 6 plantillas Twig para todas las vistas
+- Registro de actividades actualizado
+
+Próximo paso:
+- Ejecutar git add, commit, tag y push
+
+---
+
