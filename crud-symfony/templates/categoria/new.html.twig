@@ -1,11 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Categoria{% endblock %}
+{% block title %}Nueva Categoría{% endblock %}
 
 {% block body %}
-    <h1>Create new Categoria</h1>
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-plus-circle"></i> Nueva Categoría
+            </h1>
+            <p class="text-muted">Crear una nueva categoría en el sistema</p>
+        </div>
+    </div>
 
-    {{ include('categoria/_form.html.twig') }}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-folder-plus"></i> Formulario de Creación</h5>
+                </div>
+                <div class="card-body">
+                    {{ include('categoria/_form.html.twig', {
+                        'button_label': 'Crear Categoría',
+                        'button_class': 'btn btn-primary'
+                    }) }}
+                </div>
+            </div>
 
-    <a href="{{ path('app_categoria_index') }}">back to list</a>
+            <div class="mt-3">
+                <a href="{{ path('app_categoria_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver al listado
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,35 +1,77 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Categoria index{% endblock %}
+{% block title %}Categorías{% endblock %}
 
 {% block body %}
-    <h1>Categoria index</h1>
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">
+                <i class="bi bi-folder"></i> Categorías
+            </h1>
+        </div>
+        <div class="col-auto">
+            <a href="{{ path('app_categoria_new') }}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle"></i> Nueva Categoría
+            </a>
+        </div>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for categorium in categorias %}
-            <tr>
-                <td>{{ categorium.id }}</td>
-                <td>{{ categorium.nombre }}</td>
-                <td>
-                    <a href="{{ path('app_categoria_show', {'id': categorium.id}) }}">show</a>
-                    <a href="{{ path('app_categoria_edit', {'id': categorium.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a class="button" href="{{ path('app_categoria_new') }}">Create new</a>
+    {% if categorias is empty %}
+        <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i> No hay categorías registradas. 
+            <a href="{{ path('app_categoria_new') }}" class="alert-link">Crear la primera</a>
+        </div>
+    {% else %}
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col" style="width: 10%">#ID</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col" class="text-center" style="width: 20%">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for categorium in categorias %}
+                            <tr>
+                                <td class="fw-bold">{{ categorium.id }}</td>
+                                <td>{{ categorium.nombre }}</td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm gap-2" role="group">
+                                        <a href="{{ path('app_categoria_show', {'id': categorium.id}) }}" 
+                                           class="btn btn-info" 
+                                           title="Ver detalles">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </a>
+                                        <a href="{{ path('app_categoria_edit', {'id': categorium.id}) }}" 
+                                           class="btn btn-warning" 
+                                           title="Editar">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </a>
+                                        <form method="post" 
+                                            action="{{ path('app_categoria_delete', {'id': categorium.id}) }}" 
+                                            style="display:inline;"
+                                            onsubmit="return confirm('¿Estás seguro de eliminar esta categoría?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorium.id) }}">
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                Total de categorías: <strong>{{ categorias|length }}</strong>
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

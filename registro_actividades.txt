@@ -310,8 +310,8 @@ Cambio realizado:
 
 Próximos pasos:
 - Crear controladores y vistas para ver SimpleCSS en acción
+[13/11/2025 05:56:45 p.m.] CAMBIO DE DISEÑO EN VISTAS DE CATEGORÍA (Bootstrap 5)
 - Los formularios, tablas y elementos tendrán estilos automáticamente
-
 ---
 
 [12/11/2025 09:36:31 p.m.] Comandos ejecutados: Commit y push de SimpleCSS
@@ -450,13 +450,7 @@ $entityManager->flush(); // Se guarda en la BD
 USERREPOSITORY (src/Repository/UserRepository.php):
 ==================================================
 
-¿Qué es?
-- Es el "gestor de consultas" para la entidad User
-- Maneja TODAS las operaciones de lectura/búsqueda en la tabla user
-- Sigue el patrón Repository Pattern (separación de responsabilidades)
-
 ¿Para qué sirve?
-- Proporciona métodos para buscar usuarios en la base de datos
 - Permite crear consultas personalizadas sin mezclar lógica con la entidad
 - Mantiene el código organizado y reutilizable
 
@@ -2530,6 +2524,391 @@ Casos de prueba realizados:
 ✅ Cerrar sesión → Redirige a /login
 
 Estado: IMPLEMENTADO Y FUNCIONAL ✓
+
+---
+
+[13/11/2025 05:28:34 p.m.] Comandos ejecutados: Commit y versionado v1.10.1
+
+Comandos:
+1. git add .
+2. git commit -m "Redirección inteligente en ruta raíz según autenticación..."
+3. git tag -a v1.10.1 -m "v1.10.1: Redirección inteligente según autenticación..."
+4. git push origin main
+5. git push origin v1.10.1
+
+¿Qué se hizo?
+- Documentar la implementación de redirección automática
+- Crear commit con los cambios
+- Versionar como v1.10.1
+- Subir a GitHub
+
+Resultado:
+- Commit creado exitosamente con hash b46f7ba
+- 2 archivos modificados: HomeController.php, registro_actividades.txt
+- 218 inserciones, 2 eliminaciones
+- Tag v1.10.1 creado y subido exitosamente
+- Cambios en GitHub actualizados
+
+VERSIÓN v1.10.1 - CHANGELOG:
+
+✅ Redirección inteligente implementada:
+   - Ruta raíz (/) ahora evalúa estado de autenticación
+   - NO autenticado → Redirige a /login
+   - SÍ autenticado → Redirige a /home
+
+✅ Método root() en HomeController:
+   - Validación con $this->getUser()
+   - Redirecciones mediante redirectToRoute()
+   - Flujo de navegación mejorado
+
+✅ Experiencia de usuario mejorada:
+   - Acceso directo al contenido correcto
+   - Sin confusión en la ruta inicial
+   - Navegación intuitiva
+
+Lista completa de versiones:
+- v1.0.0: Inicialización Symfony 7.1
+- v1.1.0: Entidad User y autenticación
+- v1.2.0: LoginFormAuthenticator
+- v1.3.0: RegistrationController
+- v1.3.1: Links navegación
+- v1.4.0: HomeController y Categoria
+- v1.4.1: Redirect logout
+- v1.5.0: Entidad Producto con relaciones
+- v1.6.0: Sistema de roles ADMIN/USER
+- v1.6.1: Mejoras UX
+- v1.7.0: CRUD Categoria
+- v1.8.0: CRUD Producto
+- v1.8.1: Mejoras formulario Producto
+- v1.9.0: Protección autenticación y asignación automática usuario
+- v1.10.0: Integración Bootstrap 5.3.8
+- v1.10.1: Redirección inteligente en ruta raíz ⭐ ACTUAL
+
+Próximos pasos sugeridos:
+1. Prevenir acceso a /login y /register si ya está autenticado
+2. Proteger CategoriaController con IS_AUTHENTICATED_FULLY
+3. Mejorar templates con componentes Bootstrap
+4. Agregar navbar con navegación y usuario logueado
+
+---
+
+[13/11/2025 05:32:51 p.m.] GUÍA: Cómo inspeccionar variables en Symfony (debugging)
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                    TÉCNICAS DE DEBUGGING EN SYMFONY                            ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+CONTEXTO:
+Cuando desarrollas en Symfony y necesitas inspeccionar variables como $this->getUser(),
+tienes múltiples opciones para ver su contenido y depurar problemas.
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         MÉTODOS DE DEBUGGING                                   ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+1. dd() - DUMP AND DIE (Recomendado para debugging rápido)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   
+   ¿Qué hace?
+   - Muestra toda la información de la variable en pantalla
+   - Detiene la ejecución del código (die)
+   - Formato legible y coloreado
+   
+   Uso en controlador:
+   ```php
+   #[Route('/', name: 'app_root')]
+   public function root(): Response
+   {
+       dd($this->getUser());  // Muestra el objeto User completo y para
+       
+       // ⚠️ El código siguiente NO se ejecuta
+       return $this->redirectToRoute('app_home');
+   }
+   ```
+   
+   Salida:
+   - Muestra propiedades del User: id, email, roles, password (hasheado), etc.
+   - Formato HTML con pestañas expandibles
+   - Muy útil para ver qué datos tiene el objeto
+
+2. dump() - DUMP SIN DETENER (Para debugging continuo)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   
+   ¿Qué hace?
+   - Muestra información de la variable
+   - Continúa la ejecución del código
+   - Aparece en la Symfony Debug Toolbar (barra inferior)
+   
+   Uso en controlador:
+   ```php
+   #[Route('/', name: 'app_root')]
+   public function root(): Response
+   {
+       dump($this->getUser());  // Muestra info pero continúa
+       
+       if (!$this->getUser()) {
+           return $this->redirectToRoute('app_login');
+       }
+       
+       return $this->redirectToRoute('app_home');  // ✅ Se ejecuta
+   }
+   ```
+   
+   Ventaja:
+   - Puedes hacer múltiples dumps en diferentes puntos
+   - No interrumpe el flujo de la aplicación
+   - Ideal para comparar valores en diferentes momentos
+
+3. var_dump() + die() - PHP NATIVO (Tradicional)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   
+   ¿Qué hace?
+   - Función nativa de PHP
+   - Muestra tipo y contenido de la variable
+   - Requiere die() manual para detener
+   
+   Uso en controlador:
+   ```php
+   #[Route('/', name: 'app_root')]
+   public function root(): Response
+   {
+       var_dump($this->getUser());
+       die();  // Detener ejecución manualmente
+   }
+   ```
+   
+   Desventaja:
+   - Formato menos legible que dd()
+   - Hay que recordar poner die()
+
+4. INSPECCIÓN DE PROPIEDADES ESPECÍFICAS (Debugging selectivo)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   
+   ¿Qué hace?
+   - Muestra solo las propiedades que te interesan
+   - Formato personalizado
+   - Evita sobrecarga de información
+   
+   Uso en controlador:
+   ```php
+   #[Route('/', name: 'app_root')]
+   public function root(): Response
+   {
+       $user = $this->getUser();
+       
+       dd([
+           'existe_usuario' => $user !== null,
+           'email' => $user?->getEmail(),
+           'roles' => $user?->getRoles(),
+           'id' => $user?->getId(),
+           'es_admin' => in_array('ROLE_ADMIN', $user?->getRoles() ?? []),
+       ]);
+   }
+   ```
+   
+   Salida ejemplo:
+   ```
+   array:5 [
+     "existe_usuario" => true
+     "email" => "admin@example.com"
+     "roles" => array:1 [
+       0 => "ROLE_ADMIN"
+     ]
+     "id" => 1
+     "es_admin" => true
+   ]
+   ```
+   
+   Ventaja:
+   - Información clara y concisa
+   - Fácil de leer
+   - Solo lo que necesitas
+
+5. SYMFONY PROFILER (Sin modificar código)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   
+   ¿Qué hace?
+   - Herramienta visual de Symfony
+   - Muestra información del request completo
+   - Incluye datos de autenticación
+   
+   Cómo usar:
+   1. Accede a cualquier ruta: http://127.0.0.1:8000/
+   2. Mira la barra negra en la parte inferior de la página
+   3. Click en el icono de "Security" 🔒
+   4. Verás:
+      - Usuario autenticado (o "anon." si no hay)
+      - Roles del usuario
+      - Token de autenticación
+      - Firewall activo
+   
+   Ventaja:
+   - No requiere modificar código
+   - Información completa del sistema de seguridad
+   - Disponible en todas las páginas
+
+6. TWIG DEBUG (En templates)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   
+   ¿Qué hace?
+   - Inspecciona variables en las vistas
+   - Usa la variable global app.user
+   
+   Uso en template:
+   ```twig
+   {# En home/index.html.twig #}
+   {{ dump(app.user) }}
+   
+   {# O propiedades específicas #}
+   <p>Email: {{ app.user.email }}</p>
+   <p>Roles: {{ app.user.roles|json_encode }}</p>
+   ```
+   
+   Ventaja:
+   - Ver cómo llegan los datos a la vista
+   - Debugging del lado del template
+
+7. LOGGING (Para producción)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   
+   ¿Qué hace?
+   - Registra información en archivos de log
+   - No afecta la respuesta al usuario
+   - Útil en producción
+   
+   Uso en controlador:
+   ```php
+   use Psr\Log\LoggerInterface;
+   
+   public function root(LoggerInterface $logger): Response
+   {
+       $user = $this->getUser();
+       
+       $logger->info('Usuario en ruta raíz', [
+           'email' => $user?->getEmail(),
+           'roles' => $user?->getRoles(),
+       ]);
+       
+       // ... resto del código
+   }
+   ```
+   
+   Ver logs:
+   - Archivo: var/log/dev.log
+   - Comando: tail -f var/log/dev.log
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         COMPARACIÓN DE MÉTODOS                                 ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+Método          | Detiene | Formato  | Uso                    | Recomendado
+────────────────┼─────────┼──────────┼────────────────────────┼─────────────
+dd()            | ✅ Sí   | ⭐⭐⭐⭐⭐ | Debugging rápido       | ✅ Desarrollo
+dump()          | ❌ No   | ⭐⭐⭐⭐⭐ | Debugging múltiple     | ✅ Desarrollo
+var_dump()      | ❌ No*  | ⭐⭐⭐     | Debugging tradicional  | ⚠️  Ocasional
+Profiler        | ❌ No   | ⭐⭐⭐⭐⭐ | Sin tocar código       | ✅ Siempre
+Twig dump       | ❌ No   | ⭐⭐⭐⭐   | Debugging templates    | ✅ Templates
+Logger          | ❌ No   | ⭐⭐⭐     | Producción             | ✅ Producción
+
+* Requiere die() manual
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         EJEMPLO PRÁCTICO COMPLETO                              ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+Escenario: Quieres ver qué usuario está accediendo a la ruta raíz
+
+Opción A - Debugging rápido:
+```php
+#[Route('/', name: 'app_root')]
+public function root(): Response
+{
+    dd($this->getUser());
+}
+```
+Resultado: Pantalla con todos los datos del User, ejecución detenida
+
+Opción B - Debugging sin interrumpir:
+```php
+#[Route('/', name: 'app_root')]
+public function root(): Response
+{
+    dump('Usuario en root:', $this->getUser());
+    
+    if (!$this->getUser()) {
+        dump('Redirigiendo a login');
+        return $this->redirectToRoute('app_login');
+    }
+    
+    dump('Redirigiendo a home');
+    return $this->redirectToRoute('app_home');
+}
+```
+Resultado: Info en debug toolbar, página funciona normal
+
+Opción C - Información específica:
+```php
+#[Route('/', name: 'app_root')]
+public function root(): Response
+{
+    $user = $this->getUser();
+    
+    dump([
+        'autenticado' => $user !== null,
+        'email' => $user?->getEmail(),
+        'es_admin' => in_array('ROLE_ADMIN', $user?->getRoles() ?? []),
+    ]);
+    
+    if (!$user) {
+        return $this->redirectToRoute('app_login');
+    }
+    
+    return $this->redirectToRoute('app_home');
+}
+```
+Resultado: Solo la info que necesitas, funciona normal
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         RECOMENDACIONES                                        ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+✅ HACER:
+- Usar dd() para debugging rápido y temporal
+- Usar dump() cuando necesites ver múltiples valores
+- Revisar Symfony Profiler antes de agregar dumps
+- Remover todos los dd() y dump() antes de commit
+- Usar logger en producción
+
+❌ EVITAR:
+- Dejar dd() o dump() en código de producción
+- Usar var_dump() cuando dd() está disponible
+- Hacer dumps dentro de bucles (puede ser lento)
+- Olvidar quitar dumps antes de hacer commit
+
+🔧 CONSEJO PRO:
+Antes de hacer commit, busca dumps olvidados:
+```bash
+grep -r "dd(" src/
+grep -r "dump(" src/
+grep -r "var_dump" src/
+```
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                              RESUMEN                                           ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+Para inspeccionar $this->getUser():
+
+1. Opción más rápida: dd($this->getUser())
+2. Ver sin detener: dump($this->getUser())
+3. Solo propiedades: dd(['email' => $this->getUser()?->getEmail()])
+4. Sin código: Symfony Profiler > Security
+5. En templates: {{ dump(app.user) }}
+
+Documentación útil:
+- VarDumper: https://symfony.com/doc/current/components/var_dumper.html
+- Profiler: https://symfony.com/doc/current/profiler.html
+- Logging: https://symfony.com/doc/current/logging.html
 
 ---
 
