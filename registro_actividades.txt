@@ -661,3 +661,67 @@ Próximo paso:
 
 ---
 
+[12/11/2025 10:02:41 p.m.] Comandos ejecutados: Commit, versionado y push del sistema de registro
+
+Comandos:
+1. git add .
+2. git commit -m "Sistema de registro completo: RegistrationController y formulario con validaciones"
+3. git tag -a v1.3.0 -m "v1.3.0: Sistema de registro con autenticación automática y validación de emails únicos"
+4. git push origin main
+5. git push origin v1.3.0
+
+¿Qué se busca?
+- Guardar los cambios del sistema de registro completo
+- Crear una nueva versión del proyecto (v1.3.0)
+- Subir todos los cambios al repositorio remoto en GitHub
+
+Resultado:
+- Commit creado exitosamente con hash 149f9cc
+- 5 archivos modificados, 207 inserciones
+- Archivos creados:
+  * crud-symfony/src/Controller/RegistrationController.php
+  * crud-symfony/src/Form/RegistrationFormType.php
+  * crud-symfony/templates/registration/register.html.twig
+- Tag v1.3.0 creado y subido exitosamente a GitHub
+- Sistema de registro completo documentado y respaldado
+- Usuarios ahora pueden registrarse y autenticarse automáticamente
+
+---
+
+[12/11/2025 10:05:40 p.m.] Mejora: Enlaces entre Login y Registro
+
+Archivos a modificar manualmente:
+
+1. Archivo: templates/security/login.html.twig
+   Agregar después del botón "Sign in":
+   
+   ```twig
+   <p>
+       ¿No tienes cuenta? <a href="{{ path('app_register') }}">Regístrate aquí</a>
+   </p>
+   ```
+
+2. Archivo: templates/registration/register.html.twig
+   Agregar después del botón "Register":
+   
+   ```twig
+   <p>
+       ¿Ya tienes cuenta? <a href="{{ path('app_login') }}">Inicia sesión aquí</a>
+   </p>
+   ```
+
+¿Qué se busca?
+- Mejorar la experiencia de usuario (UX)
+- Permitir navegación fácil entre login y registro
+- Evitar que los usuarios se queden atrapados en una sola página
+- Proporcionar enlaces claros para nuevos usuarios y usuarios existentes
+
+Resultado esperado:
+- En la página de login: enlace "Regístrate aquí" que lleva a /register
+- En la página de registro: enlace "Inicia sesión aquí" que lleva a /login
+- Navegación fluida entre ambas páginas
+
+Nota: No existe comando de Symfony para esto, debe hacerse manualmente editando las plantillas Twig.
+
+---
+

@@ -15,5 +15,10 @@
         {{ form_row(registrationForm.agreeTerms) }}
 
         <button type="submit" class="btn">Register</button>
+
+        <p>
+            ¿Ya tienes cuenta? <a href="{{ path('app_login') }}">Inicia sesión aquí</a>
+        </p>
+
     {{ form_end(registrationForm) }}
 {% endblock %}
