@@ -2891,3 +2891,533 @@ Documentación útil:
 
 ---
 
+[13/11/2025 06:12:27 p.m.] v1.11.0 - Refactor visual completo de templates de Categoría con Bootstrap 5
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                MEJORAS VISUALES EN TEMPLATES DE CATEGORÍA                      ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+¿Qué se busca?
+- Modernizar todas las vistas de la entidad Categoría usando Bootstrap 5
+- Mejorar la experiencia visual y la usabilidad
+- Implementar componentes Bootstrap (cards, botones, tablas)
+- Añadir iconos Bootstrap Icons para mejor identificación visual
+- Unificar estilos y crear botones con clases dinámicas
+- Integrar formulario de eliminación con confirmación JavaScript
+- Hacer las vistas responsive y adaptables a diferentes dispositivos
+
+Archivos modificados:
+1. templates/categoria/index.html.twig
+2. templates/categoria/show.html.twig
+3. templates/categoria/edit.html.twig
+4. templates/categoria/new.html.twig
+5. templates/categoria/_form.html.twig
+6. templates/categoria/_delete_form.html.twig
+
+══════════════════════════════════════════════════════════════════════════════
+ARCHIVO 1: templates/categoria/index.html.twig (Listado de categorías)
+══════════════════════════════════════════════════════════════════════════════
+
+ANTES (Versión básica sin estilos):
+```twig
+{% extends 'base.html.twig' %}
+
+{% block title %}Categoria index{% endblock %}
+
+{% block body %}
+    <h1>Categoria index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for categorium in categorias %}
+            <tr>
+                <td>{{ categorium.id }}</td>
+                <td>{{ categorium.nombre }}</td>
+                <td>
+                    <a href="{{ path('app_categoria_show', {'id': categorium.id}) }}">show</a>
+                    <a href="{{ path('app_categoria_edit', {'id': categorium.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="button" href="{{ path('app_categoria_new') }}">Create new</a>
+{% endblock %}
+```
+
+DESPUÉS (Con Bootstrap 5 y componentes modernos):
+```twig
+{% extends 'base.html.twig' %}
+
+{% block title %}Categorías{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">
+                <i class="bi bi-folder"></i> Categorías
+            </h1>
+        </div>
+        <div class="col-auto">
+            <a href="{{ path('app_categoria_new') }}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle"></i> Nueva Categoría
+            </a>
+        </div>
+    </div>
+
+    {% if categorias is empty %}
+        <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i> No hay categorías registradas. 
+            <a href="{{ path('app_categoria_new') }}" class="alert-link">Crear la primera</a>
+        </div>
+    {% else %}
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col" style="width: 10%">#ID</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col" class="text-center" style="width: 20%">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for categorium in categorias %}
+                            <tr>
+                                <td class="fw-bold">{{ categorium.id }}</td>
+                                <td>{{ categorium.nombre }}</td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm gap-2" role="group">
+                                        <a href="{{ path('app_categoria_show', {'id': categorium.id}) }}" 
+                                           class="btn btn-info" 
+                                           title="Ver detalles">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </a>
+                                        <a href="{{ path('app_categoria_edit', {'id': categorium.id}) }}" 
+                                           class="btn btn-warning" 
+                                           title="Editar">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </a>
+                                        <form method="post" 
+                                              action="{{ path('app_categoria_delete', {'id': categorium.id}) }}" 
+                                              style="display:inline;"
+                                              onsubmit="return confirm('¿Estás seguro de eliminar esta categoría?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorium.id) }}">
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                Total de categorías: <strong>{{ categorias|length }}</strong>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+```
+
+Mejoras aplicadas en index.html.twig:
+✅ Container responsive con margen superior (mt-5)
+✅ Header de dos columnas: título + botón "Nueva Categoría"
+✅ Título con clase display-4 para tamaño grande
+✅ Iconos Bootstrap Icons (bi-folder, bi-plus-circle)
+✅ Alerta Bootstrap cuando no hay registros (alert-info)
+✅ Card con sombra (shadow-sm) que envuelve la tabla
+✅ Tabla con efectos: table-hover (hover), table-striped (filas alternadas)
+✅ Header de tabla oscuro (table-dark)
+✅ Tabla responsive con scroll horizontal en móviles
+✅ Botones de acción en grupo con espaciado (btn-group gap-2)
+✅ Botón eliminar integrado con confirmación JavaScript
+✅ Colores semánticos: info (azul), warning (amarillo), danger (rojo)
+✅ Footer de card mostrando total de categorías
+✅ Traducción al español de todos los textos
+
+══════════════════════════════════════════════════════════════════════════════
+ARCHIVO 2: templates/categoria/show.html.twig (Ver detalles)
+══════════════════════════════════════════════════════════════════════════════
+
+ANTES:
+```twig
+{% extends 'base.html.twig' %}
+
+{% block title %}Categoria{% endblock %}
+
+{% block body %}
+    <h1>Categoria</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ categorium.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ categorium.nombre }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_categoria_index') }}">back to list</a>
+
+    <a href="{{ path('app_categoria_edit', {'id': categorium.id}) }}">edit</a>
+
+    {{ include('categoria/_delete_form.html.twig') }}
+{% endblock %}
+```
+
+DESPUÉS:
+```twig
+{% extends 'base.html.twig' %}
+
+{% block title %}Categoría - {{ categorium.nombre }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-folder-fill"></i> Categoría: {{ categorium.nombre }}
+            </h1>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Detalles de la Categoría</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-borderless">
+                <tbody>
+                    <tr>
+                        <th scope="row" style="width: 150px;">
+                            <i class="bi bi-hash"></i> ID:
+                        </th>
+                        <td class="fw-bold">{{ categorium.id }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <i class="bi bi-tag"></i> Nombre:
+                        </th>
+                        <td class="fs-5">{{ categorium.nombre }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex gap-2">
+        <a href="{{ path('app_categoria_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver al listado
+        </a>
+        <a href="{{ path('app_categoria_edit', {'id': categorium.id}) }}" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        
+        <form method="post" 
+              action="{{ path('app_categoria_delete', {'id': categorium.id}) }}" 
+              style="display:inline;"
+              onsubmit="return confirm('¿Estás seguro de eliminar esta categoría?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorium.id) }}">
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Eliminar
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+```
+
+Mejoras aplicadas en show.html.twig:
+✅ Título dinámico con nombre de la categoría
+✅ Header con icono y nombre de la categoría actual
+✅ Card con header azul (bg-primary text-white)
+✅ Tabla sin bordes (table-borderless) para diseño limpio
+✅ Iconos descriptivos para cada campo (bi-hash, bi-tag)
+✅ Valores destacados: ID en negrita, Nombre en tamaño grande
+✅ Botones con flexbox y espaciado (d-flex gap-2)
+✅ Colores semánticos en botones
+✅ Formulario de eliminar integrado directamente
+✅ Eliminado el uso de _delete_form.html.twig por integración directa
+
+══════════════════════════════════════════════════════════════════════════════
+ARCHIVO 3: templates/categoria/edit.html.twig (Editar categoría)
+══════════════════════════════════════════════════════════════════════════════
+
+ANTES:
+```twig
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Categoria{% endblock %}
+
+{% block body %}
+    <h1>Edit Categoria</h1>
+
+    {{ include('categoria/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_categoria_index') }}">back to list</a>
+
+    {{ include('categoria/_delete_form.html.twig') }}
+{% endblock %}
+```
+
+DESPUÉS:
+```twig
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Categoría - {{ categorium.nombre }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-pencil-square"></i> Editar Categoría
+            </h1>
+            <p class="text-muted">Modificar los datos de: <strong>{{ categorium.nombre }}</strong></p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-pencil"></i> Formulario de Edición</h5>
+                </div>
+                <div class="card-body">
+                    {{ include('categoria/_form.html.twig', {
+                        'button_label': 'Actualizar',
+                        'button_class': 'btn btn-warning'
+                    }) }}
+                </div>
+            </div>
+
+            <div class="mt-3 d-flex gap-2">
+                <a href="{{ path('app_categoria_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver al listado
+                </a>
+                
+                <form method="post" 
+                      action="{{ path('app_categoria_delete', {'id': categorium.id}) }}" 
+                      style="display:inline;"
+                      onsubmit="return confirm('¿Estás seguro de eliminar esta categoría?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorium.id) }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+
+Mejoras aplicadas en edit.html.twig:
+✅ Título dinámico con nombre de categoría
+✅ Subtítulo descriptivo (text-muted) indicando qué se edita
+✅ Card amarillo (bg-warning) para destacar que es edición
+✅ Layout responsive (col-md-6) - formulario ocupa media pantalla
+✅ Botón "Actualizar" con clase dinámica (btn-warning)
+✅ Botones separados con flexbox y espaciado
+✅ Formulario eliminar integrado
+✅ Iconos descriptivos (bi-pencil-square, bi-arrow-left)
+
+══════════════════════════════════════════════════════════════════════════════
+ARCHIVO 4: templates/categoria/new.html.twig (Nueva categoría)
+══════════════════════════════════════════════════════════════════════════════
+
+ANTES:
+```twig
+{% extends 'base.html.twig' %}
+
+{% block title %}New Categoria{% endblock %}
+
+{% block body %}
+    <h1>Create new Categoria</h1>
+
+    {{ include('categoria/_form.html.twig') }}
+
+    <a href="{{ path('app_categoria_index') }}">back to list</a>
+{% endblock %}
+```
+
+DESPUÉS:
+```twig
+{% extends 'base.html.twig' %}
+
+{% block title %}Nueva Categoría{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-plus-circle"></i> Nueva Categoría
+            </h1>
+            <p class="text-muted">Crear una nueva categoría en el sistema</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-folder-plus"></i> Formulario de Creación</h5>
+                </div>
+                <div class="card-body">
+                    {{ include('categoria/_form.html.twig', {
+                        'button_label': 'Crear Categoría',
+                        'button_class': 'btn btn-primary'
+                    }) }}
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <a href="{{ path('app_categoria_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver al listado
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+
+Mejoras aplicadas en new.html.twig:
+✅ Título en español "Nueva Categoría"
+✅ Subtítulo descriptivo de la acción
+✅ Card azul (bg-primary) para creación
+✅ Layout responsive (col-md-6)
+✅ Botón "Crear Categoría" con clase dinámica (btn-primary)
+✅ Icono de plus (bi-plus-circle)
+✅ Botón volver separado del formulario
+
+══════════════════════════════════════════════════════════════════════════════
+ARCHIVO 5: templates/categoria/_form.html.twig (Formulario reutilizable)
+══════════════════════════════════════════════════════════════════════════════
+
+ANTES:
+```twig
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
+```
+
+DESPUÉS:
+```twig
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="{{ button_class|default('btn btn-primary') }}">
+        {{ button_label|default('Guardar') }}
+    </button>
+{{ form_end(form) }}
+```
+
+Mejoras aplicadas en _form.html.twig:
+✅ Botón con clase dinámica mediante parámetro button_class
+✅ Valor por defecto: btn btn-primary (azul)
+✅ Permite personalizar color desde template que lo incluye
+✅ Label por defecto en español: "Guardar"
+✅ Reutilizable para new.html.twig y edit.html.twig
+
+Uso del formulario:
+- En new.html.twig: button_class='btn btn-primary' (azul)
+- En edit.html.twig: button_class='btn btn-warning' (amarillo)
+
+══════════════════════════════════════════════════════════════════════════════
+ARCHIVO 6: templates/categoria/_delete_form.html.twig (Ya no se usa)
+══════════════════════════════════════════════════════════════════════════════
+
+ANTES:
+```twig
+<form method="post" action="{{ path('app_categoria_delete', {'id': categorium.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorium.id) }}">
+    <button class="btn">Delete</button>
+</form>
+```
+
+DESPUÉS:
+El archivo existe pero ya no se usa mediante include(). Ahora el formulario de 
+eliminación está integrado directamente en show.html.twig y edit.html.twig con:
+- Confirmación en español
+- Botón danger (rojo)
+- Icono de basura
+- Inline con otros botones
+
+══════════════════════════════════════════════════════════════════════════════
+
+Resultado final:
+✅ Todas las vistas de Categoría modernizadas con Bootstrap 5
+✅ Diseño responsive y adaptable a dispositivos móviles
+✅ Componentes visuales consistentes (cards, botones, tablas)
+✅ Iconos Bootstrap Icons para mejor UX
+✅ Botones con colores semánticos y espaciado uniforme
+✅ Formulario de eliminar con confirmación JavaScript integrada
+✅ Sistema de clases dinámicas para botones de formulario
+✅ Traducción completa al español
+✅ Layout profesional y moderno
+
+Comandos ejecutados:
+1. Modificación manual de todos los templates de categoría
+2. git add templates/categoria/*.twig
+3. git add ../registro_actividades.txt
+4. git commit -m "v1.11.0: Refactor vistas de Categoría con Bootstrap 5..."
+5. git tag v1.11.0 -m "Refactor vistas de Categoría con Bootstrap 5..."
+6. git push && git push --tags
+
+Hash del commit: 6bb3b66
+Tag creado: v1.11.0
+Estado: ✅ Sincronizado con GitHub
+
+---
+
+[13/11/2025 06:17:10 p.m.] Comando "CPCV REG ACT" configurado
+
+¿Qué se hizo?
+- Se estableció un comando abreviado para automatizar el proceso completo de documentación y versionado
+- El comando "CPCV REG ACT" ejecutará automáticamente todos los pasos necesarios
+
+Funcionamiento del comando:
+1. Obtiene timestamp actual
+2. Documenta cambios en registro_actividades.txt (antes/después, explicación detallada)
+3. Ejecuta git add de todos los archivos modificados
+4. Realiza git commit con mensaje descriptivo y nueva versión
+5. Crea git tag con la nueva versión
+6. Ejecuta git push && git push --tags
+
+Significado:
+- CPCV = Commit, Push, Cambio de Versión
+- REG ACT = Registro de Actividades
+
+Resultado:
+✅ Comando configurado y listo para usar
+✅ Automatiza todo el flujo de documentación y versionado
+✅ Ahorra tiempo en tareas repetitivas
+✅ Garantiza consistencia en la documentación
+
+---
+
