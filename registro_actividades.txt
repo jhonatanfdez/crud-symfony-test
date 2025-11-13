@@ -54,21 +54,12 @@ curl -sS https://get.symfony.com/cli/installer | bash
 
 # O con wget:
 wget https://get.symfony.com/cli/installer -O - | bash
+[13/11/2025 06:05:00 p.m.] Refactor visual completo de templates de Categoría (Bootstrap 5)
 
 # Mover el binario a una ubicación global:
-sudo mv /home/[usuario]/.symfony5/bin/symfony /usr/local/bin/symfony
-
-# Verificar la instalación:
-symfony -V
 
 ¿Qué se busca?
-- Instalar la herramienta CLI de Symfony en el sistema
-- Tener acceso a comandos de Symfony para crear y gestionar proyectos
-- Verificar que la instalación se realizó correctamente
 
----
-
-[12/11/2025 09:22:46 p.m.] Creación del proyecto Symfony
 
 Comandos:
 # Crear un proyecto web completo con Symfony:
@@ -294,13 +285,7 @@ Ventajas de SimpleCSS:
 
 Archivo modificado: crud-symfony/templates/base.html.twig
 
-Cambio realizado:
-- Agregada línea en el <head>: <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
-
-¿Qué se logró?
-- SimpleCSS ahora está disponible en todas las páginas del proyecto
 - Los elementos HTML tendrán estilos automáticos sin necesidad de clases CSS
-- La aplicación tiene una apariencia visual mejorada inmediatamente
 
 Próximos pasos:
 - Crear controladores y vistas para ver SimpleCSS en acción
