@@ -948,3 +948,151 @@ Próximo paso:
 
 ---
 
+[12/11/2025 10:26:33 p.m.] Comandos ejecutados: Commit, versionado y push
+
+Comandos:
+1. git add .
+2. git commit -m "Logout redirige a login y migración de Categoria ejecutada"
+3. git tag -a v1.4.1 -m "v1.4.1: Logout a login y tabla Categoria en BD"
+4. git push origin main
+5. git push origin v1.4.1
+
+¿Qué se busca?
+- Guardar los cambios de configuración de logout y migración de Categoria
+- Crear nueva versión del proyecto (v1.4.1)
+- Subir cambios al repositorio remoto en GitHub
+
+Resultado:
+- Commit creado exitosamente con hash 407df6f
+- 3 archivos modificados, 112 inserciones
+- Archivos principales:
+  * config/packages/security.yaml (logout target configurado)
+  * crud-symfony/migrations/Version20251113022359.php (migración de Categoria)
+  * registro_actividades.txt (documentación actualizada)
+- Tag v1.4.1 creado y subido exitosamente a GitHub
+- Tabla categoria creada en la base de datos
+- Sistema de logout mejorado
+
+Próximo paso:
+- Crear la entidad Producto con relaciones a User y Categoria
+
+---
+
+[13/11/2025 03:30:37 p.m.] Comando ejecutado: php bin/console make:entity Producto
+
+Preguntas y respuestas durante la ejecución:
+
+Campo 1 - nombre:
+- New property name: nombre
+- Field type: string
+- Field length [255]: (Enter para default)
+- Can this field be null in the database (nullable) [no]: no
+
+Campo 2 - precio:
+- New property name: precio
+- Field type: decimal
+- Precision (total number of digits stored) [10]: 10
+- Scale (number of decimals to store) [0]: 2
+- Can this field be null in the database (nullable) [no]: no
+
+Campo 3 - fecha:
+- New property name: fecha
+- Field type: datetime
+- Can this field be null in the database (nullable) [no]: no
+
+Campo 4 - categoria (relación):
+- New property name: categoria
+- Field type: relation
+- What class should this entity be related to?: Categoria
+- Relation type? [ManyToOne, OneToMany, ManyToMany, OneToOne]: ManyToOne
+- Is the Producto.categoria property allowed to be null (nullable)? [yes]: no
+- Do you want to add a new property to Categoria to access/update Producto objects? [yes]: yes
+- New field name inside Categoria [productos]: (Enter para default)
+- Do you want to automatically delete orphaned App\Entity\Producto objects (orphanRemoval)? [no]: no
+
+Campo 5 - user (relación):
+- New property name: user
+- Field type: relation
+- What class should this entity be related to?: User
+- Relation type? [ManyToOne, OneToMany, ManyToMany, OneToOne]: ManyToOne
+- Is the Producto.user property allowed to be null (nullable)? [yes]: no
+- Do you want to add a new property to User to access/update Producto objects? [yes]: yes
+- New field name inside User [productos]: (Enter para default)
+- Do you want to automatically delete orphaned App\Entity\Producto objects (orphanRemoval)? [no]: no
+
+- Add another property?: (Enter vacío para terminar)
+
+¿Qué se busca?
+- Crear la entidad Producto con todos sus campos
+- Establecer relaciones ManyToOne con Categoria y User
+- Cada producto pertenece a una categoría y un usuario
+- Permitir acceso bidireccional (User->productos, Categoria->productos)
+- No activar orphanRemoval para permitir cambios de categoría/usuario sin eliminar productos
+
+Archivos creados/modificados:
+
+Archivos CREADOS:
+1. src/Entity/Producto.php
+   - Entidad con campos: id, nombre, precio, fecha
+   - Relación ManyToOne con Categoria
+   - Relación ManyToOne con User
+   - Getters y setters para todos los campos
+
+2. src/Repository/ProductoRepository.php
+   - Repositorio para consultas de productos
+   - Métodos para buscar y gestionar productos
+
+Archivos MODIFICADOS:
+1. src/Entity/Categoria.php
+   - Agregada propiedad $productos (OneToMany)
+   - Métodos addProducto() y removeProducto()
+   - Relación bidireccional con Producto
+
+2. src/Entity/User.php
+   - Agregada propiedad $productos (OneToMany)
+   - Métodos addProducto() y removeProducto()
+   - Relación bidireccional con Producto
+
+Resultado:
+- Entidad Producto creada con 5 campos (id, nombre, precio, fecha, categoria, user)
+- Relaciones ManyToOne correctamente establecidas
+- Acceso bidireccional configurado
+- Repository generado automáticamente
+- Listo para crear la migración
+
+Próximo paso:
+- Crear y ejecutar la migración de Producto
+
+---
+
+[13/11/2025 03:37:14 p.m.] Comandos ejecutados: Migración de Producto
+
+Comandos:
+1. php bin/console make:migration
+2. php bin/console doctrine:migrations:migrate
+
+¿Qué se busca?
+- Crear el archivo de migración para la tabla producto
+- Ejecutar la migración para crear la tabla en la base de datos
+- Crear las foreign keys hacia categoria y user
+- Preparar la base de datos para almacenar productos
+
+Resultado:
+- Archivo de migración creado en migrations/
+- Migración ejecutada exitosamente
+- Tabla `producto` creada en la base de datos con campos:
+  * id (int, auto_increment, primary key)
+  * nombre (varchar 255, not null)
+  * precio (decimal 10,2, not null)
+  * fecha (datetime, not null)
+  * categoria_id (int, not null, foreign key -> categoria.id)
+  * user_id (int, not null, foreign key -> user.id)
+- Foreign keys configuradas correctamente
+- Índices creados en categoria_id y user_id
+- Base de datos lista para gestionar productos con relaciones
+
+Próximo paso:
+- Generar el CRUD de productos con make:crud
+
+---
+
