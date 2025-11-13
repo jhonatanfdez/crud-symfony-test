@@ -1096,3 +1096,84 @@ Próximo paso:
 
 ---
 
+[13/11/2025 03:38:39 p.m.] Comandos ejecutados: Commit, versionado y push de Producto
+
+Comandos:
+1. git add .
+2. git commit -m "Entidad Producto: Creación completa con relaciones ManyToOne a User y Categoria..."
+3. git tag -a v1.5.0 -m "v1.5.0: Entidad Producto completa con relaciones..."
+4. git push origin main
+5. git push origin v1.5.0
+
+¿Qué se busca?
+- Guardar todos los cambios de la entidad Producto y su migración
+- Crear una nueva versión del proyecto (v1.5.0)
+- Documentar detalladamente las relaciones y estructura
+- Subir cambios al repositorio remoto en GitHub
+
+Resultado:
+- Commit creado exitosamente con hash 69d8c1d
+- 6 archivos modificados, 410 inserciones
+- Archivos principales:
+  * crud-symfony/src/Entity/Producto.php (nueva entidad)
+  * crud-symfony/src/Repository/ProductoRepository.php (nuevo repository)
+  * crud-symfony/migrations/Version20251113193359.php (migración)
+  * crud-symfony/src/Entity/Categoria.php (relación OneToMany agregada)
+  * crud-symfony/src/Entity/User.php (relación OneToMany agregada)
+  * registro_actividades.txt (documentación actualizada)
+- Tag v1.5.0 creado con descripción completa de características
+- Cambios subidos exitosamente a GitHub
+- Sistema listo para generar CRUD de productos
+
+Próximo paso:
+- Generar el CRUD de productos con make:crud
+
+---
+
+[13/11/2025 03:47:18 p.m.] Modificación: Registro basado en roles (primer usuario ADMIN, resto USER)
+
+Archivo modificado:
+- crud-symfony/src/Controller/RegistrationController.php
+
+¿Qué se busca?
+- Implementar lógica de asignación de roles automática durante el registro
+- El primer usuario registrado en el sistema recibe el rol ROLE_ADMIN
+- Todos los usuarios posteriores reciben el rol ROLE_USER
+- Mejorar la seguridad y gestión de permisos del sistema
+
+Cambios realizados en RegistrationController.php:
+1. Se inyectó UserRepository en el constructor del controlador
+2. Se agregó variable privada $userRepository en el controlador
+3. Se modificó el método register() para incluir lógica de roles:
+   - Se cuenta la cantidad de usuarios existentes con $this->userRepository->count([])
+   - Si el conteo es 0 (primer usuario): se asigna ['ROLE_ADMIN']
+   - Si hay usuarios existentes: se asigna ['ROLE_USER']
+   - Se aplica el rol al usuario antes de guardar con $user->setRoles($role)
+
+Código implementado:
+```php
+// Determinar el rol según si es el primer usuario
+$userCount = $this->userRepository->count([]);
+$role = ($userCount === 0) ? ['ROLE_ADMIN'] : ['ROLE_USER'];
+$user->setRoles($role);
+```
+
+Resultado:
+- Sistema de roles automático funcionando correctamente
+- Primer usuario registrado tendrá privilegios de administrador
+- Usuarios subsecuentes tendrán privilegios estándar
+- Base para implementar control de acceso basado en roles (RBAC)
+- No requiere intervención manual para asignar roles
+
+Beneficios:
+- Seguridad mejorada con separación de privilegios
+- Experiencia de usuario simplificada (no requiere elegir rol)
+- Base sólida para futuras restricciones de acceso a CRUDs
+- Preparación para access_control en security.yaml
+
+Próximo paso:
+- Hacer commit y versionar estos cambios
+- Generar el CRUD de productos con make:crud
+
+---
+
