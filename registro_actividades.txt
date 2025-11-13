@@ -575,3 +575,89 @@ Próximo paso:
 
 ---
 
+[12/11/2025 09:59:35 p.m.] Comandos ejecutados: Commit, versionado y push del sistema de login
+
+Comandos:
+1. git add .
+2. git commit -m "Sistema de login completo: Authenticator, SecurityController y formulario de login"
+3. git tag -a v1.2.0 -m "v1.2.0: Sistema de login con remember me y logout implementado"
+4. git push origin main
+5. git push origin v1.2.0
+
+¿Qué se busca?
+- Guardar los cambios del sistema de autenticación completo
+- Crear una nueva versión del proyecto (v1.2.0)
+- Subir todos los cambios al repositorio remoto en GitHub
+
+Resultado:
+- Commit creado exitosamente con hash 03a98fb
+- 5 archivos modificados, 323 inserciones
+- Archivos creados:
+  * crud-symfony/src/Controller/SecurityController.php
+  * crud-symfony/src/Security/LoginFormAuthenticator.php
+  * crud-symfony/templates/security/login.html.twig
+- Tag v1.2.0 creado y subido exitosamente a GitHub
+- Sistema de login completo documentado y respaldado
+
+---
+
+[12/11/2025 10:01:32 p.m.] Comando ejecutado: php bin/console make:registration-form
+
+Preguntas y respuestas durante la ejecución:
+
+1. Do you want to add a @UniqueEntity validation annotation on your User class to make sure duplicate accounts aren't created? (yes/no):
+   Respuesta: yes
+   
+2. Do you want to send an email to verify the user's email address after registration? (yes/no):
+   Respuesta: no
+   
+3. Do you want to automatically authenticate the user after registration? (yes/no):
+   Respuesta: yes
+
+¿Qué se busca?
+- Crear el sistema completo de registro de usuarios
+- Generar el controlador de registro con la lógica para crear nuevos usuarios
+- Crear el formulario de registro con validaciones
+- Validar que los correos electrónicos sean únicos (no duplicados)
+- Autenticar automáticamente al usuario después del registro exitoso
+
+Archivos creados/modificados:
+
+Archivos CREADOS:
+1. src/Controller/RegistrationController.php
+   - Controlador con el método register()
+   - Maneja el proceso de registro de nuevos usuarios
+   - Hashea la contraseña antes de guardarla
+   - Autentica automáticamente al usuario después del registro
+   - Redirige a una ruta después del registro exitoso
+
+2. src/Form/RegistrationFormType.php
+   - Clase de formulario para el registro
+   - Define los campos: email, plainPassword (con confirmación)
+   - Validaciones de contraseña
+   - Opción de términos y condiciones (agreeTerms)
+
+3. templates/registration/register.html.twig
+   - Plantilla del formulario de registro
+   - Campos: email, password, repetir password
+   - Checkbox para aceptar términos
+   - Muestra errores de validación
+
+Archivos MODIFICADOS:
+1. src/Entity/User.php
+   - Agregada anotación @UniqueEntity para el campo email
+   - Asegura que no se puedan crear cuentas duplicadas con el mismo email
+
+Resultado:
+- Sistema de registro completamente funcional
+- Ruta /register disponible para crear nuevas cuentas
+- Validación de emails únicos implementada
+- Los usuarios se autentican automáticamente después de registrarse
+- Hash seguro de contraseñas antes de guardarlas en la BD
+- Formulario con validaciones de contraseña y confirmación
+
+Próximo paso:
+- Crear la entidad Producto con campos: nombre, precio, fecha y relación con User
+
+---
+
