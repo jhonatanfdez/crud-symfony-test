@@ -203,3 +203,51 @@ Resultado:
 
 ---
 
+[12/11/2025 09:30:08 p.m.] Comandos ejecutados: Commit y versionado del proyecto
+
+Comandos:
+1. git add .
+2. git commit -m "Proyecto Symfony 7.1 creado con webapp"
+3. git tag -a v1.0.0 -m "v1.0.0: Proyecto Symfony inicial con webapp"
+4. git push origin main
+5. git push origin v1.0.0
+
+¿Qué se busca?
+- Agregar todos los archivos nuevos y modificados al staging area
+- Crear un commit con el proyecto Symfony y el registro de actividades
+- Crear una etiqueta (tag) de versión v1.0.0 para marcar este hito
+- Subir los cambios al repositorio remoto en GitHub
+- Subir el tag al repositorio remoto
+
+Resultado:
+- Commit creado exitosamente con hash 085e4db
+- 52 archivos cambiados, 11073 inserciones
+- Tag v1.0.0 creado y anotado
+- Cambios subidos a GitHub en la rama main
+- Tag v1.0.0 subido exitosamente a GitHub
+- Versión inicial del proyecto documentada y respaldada
+
+---
+
+[12/11/2025 09:31:40 p.m.] Comando ejecutado: symfony server:start
+
+¿Qué se busca?
+- Iniciar el servidor de desarrollo local de Symfony
+- Probar que el proyecto se ejecuta correctamente
+- Tener acceso a la aplicación web a través del navegador
+- Verificar que PHP-FPM está funcionando correctamente
+
+Resultado:
+- Servidor web iniciado exitosamente
+- URL del servidor: http://127.0.0.1:8000
+- PHP-FPM versión 8.3.27 en ejecución
+- Servidor optimizado solo para desarrollo local
+- Logs disponibles en: /home/jhonatanycris/.symfony5/log/
+
+Nota importante:
+- Este servidor es SOLO para desarrollo, nunca usar en producción
+- Escucha únicamente en 127.0.0.1 (localhost)
+- Para detener el servidor: Ctrl+C o symfony server:stop
+
+---
+
