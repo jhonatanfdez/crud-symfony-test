@@ -3421,3 +3421,337 @@ Resultado:
 
 ---
 
+[13/11/2025 06:34:50 p.m.] Separación de templates: base.html.twig vs base_admin.html.twig
+
+¿Qué se hizo?
+Se creó una arquitectura de doble template para separar la interfaz pública de la interfaz autenticada:
+
+1. **base.html.twig** (template original)
+   - Uso: Páginas públicas (login, registro)
+   - Características: Layout simple sin navbar ni menú
+   - Sin navegación
+
+2. **base_admin.html.twig** (template nuevo - 303 líneas)
+   - Uso: Páginas de usuarios autenticados
+   - Características completas:
+     * Navbar con gradiente púrpura (#667eea a #764ba2)
+     * Menú de navegación: Home, Categorías, Productos
+     * Dropdown de usuario con:
+       - Email del usuario (parte antes del @)
+       - Badge de rol (ROLE_ADMIN con estrella dorada / ROLE_USER)
+       - Enlace a Perfil
+       - Enlace a Configuración
+       - Botón Cerrar Sesión
+     * Active link highlighting (detecta ruta actual)
+     * Footer con información del stack tecnológico
+     * Footer con padding inferior adicional (3rem) para mejor separación
+     * Crédito de desarrollo: "por Jhonatan Fernandez"
+     * Custom CSS con animaciones (fadeInUp, float, pulse)
+     * Scrollbar personalizado con gradiente
+     * Sticky navbar
+
+Elementos del nuevo base_admin.html.twig:
+
+**Navbar:**
+```twig
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-lg">
+    <!-- Gradiente: linear-gradient(135deg, #667eea 0%, #764ba2 100%) -->
+    <!-- Links: Home, Categorías, Productos -->
+    <!-- Dropdown usuario con email, rol, perfil, configuración, logout -->
+```
+
+**Active Link Detection:**
+```twig
+{% set currentRoute = app.request.get('_route') %}
+class="{{ currentRoute == 'app_home' ? 'active' : '' }}"
+```
+
+**Footer:**
+```twig
+<footer class="footer-custom mt-auto">
+    <div class="container">
+        <!-- Stack tecnológico, enlaces rápidos, créditos -->
+        <p>© 2025 CRUD Symfony. Desarrollado con ❤️ por Jhonatan Fernandez usando Symfony & Bootstrap</p>
+    </div>
+</footer>
+```
+
+**CSS del Footer:**
+```css
+.footer-custom {
+    background: #2d3748;
+    color: #cbd5e0;
+    padding: 2rem 0 3rem 0; /* Padding inferior aumentado a 3rem para mejor separación */
+    margin-top: 4rem;
+}
+```
+
+**Custom CSS:**
+- Animación fadeInUp para elementos del navbar
+- Animación float para elementos flotantes
+- Animación pulse para elementos pulsantes
+- Scrollbar personalizado con gradiente púrpura
+- Hover effects en links del navbar
+- Transitions suaves en todos los elementos
+
+Resultado:
+✅ Arquitectura de templates separada correctamente
+✅ Interfaz pública sin navbar (base.html.twig)
+✅ Interfaz administrativa completa (base_admin.html.twig)
+✅ Navbar responsive con Bootstrap 5
+✅ User dropdown funcional con información del usuario
+✅ Footer con stack tecnológico
+✅ Animaciones y efectos visuales modernos
+
+---
+
+[13/11/2025 06:34:50 p.m.] Rediseño completo del dashboard home (templates/home/index.html.twig)
+
+¿Qué se hizo?
+Se transformó el home básico en un dashboard espectacular y moderno con estadísticas, módulos y diseño profesional.
+
+**ANTES:**
+```twig
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="example-wrapper">
+    <h1>Hello {{ controller_name }}! ✅</h1>
+    <p>This friendly message is coming from...</p>
+</div>
+{% endblock %}
+```
+
+**DESPUÉS:**
+```twig
+{% extends 'base_admin.html.twig' %}
+{% block title %}Dashboard{% endblock %}
+{% block body %}
+<!-- 400+ líneas de diseño espectacular -->
+```
+
+**Cambios en HomeController:**
+```php
+// ANTES:
+public function index(): Response {
+    return $this->render('home/index.html.twig', [
+        'controller_name' => 'HomeController',
+    ]);
+}
+
+// DESPUÉS:
+use App\Repository\CategoriaRepository;
+use App\Repository\ProductoRepository;
+
+public function index(
+    CategoriaRepository $categoriaRepo,
+    ProductoRepository $productoRepo
+): Response {
+    $totalCategorias = count($categoriaRepo->findAll());
+    $totalProductos = count($productoRepo->findAll());
+    return $this->render('home/index.html.twig', [
+        'totalCategorias' => $totalCategorias,
+        'totalProductos' => $totalProductos,
+    ]);
+}
+```
+
+**Secciones del nuevo dashboard:**
+
+1. **Hero Section** (con gradiente púrpura):
+   - Título de bienvenida personalizado
+   - Subtítulo con stack tecnológico
+   - Email del usuario
+   - Badge de rol (Administrador/Usuario)
+   - Icono flotante animado
+
+2. **Estadísticas Rápidas** (2 cards):
+   - Total Categorías con número en gradiente
+   - Total Productos con número en gradiente
+   - Iconos grandes en background (opacity 0.15)
+   - Hover effect: translateY(-10px)
+   - Barra de color lateral (linear-gradient)
+
+3. **Módulos del Sistema** (2 cards grandes):
+   - **Card Categorías:**
+     * Icono grande con gradiente púrpura
+     * Descripción del módulo
+     * Botón "Ver Todas las Categorías" (gradiente)
+     * Botón "Crear Nueva Categoría" (outline)
+   
+   - **Card Productos:**
+     * Icono grande con gradiente verde
+     * Descripción del módulo
+     * Botón "Ver Todos los Productos" (gradiente verde)
+     * Botón "Crear Nuevo Producto" (outline)
+
+4. **Tecnologías** (3 cards):
+   - Symfony 7.1
+   - Bootstrap 5
+   - Doctrine ORM
+   - Iconos animados con hover
+
+5. **Acciones Rápidas** (panel con 4 botones):
+   - Nueva Categoría
+   - Nuevo Producto
+   - Listar Categorías
+   - Listar Productos
+
+**CSS y Animaciones:**
+
+```css
+/* Gradientes */
+--gradient-primary: #667eea a #764ba2 (púrpura)
+--gradient-success: #11998e a #38ef7d (verde)
+
+/* Animaciones */
+@keyframes float { /* Flotación suave */ }
+@keyframes pulse { /* Pulsación */ }
+
+/* Hover Effects */
+.stats-card:hover { transform: translateY(-10px); }
+.module-card:hover { transform: translateY(-15px) scale(1.02); }
+.module-icon:hover { transform: scale(1.2) rotate(10deg); }
+
+/* Cards */
+border-radius: 20px (todas las tarjetas)
+box-shadow dinámica en hover
+```
+
+**Efectos visuales implementados:**
+
+✨ Hero section con gradiente y sombra
+✨ Stats cards con barra lateral de color
+✨ Números con gradiente animado
+✨ Module cards con hover 3D
+✨ Iconos que rotan y crecen en hover
+✨ Botones con gradiente y sombra al hover
+✨ Animación float para icono de fondo
+✨ Transiciones suaves (0.3s - 0.4s)
+✨ Cards con backdrop en hover
+
+Resultado:
+✅ Dashboard moderno y profesional
+✅ Estadísticas en tiempo real desde BD
+✅ Acceso rápido a todos los módulos
+✅ Diseño responsive con Bootstrap 5
+✅ Animaciones y efectos avanzados
+✅ Gradientes personalizados (púrpura y verde)
+✅ Interfaz intuitiva y atractiva
+✅ Totalmente funcional e integrado
+
+---
+
+[13/11/2025 06:34:50 p.m.] Actualización de vistas de Categoría para usar base_admin.html.twig
+
+¿Qué se hizo?
+Se actualizaron todas las plantillas de Categoría para extender el nuevo template base_admin.html.twig en lugar de base.html.twig, integrándolas con la nueva arquitectura de navegación.
+
+**Archivos modificados:**
+
+1. **templates/categoria/index.html.twig**
+   - ANTES: {% extends 'base.html.twig' %}
+   - DESPUÉS: {% extends 'base_admin.html.twig' %}
+   - Impacto: Ahora tiene navbar con menú de navegación y footer
+
+2. **templates/categoria/show.html.twig**
+   - ANTES: {% extends 'base.html.twig' %}
+   - DESPUÉS: {% extends 'base_admin.html.twig' %}
+   - Impacto: Vista de detalle con navegación completa
+
+3. **templates/categoria/edit.html.twig**
+   - ANTES: {% extends 'base.html.twig' %}
+   - DESPUÉS: {% extends 'base_admin.html.twig' %}
+   - Impacto: Formulario de edición con navbar y menú
+
+4. **templates/categoria/new.html.twig**
+   - ANTES: {% extends 'base.html.twig' %}
+   - DESPUÉS: {% extends 'base_admin.html.twig' %}
+   - Impacto: Formulario de creación con navegación
+
+**Archivos NO modificados:**
+- templates/categoria/_form.html.twig (no extiende ningún base)
+- templates/categoria/_delete_form.html.twig (no extiende ningún base)
+
+**Beneficios:**
+✅ Navegación consistente en todas las vistas de categoría
+✅ Active link highlighting (link "Categorías" resaltado)
+✅ Acceso rápido a otros módulos desde el navbar
+✅ User dropdown disponible en todas las páginas
+✅ Footer con información tecnológica
+✅ Diseño unificado con gradientes y estilos modernos
+✅ Mejor UX con navegación siempre visible
+
+**Rutas afectadas:**
+- /categoria (index) - Listado con navbar
+- /categoria/new - Crear con navbar
+- /categoria/{id} (show) - Ver con navbar
+- /categoria/{id}/edit - Editar con navbar
+
+Resultado:
+✅ 4 archivos actualizados exitosamente
+✅ Todas las vistas de categoría integradas con base_admin
+✅ Navegación funcional y consistente
+✅ Active links funcionando correctamente
+✅ Arquitectura de templates consolidada
+
+---
+
+[13/11/2025 06:51:52 p.m.] Ajustes finales de espaciado y créditos en base_admin.html.twig
+
+¿Qué se hizo?
+Se realizaron ajustes finales de diseño en el template base_admin.html.twig para mejorar el espaciado y agregar créditos de desarrollo.
+
+**Cambios realizados:**
+
+1. **Crédito de desarrollo en el footer:**
+   - ANTES: "© 2025 CRUD Symfony. Desarrollado con ❤️ usando Symfony & Bootstrap"
+   - DESPUÉS: "© 2025 CRUD Symfony. Desarrollado con ❤️ por Jhonatan Fernandez usando Symfony & Bootstrap"
+   - Se agregó el nombre del desarrollador en el footer
+
+2. **Mejora del espaciado del footer (padding inferior):**
+   - ANTES: `padding: 2rem 0;`
+   - DESPUÉS: `padding: 2rem 0 3rem 0;`
+   - Se aumentó el padding inferior de 2rem a 3rem para mejor separación
+
+3. **Espaciado general antes del footer:**
+   - ANTES: `<footer class="footer-custom mt-auto">`
+   - DESPUÉS: `<footer class="footer-custom mt-5">`
+   - Se cambió de `mt-auto` a `mt-5` (margin-top: 3rem)
+   - Esto aplica de manera general a TODAS las páginas que usen base_admin.html.twig
+   - Ya no es necesario agregar márgenes individuales en cada vista
+
+**Beneficios del espaciado general:**
+✅ Consistencia en todas las páginas (home, categorías, productos)
+✅ Evita duplicación de código (no hay que poner mb-5 en cada vista)
+✅ Fácil mantenimiento (se ajusta en un solo lugar)
+✅ Mejor separación visual entre contenido y footer
+✅ Diseño más limpio y profesional
+
+**CSS final del footer:**
+```css
+.footer-custom {
+    background: #2d3748;
+    color: #cbd5e0;
+    padding: 2rem 0 3rem 0; /* Padding inferior: 3rem */
+    margin-top: 4rem;
+}
+```
+
+**HTML del footer:**
+```html
+<footer class="footer-custom mt-5"> <!-- Margin-top general: 3rem -->
+    ...
+    <p>© 2025 CRUD Symfony. Desarrollado con ❤️ por Jhonatan Fernandez usando Symfony & Bootstrap</p>
+    ...
+</footer>
+```
+
+Resultado:
+✅ Footer con crédito de desarrollo visible
+✅ Espaciado inferior optimizado (3rem padding)
+✅ Separación general antes del footer (3rem margin-top)
+✅ Diseño consistente en todas las vistas
+✅ Mejor presentación visual del sistema
+
+---
+
