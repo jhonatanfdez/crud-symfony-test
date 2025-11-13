@@ -2323,3 +2323,213 @@ Próximo paso recomendado:
 
 ---
 
+[13/11/2025 05:19:24 p.m.] Comandos ejecutados: Commit y versionado v1.10.0
+
+Comandos:
+1. git add .
+2. git commit -m "Integración de Bootstrap 5.3.8..."
+3. git tag -a v1.10.0 -m "v1.10.0: Integración de Bootstrap 5.3.8..."
+4. git push origin main
+5. git push origin v1.10.0
+
+¿Qué se hizo?
+- Crear commit con la integración de Bootstrap
+- Versionar como v1.10.0 con changelog completo
+- Subir todo a GitHub
+
+Resultado:
+- Commit creado exitosamente con hash b89b147
+- 4 archivos modificados: base.html.twig, twig.yaml, index.html.twig, registro_actividades.txt
+- 297 inserciones, 4 eliminaciones
+- Tag v1.10.0 creado y subido exitosamente
+- Cambios en GitHub actualizados
+
+VERSIÓN v1.10.0 - CHANGELOG:
+
+✅ Bootstrap 5.3.8 integrado:
+   - CDN CSS agregado en base.html.twig
+   - CDN JS Bundle agregado (incluye Popper.js)
+   - SimpleCSS removido (comentado)
+
+✅ Form theme configurado:
+   - bootstrap_5_layout.html.twig en twig.yaml
+   - Aplicación automática de clases Bootstrap a formularios
+   - Sin necesidad de modificar archivos PHP
+
+✅ Estilos automáticos aplicados:
+   - form-control en inputs
+   - form-select en selects
+   - form-label en labels
+   - is-invalid + invalid-feedback en errores
+   - mb-3 en contenedores de campos
+
+✅ Componentes disponibles:
+   - Grid system responsive
+   - Botones, Cards, Alerts, Modals
+   - Navbars, Tables, Badges
+   - Tooltips, Popovers, Dropdowns
+   - Y todo el ecosistema Bootstrap 5.3.8
+
+Lista completa de versiones:
+- v1.0.0: Inicialización Symfony 7.1
+- v1.1.0: Entidad User y autenticación
+- v1.2.0: LoginFormAuthenticator
+- v1.3.0: RegistrationController
+- v1.3.1: Links navegación
+- v1.4.0: HomeController y Categoria
+- v1.4.1: Redirect logout
+- v1.5.0: Entidad Producto con relaciones
+- v1.6.0: Sistema de roles ADMIN/USER
+- v1.6.1: Mejoras UX
+- v1.7.0: CRUD Categoria
+- v1.8.0: CRUD Producto
+- v1.8.1: Mejoras formulario Producto
+- v1.9.0: Protección autenticación y asignación automática usuario
+- v1.10.0: Integración Bootstrap 5.3.8 ⭐ ACTUAL
+
+Próximos pasos sugeridos:
+1. Mejorar templates de vistas (index, show, edit) con componentes Bootstrap
+2. Agregar navbar responsive con navegación
+3. Implementar mensajes flash con Bootstrap alerts
+4. Proteger CategoriaController (similar a ProductoController)
+5. Agregar breadcrumbs de navegación
+
+---
+
+[13/11/2025 05:25:13 p.m.] Redirección automática basada en estado de autenticación
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║              REDIRECCIÓN AUTOMÁTICA SEGÚN AUTENTICACIÓN                        ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+OBJETIVO:
+Implementar lógica de redirección inteligente en la ruta raíz (/) para:
+- Redirigir a /login si el usuario NO está autenticado
+- Redirigir a /home si el usuario SÍ está autenticado
+
+ARCHIVO MODIFICADO:
+━━━━━━━━━━━━━━━━━━
+
+src/Controller/HomeController.php
+
+IMPLEMENTACIÓN:
+━━━━━━━━━━━━━━━
+
+Método root() - Ruta '/' (app_root):
+
+```php
+#[Route('/', name: 'app_root')]
+public function root(): Response
+{
+    // Si NO está autenticado, redirigir a login
+    if (!$this->getUser()) {
+        return $this->redirectToRoute('app_login');
+    }
+    
+    // Si está autenticado, mostrar home
+    return $this->redirectToRoute('app_home');
+}
+```
+
+FLUJO DE NAVEGACIÓN:
+━━━━━━━━━━━━━━━━━━━
+
+1. Usuario visita la ruta raíz: http://127.0.0.1:8000/
+   
+   ┌─────────────────────────────────────┐
+   │  ¿Usuario está autenticado?         │
+   └─────────────────────────────────────┘
+                  │
+        ┌─────────┴─────────┐
+        │                   │
+       NO                  SÍ
+        │                   │
+        ▼                   ▼
+   /login              /home
+   (app_login)         (app_home)
+
+2. Desde /login después de autenticarse:
+   → Redirige a /home (configurado en LoginFormAuthenticator)
+
+3. Desde /logout:
+   → Redirige a /login (configurado en security.yaml)
+
+VENTAJAS DE ESTA IMPLEMENTACIÓN:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Experiencia de usuario mejorada:
+   - Usuario no autenticado → Ve login inmediatamente
+   - Usuario autenticado → Accede directo al home
+
+✅ Seguridad:
+   - No se permite acceso a rutas protegidas sin autenticación
+   - Redirección automática sin exponer contenido
+
+✅ Navegación intuitiva:
+   - / siempre lleva al lugar correcto según el estado
+   - No hay confusión sobre dónde empezar
+
+✅ SEO friendly:
+   - Ruta raíz (/) funcional y accesible
+   - Redirecciones HTTP correctas
+
+RUTAS DEL SISTEMA:
+━━━━━━━━━━━━━━━━━
+
+/ (app_root)
+├─ NO autenticado → /login
+└─ SÍ autenticado → /home
+
+/login (app_login)
+├─ Formulario de inicio de sesión
+└─ Después de login → /home
+
+/register (app_register)
+├─ Formulario de registro
+└─ Después de registro → Auto-login → /home
+
+/home (app_home)
+└─ Página principal (requiere autenticación)
+
+/logout (app_logout)
+└─ Cierra sesión → /login
+
+/producto/* (requiere IS_AUTHENTICATED_FULLY)
+/categoria/* (sin protección aún)
+
+MEJORAS FUTURAS SUGERIDAS:
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Prevenir que usuarios autenticados vean /login y /register:
+   ```php
+   // En SecurityController::login()
+   if ($this->getUser()) {
+       return $this->redirectToRoute('app_home');
+   }
+   ```
+
+2. Agregar access_control en security.yaml:
+   ```yaml
+   access_control:
+       - { path: ^/login, roles: PUBLIC_ACCESS }
+       - { path: ^/register, roles: PUBLIC_ACCESS }
+       - { path: ^/, roles: ROLE_USER }
+   ```
+
+3. Proteger CategoriaController similar a ProductoController
+
+4. Agregar navbar con indicador de usuario logueado
+
+TESTING:
+━━━━━━━
+
+Casos de prueba realizados:
+✅ Visitar / sin autenticación → Redirige a /login
+✅ Iniciar sesión → Redirige a /home
+✅ Visitar / autenticado → Redirige a /home
+✅ Cerrar sesión → Redirige a /login
+
+Estado: IMPLEMENTADO Y FUNCIONAL ✓
+
+---
+

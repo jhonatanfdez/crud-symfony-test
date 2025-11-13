@@ -18,8 +18,14 @@ final class HomeController extends AbstractController
     }
 
     #[Route('/', name: 'app_root')]
-    public function root(): RedirectResponse
+    public function root(): Response
     {
-        return $this->redirectToRoute('app_login');
+        // Si NO está autenticado, redirigir a login
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+        
+    // Si está autenticado, mostrar home
+    return $this->redirectToRoute('app_home');
     }
 }
