@@ -1,39 +1,96 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_admin.html.twig' %}
 
-{% block title %}Producto index{% endblock %}
+{% block title %}Productos{% endblock %}
 
 {% block body %}
-    <h1>Producto index</h1>
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">
+                <i class="bi bi-box-seam"></i> Productos
+            </h1>
+        </div>
+        <div class="col-auto">
+            <a href="{{ path('app_producto_new') }}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle"></i> Nuevo Producto
+            </a>
+        </div>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Fecha</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for producto in productos %}
-            <tr>
-                <td>{{ producto.id }}</td>
-                <td>{{ producto.nombre }}</td>
-                <td>{{ producto.precio }}</td>
-                <td>{{ producto.fecha ? producto.fecha|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_producto_show', {'id': producto.id}) }}">show</a>
-                    <a href="{{ path('app_producto_edit', {'id': producto.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a  href="{{ path('app_producto_new') }}">Create new</a>
+    {% if productos is empty %}
+        <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i> No hay productos registrados. 
+            <a href="{{ path('app_producto_new') }}" class="alert-link">Crear el primero</a>
+        </div>
+    {% else %}
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col" style="width: 8%">#ID</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col" style="width: 12%">Precio</th>
+                                <th scope="col" style="width: 15%">Fecha</th>
+                                <th scope="col">Categoría</th>
+                                <th scope="col" class="text-center" style="width: 20%">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for producto in productos %}
+                            <tr>
+                                <td class="fw-bold">{{ producto.id }}</td>
+                                <td>{{ producto.nombre }}</td>
+                                <td class="text-success fw-bold">${{ producto.precio|number_format(2, '.', ',') }}</td>
+                                <td>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i> 
+                                        {{ producto.fecha ? producto.fecha|date('d/m/Y') : '-' }}
+                                    </small>
+                                </td>
+                                <td>
+                                    {% if producto.categoria %}
+                                        <span class="badge bg-primary">
+                                            <i class="bi bi-folder"></i> {{ producto.categoria.nombre }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Sin categoría</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm gap-2" role="group">
+                                        <a href="{{ path('app_producto_show', {'id': producto.id}) }}" 
+                                           class="btn btn-info" 
+                                           title="Ver detalles">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </a>
+                                        <a href="{{ path('app_producto_edit', {'id': producto.id}) }}" 
+                                           class="btn btn-warning" 
+                                           title="Editar">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </a>
+                                        <form method="post" 
+                                            action="{{ path('app_producto_delete', {'id': producto.id}) }}" 
+                                            style="display:inline;"
+                                            onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ producto.id) }}">
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                Total de productos: <strong>{{ productos|length }}</strong>
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

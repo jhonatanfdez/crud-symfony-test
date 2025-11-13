@@ -1,34 +1,97 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_admin.html.twig' %}
 
-{% block title %}Producto{% endblock %}
+{% block title %}Producto - {{ producto.nombre }}{% endblock %}
 
 {% block body %}
-    <h1>Producto</h1>
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-box-fill"></i> Producto: {{ producto.nombre }}
+            </h1>
+        </div>
+    </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ producto.id }}</td>
-            </tr>
-            <tr>
-                <th>Nombre</th>
-                <td>{{ producto.nombre }}</td>
-            </tr>
-            <tr>
-                <th>Precio</th>
-                <td>{{ producto.precio }}</td>
-            </tr>
-            <tr>
-                <th>Fecha</th>
-                <td>{{ producto.fecha ? producto.fecha|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Detalles del Producto</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-borderless">
+                <tbody>
+                    <tr>
+                        <th scope="row" style="width: 150px;">
+                            <i class="bi bi-hash"></i> ID:
+                        </th>
+                        <td class="fw-bold">{{ producto.id }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <i class="bi bi-tag"></i> Nombre:
+                        </th>
+                        <td class="fs-5">{{ producto.nombre }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <i class="bi bi-cash-coin"></i> Precio:
+                        </th>
+                        <td class="fs-4 text-success fw-bold">
+                            ${{ producto.precio|number_format(2, '.', ',') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <i class="bi bi-calendar-event"></i> Fecha:
+                        </th>
+                        <td>
+                            {% if producto.fecha %}
+                                <span class="badge bg-info text-dark">
+                                    {{ producto.fecha|date('d/m/Y') }}
+                                </span>
+                                <small class="text-muted ms-2">
+                                    {{ producto.fecha|date('H:i:s') }}
+                                </small>
+                            {% else %}
+                                <span class="text-muted">No especificada</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <i class="bi bi-folder"></i> Categoría:
+                        </th>
+                        <td>
+                            {% if producto.categoria %}
+                                <span class="badge bg-primary fs-6">
+                                    <i class="bi bi-folder-fill"></i> {{ producto.categoria.nombre }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">Sin categoría</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <a href="{{ path('app_producto_index') }}">back to list</a>
-
-    <a href="{{ path('app_producto_edit', {'id': producto.id}) }}">edit</a>
-
-    {{ include('producto/_delete_form.html.twig') }}
+    <div class="mt-4 d-flex gap-2">
+        <a href="{{ path('app_producto_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver al listado
+        </a>
+        <a href="{{ path('app_producto_edit', {'id': producto.id}) }}" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        
+        <form method="post" 
+              action="{{ path('app_producto_delete', {'id': producto.id}) }}" 
+              style="display:inline;"
+              onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ producto.id) }}">
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Eliminar
+            </button>
+        </form>
+    </div>
+</div>
 {% endblock %}

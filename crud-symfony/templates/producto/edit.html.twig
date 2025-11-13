@@ -1,13 +1,48 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_admin.html.twig' %}
 
-{% block title %}Edit Producto{% endblock %}
+{% block title %}Editar Producto - {{ producto.nombre }}{% endblock %}
 
 {% block body %}
-    <h1>Edit Producto</h1>
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-pencil-square"></i> Editar Producto
+            </h1>
+            <p class="text-muted">Modificar los datos de: <strong>{{ producto.nombre }}</strong></p>
+        </div>
+    </div>
 
-    {{ include('producto/_form.html.twig', {'button_label': 'Update'}) }}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-pencil"></i> Formulario de Edición</h5>
+                </div>
+                <div class="card-body">
+                    {{ include('producto/_form.html.twig', {
+                        'button_label': 'Actualizar',
+                        'button_class': 'btn btn-success'
+                    }) }}
+                </div>
+            </div>
 
-    <a href="{{ path('app_producto_index') }}">back to list</a>
-
-    {{ include('producto/_delete_form.html.twig') }}
+            <div class="mt-3 d-flex gap-2">
+                <a href="{{ path('app_producto_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver al listado
+                </a>
+                
+                <form method="post" 
+                      action="{{ path('app_producto_delete', {'id': producto.id}) }}" 
+                      style="display:inline;"
+                      onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ producto.id) }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

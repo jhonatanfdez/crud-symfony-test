@@ -3755,3 +3755,604 @@ Resultado:
 
 ---
 
+[13/11/2025 06:59:34 p.m.] Refactor visual de vista index de Producto con Bootstrap 5
+
+¿Qué se hizo?
+Se rediseñó completamente la vista de listado de productos (templates/producto/index.html.twig) siguiendo el mismo patrón visual de categorías, con mejoras adicionales específicas para productos.
+
+**ANTES:**
+```twig
+{% extends 'base.html.twig' %}
+{% block title %}Producto index{% endblock %}
+{% block body %}
+    <h1>Producto index</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Fecha</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for producto in productos %}
+            <tr>
+                <td>{{ producto.id }}</td>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.precio }}</td>
+                <td>{{ producto.fecha ? producto.fecha|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_producto_show', {'id': producto.id}) }}">show</a>
+                    <a href="{{ path('app_producto_edit', {'id': producto.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('app_producto_new') }}">Create new</a>
+{% endblock %}
+```
+
+**DESPUÉS:**
+```twig
+{% extends 'base_admin.html.twig' %}
+{% block title %}Productos{% endblock %}
+{% block body %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">
+                <i class="bi bi-box-seam"></i> Productos
+            </h1>
+        </div>
+        <div class="col-auto">
+            <a href="{{ path('app_producto_new') }}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle"></i> Nuevo Producto
+            </a>
+        </div>
+    </div>
+
+    {% if productos is empty %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No hay productos registrados. 
+            <a href="{{ path('app_producto_new') }}" class="alert-link">Crear el primero</a>
+        </div>
+    {% else %}
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col" style="width: 8%">#ID</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col" style="width: 12%">Precio</th>
+                                <th scope="col" style="width: 15%">Fecha</th>
+                                <th scope="col">Categoría</th>
+                                <th scope="col" class="text-center" style="width: 20%">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for producto in productos %}
+                            <tr>
+                                <td class="fw-bold">{{ producto.id }}</td>
+                                <td>{{ producto.nombre }}</td>
+                                <td class="text-success fw-bold">${{ producto.precio|number_format(2, '.', ',') }}</td>
+                                <td>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i> 
+                                        {{ producto.fecha ? producto.fecha|date('d/m/Y') : '-' }}
+                                    </small>
+                                </td>
+                                <td>
+                                    {% if producto.categoria %}
+                                        <span class="badge bg-primary">
+                                            <i class="bi bi-folder"></i> {{ producto.categoria.nombre }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Sin categoría</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm gap-2">
+                                        <a href="{{ path('app_producto_show', {'id': producto.id}) }}" 
+                                           class="btn btn-info" title="Ver detalles">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </a>
+                                        <a href="{{ path('app_producto_edit', {'id': producto.id}) }}" 
+                                           class="btn btn-warning" title="Editar">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </a>
+                                        <form method="post" 
+                                            action="{{ path('app_producto_delete', {'id': producto.id}) }}" 
+                                            style="display:inline;"
+                                            onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ producto.id) }}">
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                Total de productos: <strong>{{ productos|length }}</strong>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+```
+
+**Cambios principales:**
+
+1. **Template base:**
+   - ANTES: Extendía `base.html.twig` (sin navbar)
+   - DESPUÉS: Extiende `base_admin.html.twig` (con navbar y footer completo)
+
+2. **Título:**
+   - ANTES: Simple "Producto index"
+   - DESPUÉS: "Productos" con icono de caja (bi-box-seam)
+
+3. **Header mejorado:**
+   - Título con clase `display-4` y icono
+   - Botón "Nuevo Producto" con `btn-primary btn-lg` (azul, grande)
+   - Layout responsive con row/col
+
+4. **Tabla moderna:**
+   - Card con sombra que envuelve la tabla
+   - Thead oscuro (`table-dark`)
+   - Tabla responsive con hover y striped
+   - 6 columnas: #ID, Nombre, Precio, Fecha, Categoría, Acciones
+
+5. **Columna de Precio:**
+   - Formato: `${{ producto.precio|number_format(2, '.', ',') }}`
+   - Estilo: `text-success fw-bold` (verde y negrita)
+   - Ejemplo: $1,299.99
+
+6. **Columna de Fecha:**
+   - Formato: dd/mm/yyyy (antes: Y-m-d H:i:s)
+   - Icono de calendario
+   - Texto small y muted
+   - Muestra "-" si no hay fecha
+
+7. **Columna de Categoría (NUEVA):**
+   - Badge azul (`bg-primary`) si tiene categoría
+   - Muestra icono de carpeta + nombre
+   - Badge gris (`bg-secondary`) si no tiene categoría
+
+8. **Botones de acción:**
+   - Ver (info/cyan)
+   - Editar (warning/amarillo)
+   - Eliminar (danger/rojo) con confirmación
+   - Tooltips con title
+   - Iconos de Bootstrap Icons
+
+9. **Footer de la card:**
+   - Muestra total de productos
+   - Texto muted con número en bold
+
+10. **Alerta cuando está vacío:**
+    - Alert info con icono
+    - Link para crear el primer producto
+
+**Mejoras específicas de productos vs categorías:**
+✨ Columna de precio formateado con símbolo $
+✨ Columna de categoría con badge
+✨ Fecha en formato corto dd/mm/yyyy
+✨ Botón "Nuevo Producto" en azul (`btn-primary`) en vez de verde
+
+Resultado:
+✅ Vista moderna y profesional
+✅ Tabla responsive con Bootstrap 5
+✅ Precio formateado correctamente ($1,299.99)
+✅ Fecha en formato español
+✅ Relación con categoría visible
+✅ Botones con iconos y colores semánticos
+✅ Integrado con base_admin.html.twig
+✅ Confirmación antes de eliminar
+✅ Consistencia visual con módulo de categorías
+
+---
+
+[13/11/2025 07:09:32 p.m.] Refactor completo de todas las vistas de Producto con Bootstrap 5
+
+¿Qué se hizo?
+Se actualizaron todas las plantillas del módulo de Producto para usar base_admin.html.twig y Bootstrap 5, con diseño moderno y profesional siguiendo el mismo patrón de categorías.
+
+**Archivos modificados:**
+
+1. **templates/producto/index.html.twig** (ya documentado anteriormente)
+   - Listado con tabla moderna, precio formateado, columna de categoría
+   - Botón "Nuevo Producto" en azul
+
+2. **templates/producto/show.html.twig**
+   - ANTES: Layout básico sin estilos
+   - DESPUÉS: Card con detalles completos del producto
+
+3. **templates/producto/new.html.twig**
+   - ANTES: Formulario simple sin estilos
+   - DESPUÉS: Card azul con formulario de creación
+
+4. **templates/producto/edit.html.twig**
+   - ANTES: Formulario básico
+   - DESPUÉS: Card amarillo con formulario de edición
+
+5. **templates/producto/_form.html.twig**
+   - ANTES: Botón genérico sin clase
+   - DESPUÉS: Botón con clase dinámica y label personalizable
+
+6. **templates/producto/_delete_form.html.twig**
+   - ANTES: Botón básico "Delete" en inglés
+   - DESPUÉS: Botón rojo "Eliminar" con icono
+
+---
+
+**DETALLES DE CADA VISTA:**
+
+**2. show.html.twig - Vista de Detalles**
+
+ANTES:
+```twig
+{% extends 'base.html.twig' %}
+{% block title %}Producto{% endblock %}
+{% block body %}
+    <h1>Producto</h1>
+    <table class="table">
+        <tbody>
+            <tr><th>Id</th><td>{{ producto.id }}</td></tr>
+            <tr><th>Nombre</th><td>{{ producto.nombre }}</td></tr>
+            <tr><th>Precio</th><td>{{ producto.precio }}</td></tr>
+            <tr><th>Fecha</th><td>{{ producto.fecha ? producto.fecha|date('Y-m-d H:i:s') : '' }}</td></tr>
+        </tbody>
+    </table>
+    <a href="{{ path('app_producto_index') }}">back to list</a>
+    <a href="{{ path('app_producto_edit', {'id': producto.id}) }}">edit</a>
+    {{ include('producto/_delete_form.html.twig') }}
+{% endblock %}
+```
+
+DESPUÉS:
+```twig
+{% extends 'base_admin.html.twig' %}
+{% block title %}Producto - {{ producto.nombre }}{% endblock %}
+{% block body %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-box-fill"></i> Producto: {{ producto.nombre }}
+            </h1>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Detalles del Producto</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-borderless">
+                <tbody>
+                    <tr>
+                        <th scope="row" style="width: 150px;">
+                            <i class="bi bi-hash"></i> ID:
+                        </th>
+                        <td class="fw-bold">{{ producto.id }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <i class="bi bi-tag"></i> Nombre:
+                        </th>
+                        <td class="fs-5">{{ producto.nombre }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <i class="bi bi-cash-coin"></i> Precio:
+                        </th>
+                        <td class="fs-4 text-success fw-bold">
+                            ${{ producto.precio|number_format(2, '.', ',') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <i class="bi bi-calendar-event"></i> Fecha:
+                        </th>
+                        <td>
+                            {% if producto.fecha %}
+                                <span class="badge bg-info text-dark">
+                                    {{ producto.fecha|date('d/m/Y') }}
+                                </span>
+                                <small class="text-muted ms-2">
+                                    {{ producto.fecha|date('H:i:s') }}
+                                </small>
+                            {% else %}
+                                <span class="text-muted">No especificada</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <i class="bi bi-folder"></i> Categoría:
+                        </th>
+                        <td>
+                            {% if producto.categoria %}
+                                <span class="badge bg-primary fs-6">
+                                    <i class="bi bi-folder-fill"></i> {{ producto.categoria.nombre }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">Sin categoría</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex gap-2">
+        <a href="{{ path('app_producto_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver al listado
+        </a>
+        <a href="{{ path('app_producto_edit', {'id': producto.id}) }}" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        <form method="post" 
+              action="{{ path('app_producto_delete', {'id': producto.id}) }}" 
+              style="display:inline;"
+              onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ producto.id) }}">
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Eliminar
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+```
+
+Mejoras en show.html.twig:
+✅ Título dinámico con nombre del producto
+✅ Card con header azul
+✅ 5 campos: ID, Nombre, Precio, Fecha, Categoría
+✅ Precio formateado en verde grande: $1,299.99
+✅ Fecha con badge + hora separada
+✅ Categoría con badge (azul si tiene, gris si no)
+✅ Iconos en cada campo
+✅ Botones: Volver (gris), Editar (amarillo), Eliminar (rojo)
+
+---
+
+**3. new.html.twig - Vista de Creación**
+
+ANTES:
+```twig
+{% extends 'base.html.twig' %}
+{% block title %}New Producto{% endblock %}
+{% block body %}
+    <h1>Create new Producto</h1>
+    {{ include('producto/_form.html.twig') }}
+    <a href="{{ path('app_producto_index') }}">back to list</a>
+{% endblock %}
+```
+
+DESPUÉS:
+```twig
+{% extends 'base_admin.html.twig' %}
+{% block title %}Nuevo Producto{% endblock %}
+{% block body %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-plus-circle"></i> Nuevo Producto
+            </h1>
+            <p class="text-muted">Crear un nuevo producto en el sistema</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-box-seam"></i> Formulario de Creación</h5>
+                </div>
+                <div class="card-body">
+                    {{ include('producto/_form.html.twig', {
+                        'button_label': 'Crear Producto',
+                        'button_class': 'btn btn-primary'
+                    }) }}
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <a href="{{ path('app_producto_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver al listado
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+
+Mejoras en new.html.twig:
+✅ Título "Nuevo Producto" con icono plus-circle
+✅ Subtítulo descriptivo
+✅ Card con header azul (bg-primary)
+✅ Formulario incluido con parámetros personalizados
+✅ Botón "Crear Producto" en azul
+✅ Botón "Volver al listado"
+✅ Layout responsive (col-md-6)
+
+---
+
+**4. edit.html.twig - Vista de Edición**
+
+ANTES:
+```twig
+{% extends 'base.html.twig' %}
+{% block title %}Edit Producto{% endblock %}
+{% block body %}
+    <h1>Edit Producto</h1>
+    {{ include('producto/_form.html.twig', {'button_label': 'Update'}) }}
+    <a href="{{ path('app_producto_index') }}">back to list</a>
+    {{ include('producto/_delete_form.html.twig') }}
+{% endblock %}
+```
+
+DESPUÉS:
+```twig
+{% extends 'base_admin.html.twig' %}
+{% block title %}Editar Producto - {{ producto.nombre }}{% endblock %}
+{% block body %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-pencil-square"></i> Editar Producto
+            </h1>
+            <p class="text-muted">Modificar los datos de: <strong>{{ producto.nombre }}</strong></p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-pencil"></i> Formulario de Edición</h5>
+                </div>
+                <div class="card-body">
+                    {{ include('producto/_form.html.twig', {
+                        'button_label': 'Actualizar',
+                        'button_class': 'btn btn-success'
+                    }) }}
+                </div>
+            </div>
+
+            <div class="mt-3 d-flex gap-2">
+                <a href="{{ path('app_producto_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver al listado
+                </a>
+                <form method="post" 
+                      action="{{ path('app_producto_delete', {'id': producto.id}) }}" 
+                      style="display:inline;"
+                      onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ producto.id) }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+
+Mejoras en edit.html.twig:
+✅ Título dinámico con nombre del producto
+✅ Muestra qué producto se está editando
+✅ Card con header amarillo (bg-warning)
+✅ Botón "Actualizar" en verde (btn-success)
+✅ Botones inferiores: Volver + Eliminar
+✅ Confirmación antes de eliminar
+
+---
+
+**5. _form.html.twig - Formulario Reutilizable**
+
+ANTES:
+```twig
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
+```
+
+DESPUÉS:
+```twig
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="{{ button_class|default('btn btn-primary') }}">
+        {{ button_label|default('Guardar') }}
+    </button>
+{{ form_end(form) }}
+```
+
+Mejoras en _form.html.twig:
+✅ Clase del botón dinámica (button_class)
+✅ Por defecto: btn btn-primary
+✅ Label del botón personalizable (button_label)
+✅ Por defecto: "Guardar" en español
+✅ Permite diferentes estilos según la acción:
+   - new.html.twig → "Crear Producto" (azul)
+   - edit.html.twig → "Actualizar" (verde)
+
+---
+
+**6. _delete_form.html.twig - Formulario de Eliminación**
+
+ANTES:
+```twig
+<form method="post" action="{{ path('app_producto_delete', {'id': producto.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ producto.id) }}">
+    <button class="btn">Delete</button>
+</form>
+```
+
+DESPUÉS:
+```twig
+<form method="post" action="{{ path('app_producto_delete', {'id': producto.id}) }}" onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ producto.id) }}">
+    <button class="btn btn-danger">
+        <i class="bi bi-trash"></i> Eliminar
+    </button>
+</form>
+```
+
+Mejoras en _delete_form.html.twig:
+✅ Botón rojo (btn-danger)
+✅ Icono de papelera (bi-trash)
+✅ Texto "Eliminar" en español
+✅ Confirmación en español
+✅ Mantiene seguridad CSRF
+
+---
+
+**RESUMEN DE TODAS LAS VISTAS DE PRODUCTO:**
+
+| Vista | Extiende | Header Color | Botón Principal | Características Especiales |
+|-------|----------|--------------|-----------------|---------------------------|
+| index.html.twig | base_admin | table-dark | "Nuevo Producto" (azul) | Tabla con precio formateado, categoría badge |
+| show.html.twig | base_admin | bg-primary | - | 5 campos detallados, precio verde grande |
+| new.html.twig | base_admin | bg-primary | "Crear Producto" (azul) | Formulario de creación |
+| edit.html.twig | base_admin | bg-warning | "Actualizar" (verde) | Formulario de edición + eliminar |
+| _form.html.twig | - | - | Dinámico | Clase y label personalizables |
+| _delete_form.html.twig | - | - | "Eliminar" (rojo) | Confirmación en español |
+
+Resultado Final:
+✅ 6 archivos de producto completamente modernizados
+✅ Todas las vistas usan base_admin.html.twig
+✅ Diseño consistente con módulo de categorías
+✅ Precio formateado en todas las vistas ($1,299.99)
+✅ Relación con categoría visible con badges
+✅ Fechas en formato español (dd/mm/yyyy)
+✅ Botones con colores semánticos e iconos
+✅ Formularios reutilizables con parámetros dinámicos
+✅ Confirmaciones de eliminación en español
+✅ Responsive design con Bootstrap 5
+✅ Integración completa con navbar y footer
+
+---
+
