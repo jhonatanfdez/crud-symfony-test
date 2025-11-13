@@ -251,3 +251,66 @@ Nota importante:
 
 ---
 
+[12/11/2025 09:34:16 p.m.] Comando ejecutado: git commit -m "Servidor Symfony iniciado - registro actualizado"
+
+¿Qué se busca?
+- Guardar los cambios realizados en el registro de actividades
+- Documentar el inicio del servidor de desarrollo
+
+Resultado:
+- Commit creado exitosamente con hash 149aa10
+- 1 archivo modificado (registro_actividades.txt)
+- 48 líneas añadidas al registro
+
+---
+
+[12/11/2025 09:34:47 p.m.] Instalación y configuración de CSS (SimpleCSS)
+
+Opción 1: Agregar SimpleCSS mediante CDN en la plantilla base
+
+Archivo: templates/base.html.twig
+Agregar en el <head>:
+<link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+
+Opción 2: Descargar SimpleCSS localmente
+
+Comandos:
+cd /home/jhonatanycris/Escritorio/test1/crud-symfony/public
+mkdir css
+cd css
+wget https://cdn.simplecss.org/simple.min.css
+
+Luego en templates/base.html.twig agregar:
+<link rel="stylesheet" href="{{ asset('css/simple.min.css') }}">
+
+¿Qué se busca?
+- Agregar estilos CSS básicos al proyecto Symfony
+- Mejorar la apariencia visual sin escribir CSS desde cero
+- SimpleCSS proporciona estilos semánticos automáticos para HTML
+
+Ventajas de SimpleCSS:
+- No requiere clases CSS específicas
+- Estiliza automáticamente elementos HTML semánticos
+- Perfecto para prototipos y proyectos de aprendizaje
+- Muy ligero (menos de 10KB)
+
+---
+
+[12/11/2025 09:35:41 p.m.] SimpleCSS implementado en el proyecto
+
+Archivo modificado: crud-symfony/templates/base.html.twig
+
+Cambio realizado:
+- Agregada línea en el <head>: <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+
+¿Qué se logró?
+- SimpleCSS ahora está disponible en todas las páginas del proyecto
+- Los elementos HTML tendrán estilos automáticos sin necesidad de clases CSS
+- La aplicación tiene una apariencia visual mejorada inmediatamente
+
+Próximos pasos:
+- Crear controladores y vistas para ver SimpleCSS en acción
+- Los formularios, tablas y elementos tendrán estilos automáticamente
+
+---
+
