@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductoRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Producto
 {
     #[ORM\Id]
@@ -20,8 +21,19 @@ class Producto
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $precio = null;
 
+    /*
+
+    asi estaba antes
     #[ORM\Column]
     private ?\DateTime $fecha = null;
+
+    */
+
+    /*asi esta ahora*/
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $fecha = null;
+    
+
 
     #[ORM\ManyToOne(inversedBy: 'productos')]
     #[ORM\JoinColumn(nullable: false)]
@@ -95,4 +107,14 @@ class Producto
 
         return $this;
     }
+
+     #[ORM\PrePersist]
+    public function setFechaAutomatica(): void
+    {
+        if ($this->fecha === null) {
+            $this->fecha = new \DateTime();
+        }
+    }
+
+
 }

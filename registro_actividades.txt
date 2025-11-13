@@ -4356,3 +4356,270 @@ Resultado Final:
 
 ---
 
+[13/11/2025 07:47:48 p.m.] Implementación de fecha automática en Producto con Lifecycle Callbacks
+
+¿Qué se hizo?
+Se implementó un sistema de creación automática de fecha para productos usando Doctrine Lifecycle Callbacks, con campo de fecha visible solo en edición (deshabilitado).
+
+**Objetivo:**
+- Al crear un producto: la fecha se genera automáticamente (no aparece en el formulario)
+- Al editar un producto: la fecha se muestra pero está bloqueada (no se puede modificar)
+
+---
+
+**CAMBIOS REALIZADOS:**
+
+**1. Entidad Producto (src/Entity/Producto.php)**
+
+Agregado el atributo `#[ORM\HasLifecycleCallbacks]` a la clase:
+```php
+#[ORM\Entity(repositoryClass: ProductoRepository::class)]
+#[ORM\HasLifecycleCallbacks]  // <- Habilita los lifecycle callbacks
+class Producto
+{
+    // ... propiedades ...
+}
+```
+
+Agregado el método `#[ORM\PrePersist]` para fecha automática:
+```php
+#[ORM\PrePersist]
+public function setFechaAutomatica(): void
+{
+    if ($this->fecha === null) {
+        $this->fecha = new \DateTime();
+    }
+}
+```
+
+**¿Qué hace PrePersist?**
+- Se ejecuta ANTES de insertar el producto en la base de datos (primera vez)
+- Verifica si la fecha está vacía (`null`)
+- Si está vacía, asigna la fecha/hora actual automáticamente
+- Si ya tiene fecha (en edición), no hace nada
+
+**Tipo de dato actualizado:**
+```php
+// ANTES:
+#[ORM\Column]
+private ?\DateTime $fecha = null;
+
+// DESPUÉS:
+#[ORM\Column(type: Types::DATETIME_MUTABLE)]
+private ?\DateTimeInterface $fecha = null;
+```
+
+---
+
+**2. Formulario ProductoType (src/Form/ProductoType.php)**
+
+Campo fecha ahora es CONDICIONAL - solo aparece en edición:
+```php
+public function buildForm(FormBuilderInterface $builder, array $options): void
+{
+    $builder
+        ->add('nombre')
+        ->add('precio')
+        ->add('categoria', EntityType::class, [
+            'class' => Categoria::class,
+            'choice_label' => 'nombre',
+        ])
+    ;
+    
+    // CAMPO CONDICIONAL FECHA: Solo mostrar en EDICIÓN (deshabilitado)
+    // En creación NO aparece porque se genera automáticamente con PrePersist
+    if ($options['is_edit']) {
+        $builder->add('fecha', DateTimeType::class, [
+            'disabled' => true,  // Siempre deshabilitado en edición
+            'required' => false,
+            'widget' => 'single_text',
+            'label' => 'Fecha de creación'
+        ]);
+    }
+    
+    // Campo user condicional (solo en edición)
+    if ($options['show_user']) {
+        $builder->add('user', EntityType::class, [
+            'class' => User::class,
+            'choice_label' => 'email',
+        ]);
+    }
+}
+
+public function configureOptions(OptionsResolver $resolver): void
+{
+    $resolver->setDefaults([
+        'data_class' => Producto::class,
+        'show_user' => false,   // Controla visibilidad del campo user
+        'is_edit' => false,     // Controla visibilidad del campo fecha
+    ]);
+}
+```
+
+**Lógica del campo fecha:**
+- `is_edit = false` (creación) → Campo fecha NO aparece
+- `is_edit = true` (edición) → Campo fecha SÍ aparece pero `disabled = true`
+
+---
+
+**3. Controlador ProductoController (src/Controller/ProductoController.php)**
+
+**Método new() - Creación:**
+```php
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+    
+    $producto = new Producto();
+    
+    // Crear formulario SIN campo fecha (is_edit = false)
+    $form = $this->createForm(ProductoType::class, $producto, [
+        'is_edit' => false
+    ]);
+    
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Asignar usuario automáticamente
+        $producto->setUser($this->getUser());
+        
+        // Al hacer persist, Doctrine ejecuta setFechaAutomatica()
+        // y la fecha se crea automáticamente
+        $entityManager->persist($producto);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_producto_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    return $this->render('producto/new.html.twig', [
+        'producto' => $producto,
+        'form' => $form,
+    ]);
+}
+```
+
+**Método edit() - Edición:**
+```php
+public function edit(Request $request, Producto $producto, EntityManagerInterface $entityManager): Response
+{
+    $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+    
+    // Crear formulario CON campo fecha visible pero deshabilitado (is_edit = true)
+    $form = $this->createForm(ProductoType::class, $producto, [
+        'show_user' => true,   // Mostrar campo user
+        'is_edit' => true      // Mostrar campo fecha (deshabilitado)
+    ]);
+    
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        // La fecha NO se puede modificar porque está disabled
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_producto_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    return $this->render('producto/edit.html.twig', [
+        'producto' => $producto,
+        'form' => $form,
+    ]);
+}
+```
+
+---
+
+**FLUJO COMPLETO:**
+
+**Escenario 1: CREAR PRODUCTO**
+
+1. Usuario accede a `/producto/new`
+2. Ve formulario con: Nombre, Precio, Categoría (SIN fecha)
+3. Llena los campos y da clic en "Crear Producto"
+4. Symfony recibe el formulario
+5. Valida los datos
+6. Asigna usuario automáticamente: `$producto->setUser($this->getUser())`
+7. Ejecuta `$entityManager->persist($producto)`
+8. **Doctrine detecta que va a insertar** → Ejecuta `setFechaAutomatica()`
+9. El método verifica: `if ($this->fecha === null)` → **TRUE**
+10. Asigna: `$this->fecha = new \DateTime()` → Ejemplo: "2025-11-13 19:47:48"
+11. Doctrine hace INSERT en la base de datos CON la fecha automática
+12. Redirige al listado
+
+**Escenario 2: EDITAR PRODUCTO**
+
+1. Usuario accede a `/producto/1/edit`
+2. Ve formulario con: Nombre, Precio, Categoría, **Fecha (bloqueada)**, Usuario
+3. El campo fecha muestra "2025-11-13 19:47:48" pero está en gris (disabled)
+4. Usuario modifica nombre o precio
+5. Da clic en "Actualizar"
+6. Symfony recibe el formulario
+7. Como el campo fecha está `disabled`, el valor NO se envía
+8. Doctrine mantiene la fecha original intacta
+9. Actualiza solo los campos modificables
+10. Redirige al listado
+
+---
+
+**CONCEPTOS TÉCNICOS EXPLICADOS:**
+
+**1. Lifecycle Callbacks:**
+Son métodos que Doctrine ejecuta automáticamente en momentos específicos del ciclo de vida de una entidad:
+
+- `#[ORM\PrePersist]` → Antes de INSERT (primera vez)
+- `#[ORM\PreUpdate]` → Antes de UPDATE
+- `#[ORM\PostPersist]` → Después de INSERT
+- `#[ORM\PostUpdate]` → Después de UPDATE
+- `#[ORM\PreRemove]` → Antes de DELETE
+
+**2. Options Resolver:**
+Sistema de Symfony para configurar opciones de formularios:
+```php
+'is_edit' => false  // Valor por defecto
+```
+Se puede sobrescribir al crear el formulario:
+```php
+$form = $this->createForm(ProductoType::class, $producto, [
+    'is_edit' => true  // Sobrescribe el valor por defecto
+]);
+```
+
+**3. Campo disabled:**
+Cuando un campo está `disabled = true`:
+- Se muestra en el formulario (usuario lo ve)
+- Aparece en gris / no editable
+- El navegador NO envía su valor al hacer submit
+- Protege el dato de modificaciones
+
+---
+
+**VENTAJAS DE ESTA IMPLEMENTACIÓN:**
+
+✅ **Automatización:** La fecha se crea sola, sin intervención del usuario
+✅ **Integridad:** La fecha original nunca se puede modificar
+✅ **Transparencia:** En edición, el usuario VE la fecha pero no puede cambiarla
+✅ **Simplicidad:** No hay campos ocultos ni lógica compleja en controladores
+✅ **Doctrine-native:** Usa características nativas de Doctrine (lifecycle callbacks)
+✅ **Seguridad:** El campo disabled previene manipulación por parte del usuario
+
+**COMPARACIÓN:**
+
+| Aspecto | Antes | Ahora |
+|---------|-------|-------|
+| Fecha en creación | Usuario debía llenarla manualmente | Se crea automáticamente |
+| Fecha en formulario NEW | Visible y editable | No aparece (oculto) |
+| Fecha en formulario EDIT | Visible y editable | Visible pero bloqueada |
+| Riesgo de modificación | Alto (usuario podía cambiarla) | Nulo (disabled = true) |
+| Código en controlador | Manual: `$producto->setFecha(new \DateTime())` | Automático vía PrePersist |
+
+Resultado:
+✅ Fecha automática implementada con Lifecycle Callbacks
+✅ Campo fecha oculto en creación (NEW)
+✅ Campo fecha visible pero bloqueado en edición (EDIT)
+✅ `#[ORM\HasLifecycleCallbacks]` agregado a la entidad
+✅ `#[ORM\PrePersist]` ejecutándose correctamente
+✅ Opción `is_edit` controlando visibilidad del campo
+✅ Integridad de datos garantizada
+✅ Código limpio y mantenible
+
+---
+

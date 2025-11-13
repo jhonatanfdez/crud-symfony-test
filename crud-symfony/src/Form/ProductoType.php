@@ -9,6 +9,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+
 
 class ProductoType extends AbstractType
 {
@@ -18,7 +20,6 @@ class ProductoType extends AbstractType
             // Campos básicos del producto
             ->add('nombre')
             ->add('precio')
-            ->add('fecha')
             
             // Campo categoria: select con las categorías disponibles
             ->add('categoria', EntityType::class, [
@@ -26,6 +27,17 @@ class ProductoType extends AbstractType
                 'choice_label' => 'nombre',  // Mostrar el nombre de la categoría en lugar del ID
             ])
         ;
+        
+        // CAMPO CONDICIONAL FECHA: Solo mostrar en EDICIÓN (deshabilitado)
+        // En creación NO aparece porque se genera automáticamente con PrePersist
+        if ($options['is_edit']) {
+            $builder->add('fecha', DateTimeType::class, [
+                'disabled' => true,  // Siempre deshabilitado en edición
+                'required' => false,
+                'widget' => 'single_text',
+                'label' => 'Fecha de creación'
+            ]);
+        }
         
         // CAMPO CONDICIONAL: Solo mostrar el campo user en modo EDICIÓN
         // Cuando show_user es false (en creación), este campo NO aparece en el formulario
@@ -47,6 +59,7 @@ class ProductoType extends AbstractType
             // Por defecto es false, lo que significa que el campo user NO se muestra
             // En el controlador, al editar pasamos ['show_user' => true] para mostrarlo
             'show_user' => false,
+            'is_edit' => false,  // <- Agregar esta opción
         ]);
     }
 }

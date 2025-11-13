@@ -35,9 +35,12 @@ final class ProductoController extends AbstractController
         // Crear una nueva instancia de Producto
         $producto = new Producto();
         
-        // Crear el formulario SIN el campo user (show_user = false por defecto)
-        // Esto significa que el usuario no verá ni podrá modificar el campo user
-        $form = $this->createForm(ProductoType::class, $producto);
+        // Crear el formulario SIN el campo user y SIN el campo fecha
+        // show_user = false: el usuario no verá el campo user (se asigna automáticamente)
+        // is_edit = false: el campo fecha NO aparecerá (se crea automáticamente con PrePersist)
+        $form = $this->createForm(ProductoType::class, $producto, [
+            'is_edit' => false
+        ]);
         
         // Procesar la petición del formulario
         $form->handleRequest($request);
@@ -88,7 +91,7 @@ final class ProductoController extends AbstractController
         // Esto permite que en la edición se pueda cambiar el usuario asignado al producto
         // El formulario automáticamente cargará el usuario actual del producto
         $form = $this->createForm(ProductoType::class, $producto, [
-            'show_user' => true  // Mostrar el campo user en edición
+            'show_user' => true, 'is_edit' => true   // Mostrar el campo user en edición
         ]);
         
         // Procesar la petición del formulario
