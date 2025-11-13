@@ -391,3 +391,187 @@ Respuestas sugeridas:
 
 ---
 
+[12/11/2025 09:48:59 p.m.] Comandos ejecutados: Commit, versionado y push del sistema de usuarios
+
+Comandos:
+1. git add .
+2. git commit -m "Sistema de autenticación: Entidad User y migración de BD creadas"
+3. git tag -a v1.1.0 -m "v1.1.0: Sistema de autenticación - Entidad User y base de datos configurada"
+4. git push origin main
+5. git push origin v1.1.0
+
+¿Qué se busca?
+- Guardar los cambios del sistema de autenticación
+- Crear una nueva versión del proyecto (v1.1.0)
+- Subir todos los cambios al repositorio remoto en GitHub
+
+Resultado:
+- Commit creado exitosamente con hash 78e87c9
+- 6 archivos modificados, 283 inserciones
+- Archivos creados:
+  * crud-symfony/migrations/Version20251113014721.php (migración de BD)
+  * crud-symfony/src/Entity/User.php (entidad User)
+  * crud-symfony/src/Repository/UserRepository.php (repositorio)
+- Tag v1.1.0 creado y subido exitosamente a GitHub
+- Versión del sistema de usuarios documentada y respaldada
+
+---
+
+[12/11/2025 09:52:14 p.m.] Explicación: Entidad User y UserRepository
+
+ENTIDAD USER (src/Entity/User.php):
+==================================
+
+¿Qué es?
+- Es la representación de la tabla "user" en la base de datos
+- Define la estructura: qué campos tiene (id, email, roles, password)
+- Es como un "molde" o "blueprint" de cómo se ve un usuario
+
+¿Para qué sirve?
+- Doctrine usa esta clase para crear y modificar la tabla en la BD
+- Cada objeto User representa una fila en la tabla
+- Define las relaciones con otras entidades (ej: User tiene muchos Productos)
+
+Características principales:
+- Implementa UserInterface (necesario para el sistema de seguridad de Symfony)
+- Implementa PasswordAuthenticatedUserInterface (para manejar contraseñas)
+- Campos básicos: id, email, roles (array), password (hasheado)
+- Los campos se mapean a columnas de la tabla mediante anotaciones/atributos
+
+Ejemplo de uso:
+```php
+$user = new User();
+$user->setEmail('usuario@ejemplo.com');
+$user->setPassword($hashedPassword);
+$entityManager->persist($user);
+$entityManager->flush(); // Se guarda en la BD
+```
+
+USERREPOSITORY (src/Repository/UserRepository.php):
+==================================================
+
+¿Qué es?
+- Es el "gestor de consultas" para la entidad User
+- Maneja TODAS las operaciones de lectura/búsqueda en la tabla user
+- Sigue el patrón Repository Pattern (separación de responsabilidades)
+
+¿Para qué sirve?
+- Proporciona métodos para buscar usuarios en la base de datos
+- Permite crear consultas personalizadas sin mezclar lógica con la entidad
+- Mantiene el código organizado y reutilizable
+
+Métodos automáticos (heredados):
+- find($id) - Buscar por ID
+- findAll() - Obtener todos los usuarios
+- findBy(['campo' => 'valor']) - Buscar por cualquier campo
+- findOneBy(['email' => 'test@test.com']) - Buscar un solo registro
+
+Métodos especiales para autenticación:
+- upgradePassword() - Actualiza la contraseña hasheada de un usuario
+- Se usa cuando el algoritmo de hash cambia o para funciones de seguridad
+
+¿Cuándo crear métodos personalizados?
+Cuando necesitas consultas complejas, por ejemplo:
+```php
+public function findActiveUsers()
+{
+    return $this->createQueryBuilder('u')
+        ->where('u.isActive = true')
+        ->orderBy('u.email', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+```
+
+Ejemplo de uso en un controlador:
+```php
+// Obtener el repository
+$userRepository = $entityManager->getRepository(User::class);
+
+// Buscar un usuario por email
+$user = $userRepository->findOneBy(['email' => 'test@test.com']);
+
+// Obtener todos los usuarios
+$allUsers = $userRepository->findAll();
+```
+
+DIFERENCIA CLAVE:
+=================
+- Entity (User.php) = QUÉ es un usuario (estructura, campos)
+- Repository (UserRepository.php) = CÓMO buscar/consultar usuarios (lógica de consultas)
+
+Esta separación hace el código más limpio, testeable y mantenible.
+
+---
+
+[12/11/2025 09:56:13 p.m.] Comando ejecutado: php bin/console make:auth
+
+Preguntas y respuestas durante la ejecución:
+
+1. What style of authentication do you want? [Empty authenticator]:
+   Respuesta: 1 (Login form authenticator)
+   
+2. The class name of the authenticator to create (e.g. AppCustomAuthenticator):
+   Respuesta: LoginFormAuthenticator
+   
+3. Choose a name for the controller class (e.g. SecurityController):
+   Respuesta: SecurityController
+   
+4. Do you want to generate a '/logout' URL? (yes/no):
+   Respuesta: yes
+   
+5. Do you want to support remember me? (yes/no):
+   Respuesta: yes
+   
+6. How should remember me be activated?:
+   [0] Activate when the user checks a box
+   [1] Always activate remember me
+   Respuesta: 0 (Activate when the user checks a box)
+
+¿Qué se busca?
+- Crear el sistema completo de autenticación (login)
+- Generar el controlador de seguridad con las rutas de login y logout
+- Crear el formulario de inicio de sesión
+- Implementar la funcionalidad "Recordarme" con checkbox
+- Configurar el authenticator que maneja la lógica de autenticación
+
+Archivos creados/modificados:
+
+Archivos CREADOS:
+1. src/Security/LoginFormAuthenticator.php
+   - Clase que maneja toda la lógica de autenticación
+   - Verifica las credenciales del usuario
+   - Redirige después del login exitoso
+   - Maneja errores de autenticación
+
+2. src/Controller/SecurityController.php
+   - Controlador con las rutas de login y logout
+   - Método login() - Muestra el formulario de login
+   - Método logout() - Cierra la sesión del usuario
+
+3. templates/security/login.html.twig
+   - Plantilla del formulario de inicio de sesión
+   - Campos: email, password
+   - Checkbox "Recordarme" (remember me)
+   - Muestra mensajes de error si las credenciales son incorrectas
+
+Archivos MODIFICADOS:
+1. config/packages/security.yaml
+   - Configuración del firewall principal
+   - Activación del form_login con LoginFormAuthenticator
+   - Configuración de logout en la ruta /logout
+   - Configuración de remember_me con cookie segura
+   - Definición de access control (rutas protegidas)
+
+Resultado:
+- Sistema de login completamente funcional
+- Ruta /login disponible para iniciar sesión
+- Ruta /logout disponible para cerrar sesión
+- Funcionalidad "Recordarme" implementada
+- Los usuarios ahora pueden autenticarse en la aplicación
+
+Próximo paso:
+- Crear el formulario de registro de usuarios (make:registration-form)
+
+---
+
