@@ -2041,3 +2041,285 @@ Pendiente:
 
 ---
 
+[13/11/2025 05:07:49 p.m.] Comandos ejecutados: Commit y versionado v1.9.0
+
+Comandos:
+1. git add .
+2. git commit -m "Protección de autenticación y asignación automática de usuario..."
+3. git tag -a v1.9.0 -m "v1.9.0: Protección de rutas..."
+4. git push origin main
+5. git push origin v1.9.0
+
+¿Qué se hizo?
+- Crear commit con los cambios de protección de rutas
+- Versionar como v1.9.0 con descripción completa
+- Subir todo a GitHub
+
+Resultado:
+- Commit creado exitosamente con hash 4a16d9d
+- 3 archivos modificados: ProductoController.php, ProductoType.php, registro_actividades.txt
+- 318 inserciones, 5 eliminaciones
+- Tag v1.9.0 creado y subido exitosamente
+- Cambios en GitHub actualizados
+
+VERSIÓN v1.9.0 - CHANGELOG:
+
+✅ Protección de autenticación:
+   - Todos los métodos de ProductoController protegidos
+   - IS_AUTHENTICATED_FULLY en: index, new, show, edit, delete
+   - Redirección automática a login si no está autenticado
+
+✅ Asignación automática de usuario:
+   - Usuario se asigna automáticamente al crear productos
+   - $producto->setUser($this->getUser()) después de validación
+   - Elimina el error "user_id cannot be null"
+
+✅ Campo condicional en formularios:
+   - Creación: campo user OCULTO (asignación automática)
+   - Edición: campo user VISIBLE (permite cambiar usuario)
+   - Opción personalizada 'show_user' en ProductoType
+
+✅ Documentación mejorada:
+   - Comentarios detallados en cada método del controlador
+   - Explicación del flujo de autenticación
+   - Comentarios en ProductoType sobre opciones personalizadas
+
+Lista completa de versiones:
+- v1.0.0: Inicialización Symfony 7.1
+- v1.1.0: Entidad User y autenticación
+- v1.2.0: LoginFormAuthenticator
+- v1.3.0: RegistrationController
+- v1.3.1: Links navegación
+- v1.4.0: HomeController y Categoria
+- v1.4.1: Redirect logout
+- v1.5.0: Entidad Producto con relaciones
+- v1.6.0: Sistema de roles ADMIN/USER
+- v1.6.1: Mejoras UX
+- v1.7.0: CRUD Categoria
+- v1.8.0: CRUD Producto
+- v1.8.1: Mejoras formulario Producto
+- v1.9.0: Protección autenticación y asignación automática usuario ⭐ ACTUAL
+
+Próximos pasos sugeridos:
+1. Proteger CategoriaController (similar a ProductoController)
+2. Integrar Bootstrap para mejorar diseño
+3. Implementar control de acceso por roles
+4. Agregar mensajes flash informativos
+
+---
+
+[13/11/2025 05:15:34 p.m.] Integración de Bootstrap 5.3.8 - Configuración completa
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                    INTEGRACIÓN DE BOOTSTRAP 5.3.8                              ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+OBJETIVO:
+Reemplazar SimpleCSS por Bootstrap 5.3.8 para mejorar el diseño y aplicar
+automáticamente estilos a todos los formularios del proyecto.
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         ARCHIVOS MODIFICADOS                                   ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+1. templates/base.html.twig
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   
+   ✅ Bootstrap CSS agregado (línea 12):
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" 
+         rel="stylesheet" 
+         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" 
+         crossorigin="anonymous">
+   
+   ✅ Bootstrap JS Bundle agregado (línea 33 - antes de </body>):
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" 
+           integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" 
+           crossorigin="anonymous"></script>
+   
+   ✅ SimpleCSS comentado (ya no se usa):
+   <!-- Usar SimpleCSS desde CDN 
+       <link rel="stylesheet" href="https://unpkg.com/simpledotcss/simple.css">
+   -->
+
+2. config/packages/twig.yaml
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━
+   
+   ✅ Form theme de Bootstrap configurado:
+   twig:
+       file_name_pattern: '*.twig'
+       form_themes:
+           - 'bootstrap_5_layout.html.twig'  # ⭐ CLAVE: Aplica Bootstrap automáticamente
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                    ¿QUÉ HACE bootstrap_5_layout.html.twig?                     ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+Este es un archivo de tema incluido en Symfony que aplica AUTOMÁTICAMENTE
+las clases de Bootstrap 5 a TODOS los formularios del proyecto.
+
+✅ Clases aplicadas automáticamente:
+   
+   Inputs de texto/número/fecha:
+   └─> class="form-control"
+   
+   Labels:
+   └─> class="form-label"
+   
+   Selects (EntityType):
+   └─> class="form-select"
+   
+   Checkboxes:
+   └─> class="form-check-input"
+   
+   Errores de validación:
+   └─> class="is-invalid"
+   └─> <div class="invalid-feedback">mensaje de error</div>
+   
+   Contenedores de campos:
+   └─> class="mb-3" (margin-bottom)
+
+✅ Formularios afectados AUTOMÁTICAMENTE:
+   - ProductoType (nombre, precio, fecha, categoria, user)
+   - CategoriaType (nombre)
+   - RegistrationFormType (email, password)
+   - LoginFormType (email, password)
+   - Cualquier formulario futuro que crees
+
+✅ SIN necesidad de modificar:
+   - Ningún archivo .php de formularios
+   - Ningún template .twig
+   - Todo funciona automáticamente
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                           COMPONENTES DISPONIBLES                              ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+Con Bootstrap 5.3.8 ahora tienes acceso a:
+
+✅ Sistema de Grid (col-1 a col-12, responsive)
+✅ Botones con estilos (.btn .btn-primary, .btn-danger, etc.)
+✅ Alerts (.alert .alert-success, .alert-danger, etc.)
+✅ Cards (.card, .card-body, .card-header)
+✅ Navbars responsive
+✅ Modals (ventanas emergentes)
+✅ Tooltips y Popovers
+✅ Badges, Breadcrumbs, Progress bars
+✅ Formularios completamente estilizados
+✅ Tablas responsive (.table .table-striped, etc.)
+✅ Spinners de carga
+✅ Offcanvas (sidebars deslizantes)
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         VENTAJAS DE ESTA CONFIGURACIÓN                         ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+1. ✅ Formularios bonitos SIN tocar código
+   - Solo con form_themes: ['bootstrap_5_layout.html.twig']
+   - Todos los formularios se ven profesionales automáticamente
+
+2. ✅ Responsive por defecto
+   - Bootstrap es mobile-first
+   - Se adapta a tablets, móviles, desktop
+
+3. ✅ CDN = Carga rápida
+   - Bootstrap se descarga desde servidores optimizados
+   - Cache compartido entre sitios
+   - Sin archivos locales pesados
+
+4. ✅ Última versión (5.3.8)
+   - Todas las mejoras y correcciones de bugs
+   - Compatibilidad moderna
+
+5. ✅ JavaScript incluido
+   - Modals, dropdowns, tooltips funcionan automáticamente
+   - No necesitas jQuery
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                          PRÓXIMOS PASOS SUGERIDOS                              ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+1. ✅ Mejorar templates de vistas index/show/edit
+   - Usar .table .table-striped para listados
+   - Agregar .btn .btn-primary a botones de crear
+   - Usar .btn .btn-danger para eliminar
+   - Agregar .card para envolver contenido
+
+2. ✅ Agregar navbar responsive
+   - Menú de navegación con logo
+   - Links a Productos, Categorías
+   - Botón de logout
+
+3. ✅ Implementar alerts para mensajes flash
+   - Confirmaciones de acciones (creado, editado, eliminado)
+   - Mensajes de error amigables
+
+4. ✅ Mejorar diseño de formularios
+   - Usar grid system (col-md-6, col-lg-4)
+   - Agrupar campos relacionados en .card
+
+5. ✅ Agregar breadcrumbs
+   - Navegación jerárquica (Home > Productos > Crear)
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                            EJEMPLO DE USO                                      ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+Antes (sin hacer nada):
+Los formularios ya tienen clases de Bootstrap aplicadas automáticamente
+
+Para mejorar un template manualmente:
+{# En producto/index.html.twig #}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h1>Listado de Productos</h1>
+        </div>
+        <div class="card-body">
+            <a href="{{ path('app_producto_new') }}" class="btn btn-primary mb-3">
+                Crear nuevo
+            </a>
+            
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                        <tr>
+                            <td>{{ producto.nombre }}</td>
+                            <td>{{ producto.precio }}</td>
+                            <td>
+                                <a href="{{ path('app_producto_edit', {'id': producto.id}) }}" 
+                                   class="btn btn-sm btn-warning">Editar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                              RESUMEN                                           ║
+╔════════════════════════════════════════════════════════════════════════════════╗
+
+✅ Bootstrap 5.3.8 integrado correctamente
+✅ Form theme configurado en twig.yaml
+✅ Todos los formularios con estilos automáticos
+✅ JavaScript de Bootstrap disponible
+✅ Listo para mejorar templates
+
+Estado: COMPLETADO ✓
+
+Próximo paso recomendado:
+- Hacer commit de estos cambios
+- Crear versión v1.9.1 o v1.10.0
+- Comenzar a mejorar templates de vistas
+
+---
+
