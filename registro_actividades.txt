@@ -314,3 +314,80 @@ Próximos pasos:
 
 ---
 
+[12/11/2025 09:36:31 p.m.] Comandos ejecutados: Commit y push de SimpleCSS
+
+Comandos:
+1. git add .
+2. git commit -m "SimpleCSS agregado al proyecto"
+3. git push origin main
+
+¿Qué se busca?
+- Guardar los cambios de SimpleCSS y el registro actualizado
+- Subir los cambios al repositorio remoto en GitHub
+- Mantener el historial del proyecto actualizado
+
+Resultado:
+- Commit creado exitosamente con hash 9f93547
+- 2 archivos modificados con 64 líneas añadidas
+- Cambios subidos exitosamente a GitHub
+- Rama main actualizada en el repositorio remoto
+
+---
+
+[12/11/2025 09:38:47 p.m.] Instalación del sistema de autenticación de usuarios
+
+Comandos para crear el sistema de usuarios:
+
+1. Crear la entidad User:
+cd /home/jhonatanycris/Escritorio/test1/crud-symfony
+php bin/console make:user
+
+Respuestas sugeridas:
+- The name of the security user class: User
+- Do you want to store user data in the database? Yes
+- Enter a property name that will be the unique "display" name: email
+- Will this app need to hash/check user passwords? Yes
+
+2. Configurar la conexión a la base de datos MySQL:
+
+Editar el archivo .env y modificar la línea DATABASE_URL:
+DATABASE_URL="mysql://usuario:contraseña@127.0.0.1:3306/nombre_base_datos?serverVersion=8.0.32&charset=utf8mb4"
+
+Ejemplo:
+DATABASE_URL="mysql://root:@127.0.0.1:3306/crud_symfony?serverVersion=8.0.32&charset=utf8mb4"
+
+3. Crear la base de datos:
+php bin/console doctrine:database:create
+
+4. Crear la migración de base de datos:
+php bin/console make:migration
+
+5. Ejecutar la migración:
+php bin/console doctrine:migrations:migrate
+
+6. Crear el sistema de autenticación:
+php bin/console make:auth
+
+Respuestas sugeridas:
+- What style of authentication: 1 (Login form authenticator)
+- The class name: LoginFormAuthenticator
+- Choose a name for the controller: SecurityController
+- Generate a '/logout' URL? Yes
+
+7. Crear el formulario de registro:
+php bin/console make:registration-form
+
+Respuestas sugeridas:
+- Do you want to add a @UniqueEntity validation?: Yes
+- Do you want to send an email to verify the user's email?: No
+- Do you want to automatically authenticate after registration?: Yes
+
+¿Qué se busca?
+- Crear la entidad User para almacenar usuarios en la base de datos
+- Implementar el sistema de login (autenticación)
+- Crear el formulario de registro de nuevos usuarios
+- Hash de contraseñas para seguridad
+- Rutas de login, logout y registro automáticas
+
+---
+
