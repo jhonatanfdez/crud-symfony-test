@@ -8,6 +8,12 @@
         <link rel="stylesheet" href="https://unpkg.com/simpledotcss/simple.css">
 
         {% block stylesheets %}
+        <style>
+            /* Sobreescribir el fondo azul de SimpleCSS */
+            body {
+                background-color: #fff !important;
+            }
+        </style>
         {% endblock %}
 
         {% block javascripts %}

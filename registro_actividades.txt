@@ -1177,3 +1177,184 @@ Próximo paso:
 
 ---
 
+[13/11/2025 03:48:52 p.m.] Comandos ejecutados: Commit, versionado y push del sistema de roles
+
+Comandos:
+1. git add .
+2. git commit -m "Sistema de roles automático: Primer usuario ADMIN, usuarios posteriores USER..."
+3. git tag -a v1.6.0 -m "v1.6.0: Sistema de roles automático..."
+4. git push origin main
+5. git push origin v1.6.0
+
+¿Qué se busca?
+- Guardar todos los cambios del sistema de roles automático
+- Crear una nueva versión del proyecto (v1.6.0)
+- Documentar la funcionalidad de asignación automática de roles
+- Subir cambios al repositorio remoto en GitHub
+
+Resultado:
+- Commit creado exitosamente con hash 747af2a
+- 3 archivos modificados, 97 inserciones, 1 eliminación
+- Archivos principales:
+  * crud-symfony/src/Controller/RegistrationController.php (lógica de roles)
+  * registro_actividades.txt (documentación actualizada)
+- Tag v1.6.0 creado con descripción completa de características
+- Cambios subidos exitosamente a GitHub
+- Sistema listo con control automático de roles
+
+Versiones del proyecto hasta ahora:
+- v1.0.0: Inicialización de proyecto Symfony 7.1
+- v1.1.0: Entidad User y migración de autenticación
+- v1.2.0: LoginFormAuthenticator con remember me
+- v1.3.0: RegistrationController con auto-autenticación
+- v1.3.1: Links de navegación entre login y registro
+- v1.4.0: HomeController y entidad Categoria
+- v1.4.1: Redirect de logout y migración de Categoria
+- v1.5.0: Entidad Producto con relaciones ManyToOne
+- v1.6.0: Sistema de roles automático (ADMIN/USER)
+
+Próximo paso:
+- Generar el CRUD de productos con make:crud
+
+---
+
+[13/11/2025 03:52:40 p.m.] Modificaciones: Redirección de raíz a login y eliminación de fondo azul
+
+Archivos modificados:
+- crud-symfony/config/routes.yaml
+- crud-symfony/templates/base.html.twig
+
+¿Qué se busca?
+- Redirigir automáticamente la ruta raíz (/) al formulario de login
+- Eliminar el fondo azul por defecto de SimpleCSS
+- Mejorar la experiencia de usuario con redirección automática
+- Mantener un diseño limpio con fondo blanco
+
+Cambios realizados:
+
+1. routes.yaml - Redirección de raíz:
+```yaml
+# Redireccionar raíz a login
+index:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        route: 'app_login'
+        permanent: false
+```
+
+Explicación:
+- Se usa RedirectController de Symfony Framework Bundle
+- La ruta / redirige a app_login (ruta del login)
+- permanent: false indica una redirección 302 (temporal)
+- Los usuarios que accedan a la raíz serán enviados automáticamente al login
+
+2. base.html.twig - Eliminación de fondo azul:
+```twig
+{% block stylesheets %}
+<style>
+    /* Sobreescribir el fondo azul de SimpleCSS */
+    body {
+        background-color: #fff !important;
+    }
+</style>
+{% endblock %}
+```
+
+Explicación:
+- Se agrega CSS inline en el bloque stylesheets
+- background-color: #fff !important sobreescribe el fondo azul de SimpleCSS
+- El !important asegura que el estilo personalizado tenga prioridad
+- Resultado: fondo blanco limpio en todas las páginas
+
+Resultado:
+- Usuarios que accedan a / son redirigidos automáticamente a /login
+- Fondo blanco aplicado en toda la aplicación
+- SimpleCSS mantiene sus estilos de tipografía, formularios y componentes
+- Mejor experiencia visual sin el fondo azul por defecto
+
+Beneficios:
+- No es necesario memorizar la ruta /login
+- Diseño más limpio y profesional
+- Mantiene la simplicidad de SimpleCSS sin su tema de color
+- Fácil de personalizar cambiando el valor de background-color
+
+Próximo paso:
+- Hacer commit de estos cambios
+- Generar el CRUD de productos con make:crud
+
+---
+
+[13/11/2025 03:58:23 p.m.] Actualización: Redirección mediante controlador en lugar de routes.yaml
+
+Archivo modificado:
+- crud-symfony/src/Controller/HomeController.php
+
+¿Qué se busca?
+- Implementar la redirección de / a login usando un método en el controlador
+- Evitar configurar rutas estáticas en routes.yaml
+- Mantener la lógica de redirección en el código PHP (mejor práctica)
+- Mayor flexibilidad y mantenibilidad del código
+
+Cambio realizado en HomeController.php:
+
+Se agregó un nuevo método root() con la ruta /:
+```php
+#[Route('/', name: 'app_root')]
+public function root(): RedirectResponse
+{
+    return $this->redirectToRoute('app_login');
+}
+```
+
+Explicación:
+- Se usa el atributo #[Route('/', name: 'app_root')] para definir la ruta raíz
+- El método root() retorna un RedirectResponse
+- $this->redirectToRoute('app_login') redirige a la ruta del login
+- Se agregó use Symfony\Component\HttpFoundation\RedirectResponse al inicio del archivo
+- El HomeController ahora maneja dos rutas: /home y /
+
+Ventajas de este método vs routes.yaml:
+- Lógica en PHP en lugar de configuración YAML
+- Más fácil de encontrar y mantener (todo en un mismo controlador)
+- Permite agregar lógica adicional si se necesita en el futuro
+- Sigue las mejores prácticas de Symfony con atributos PHP 8
+- No requiere el RedirectController de Symfony
+
+Resultado:
+- Los usuarios que accedan a / son redirigidos automáticamente a /login
+- La ruta /home sigue funcionando normalmente para usuarios autenticados
+- Implementación más limpia y orientada a objetos
+
+Próximo paso:
+- Hacer commit de estos cambios
+- Generar el CRUD de productos con make:crud
+
+---
+
+[13/11/2025 04:01:56 p.m.] Comandos ejecutados: Commit, versionado y push de mejoras UX
+
+Comandos:
+1. git add .
+2. git commit -m "Mejoras UX: Redirección mediante controlador y fondo blanco personalizado"
+3. git tag -a v1.6.1 -m "v1.6.1: Mejoras de experiencia de usuario"
+4. git push origin main
+5. git push origin v1.6.1
+
+¿Qué se busca?
+- Guardar los cambios de redirección mediante HomeController
+- Guardar el cambio de fondo blanco en base.html.twig
+- Crear una nueva versión del proyecto (v1.6.1)
+- Documentar las mejoras de experiencia de usuario
+- Subir cambios al repositorio remoto en GitHub
+
+Cambios incluidos en este commit:
+- HomeController con método root() para redirigir / a login
+- CSS personalizado para fondo blanco (sobreescribe SimpleCSS)
+- Documentación actualizada en registro_actividades.txt
+
+Próximo paso:
+- Generar el CRUD de productos con make:crud
+
+---
+
