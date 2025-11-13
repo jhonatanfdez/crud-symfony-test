@@ -1358,3 +1358,142 @@ Próximo paso:
 
 ---
 
+[13/11/2025 04:02:45 p.m.] Resultado del commit y versionado
+
+Resultado:
+- Commit creado exitosamente con hash 92e69dc
+- 4 archivos modificados, 202 inserciones
+- Archivos principales:
+  * crud-symfony/src/Controller/HomeController.php (método root agregado)
+  * crud-symfony/templates/base.html.twig (CSS personalizado)
+  * crud-symfony/config/routes.yaml (limpiado de RedirectController)
+  * registro_actividades.txt (documentación completa)
+- Tag v1.6.1 creado con descripción de mejoras UX
+- Cambios subidos exitosamente a GitHub
+- Sistema con mejor experiencia de usuario
+
+Versiones del proyecto actualizadas:
+- v1.0.0: Inicialización de proyecto Symfony 7.1
+- v1.1.0: Entidad User y migración de autenticación
+- v1.2.0: LoginFormAuthenticator con remember me
+- v1.3.0: RegistrationController con auto-autenticación
+- v1.3.1: Links de navegación entre login y registro
+- v1.4.0: HomeController y entidad Categoria
+- v1.4.1: Redirect de logout y migración de Categoria
+- v1.5.0: Entidad Producto con relaciones ManyToOne
+- v1.6.0: Sistema de roles automático (ADMIN/USER)
+- v1.6.1: Mejoras UX (redirección mediante controlador y fondo blanco)
+
+Próximo paso:
+- Generar el CRUD de productos con make:crud
+
+---
+
+[13/11/2025 04:03:58 p.m.] Comando ejecutado: php bin/console make:crud Categoria
+
+Preguntas y respuestas durante la ejecución:
+
+1. Choose a name for your controller class (e.g. CategoriaController) [CategoriaController]:
+   Respuesta: (Enter para aceptar default)
+
+2. Do you want to generate PHPUnit tests? [Experimental] (yes/no) [no]:
+   Respuesta: no
+
+¿Qué se busca?
+- Generar automáticamente el CRUD completo para la entidad Categoria
+- Crear el controlador con todos los métodos (index, new, show, edit, delete)
+- Crear el formulario de Categoria
+- Crear todas las plantillas Twig necesarias
+- Tener un sistema completo para gestionar categorías
+
+Archivos CREADOS:
+
+1. src/Controller/CategoriaController.php
+   - Controlador con 5 métodos principales:
+   - index() - Lista todas las categorías (ruta: /categoria/)
+   - new() - Crear nueva categoría (ruta: /categoria/new)
+   - show() - Ver detalles de una categoría (ruta: /categoria/{id})
+   - edit() - Editar categoría existente (ruta: /categoria/{id}/edit)
+   - delete() - Eliminar categoría (ruta: /categoria/{id})
+
+2. src/Form/CategoriaType.php
+   - Clase de formulario para Categoria
+   - Define los campos del formulario (nombre)
+   - Configuración automática basada en la entidad
+
+3. templates/categoria/index.html.twig
+   - Plantilla para listar todas las categorías
+   - Tabla con las categorías y botones de acciones
+   - Enlaces a crear, ver, editar y eliminar
+
+4. templates/categoria/new.html.twig
+   - Plantilla para crear nueva categoría
+   - Renderiza el formulario de CategoriaType
+   - Botón para guardar y enlace para volver al listado
+
+5. templates/categoria/show.html.twig
+   - Plantilla para mostrar detalles de una categoría
+   - Muestra todos los campos de la categoría
+   - Enlaces a editar, eliminar y volver al listado
+
+6. templates/categoria/edit.html.twig
+   - Plantilla para editar categoría existente
+   - Renderiza el formulario con datos pre-cargados
+   - Botones para guardar cambios y volver
+
+7. templates/categoria/_form.html.twig
+   - Partial del formulario reutilizable
+   - Usado en new.html.twig y edit.html.twig
+   - Evita duplicación de código
+
+8. templates/categoria/_delete_form.html.twig
+   - Partial del formulario de eliminación
+   - Botón para confirmar eliminación
+   - Usado en show.html.twig y edit.html.twig
+
+Resultado:
+- CRUD de Categoria completamente funcional
+- Ruta principal: /categoria/
+- Sistema completo: crear, leer, actualizar y eliminar categorías
+- Formularios con validaciones automáticas
+- Interfaz con SimpleCSS aplicado automáticamente
+- Flash messages para operaciones exitosas
+- Confirmación antes de eliminar
+
+Funcionalidades incluidas:
+- Listar todas las categorías en tabla
+- Crear nuevas categorías con validación
+- Ver detalles de cada categoría
+- Editar categorías existentes
+- Eliminar categorías con confirmación
+- Redirecciones apropiadas después de cada operación
+- Mensajes de éxito/error (flash messages)
+
+Próximo paso:
+- Probar el CRUD accediendo a /categoria/
+- Crear algunas categorías de ejemplo
+- Hacer commit y versionar estos cambios
+
+---
+
+[13/11/2025 04:05:41 p.m.] Prueba del CRUD de Categoria
+
+Resultado de la prueba:
+- CRUD de Categoria probado y funcionando correctamente
+- Ruta /categoria/ accesible y operativa
+- Todas las operaciones CRUD verificadas:
+  * Listar categorías (index)
+  * Crear nueva categoría (new)
+  * Ver detalles (show)
+  * Editar categoría (edit)
+  * Eliminar categoría (delete)
+- Formularios renderizados correctamente con SimpleCSS
+- Validaciones funcionando
+- Flash messages operativos
+- Redirecciones correctas después de cada operación
+
+Próximo paso:
+- Hacer commit y versionar el CRUD de Categoria
+
+---
+
