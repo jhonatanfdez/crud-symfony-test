@@ -868,3 +868,83 @@ Resultado:
 
 ---
 
+[12/11/2025 10:21:32 p.m.] Comandos ejecutados: Commit, versionado y push
+
+Comandos:
+1. git add .
+2. git commit -m "HomeController creado, redirección corregida y mejoras UX en login/home"
+3. git tag -a v1.4.0 -m "v1.4.0: HomeController, Categoria y correcciones de redirección"
+4. git push origin main
+5. git push origin v1.4.0
+
+¿Qué se busca?
+- Guardar todos los cambios realizados (HomeController, Categoria, correcciones)
+- Crear nueva versión del proyecto (v1.4.0)
+- Subir cambios al repositorio remoto en GitHub
+
+Resultado:
+- Commit creado exitosamente con hash 35a25d0
+- 7 archivos modificados, 268 inserciones
+- Archivos principales:
+  * crud-symfony/src/Controller/HomeController.php (nuevo)
+  * crud-symfony/src/Entity/Categoria.php (nuevo)
+  * crud-symfony/src/Repository/CategoriaRepository.php (nuevo)
+  * crud-symfony/templates/home/index.html.twig (nuevo)
+  * crud-symfony/src/Security/LoginFormAuthenticator.php (modificado)
+  * crud-symfony/templates/security/login.html.twig (modificado)
+- Tag v1.4.0 creado y subido exitosamente a GitHub
+- Sistema de autenticación completamente funcional
+
+Próximo paso:
+- Crear la entidad Producto con relaciones a User y Categoria
+
+---
+
+[12/11/2025 10:24:44 p.m.] Configuración: Redirección del logout a login
+
+Archivo modificado: config/packages/security.yaml
+
+Cambio realizado:
+En la sección logout, agregada la línea:
+```yaml
+logout:
+    path: app_logout
+    target: app_login
+```
+
+¿Qué se busca?
+- Redirigir al usuario a la página de login después de hacer logout
+- Mejor experiencia de usuario (después de cerrar sesión, ver el login)
+- Evitar que quede en una página que requiere autenticación
+
+Resultado:
+- Logout ahora redirige a /login automáticamente
+- Usuario ve el formulario de login después de cerrar sesión
+- Comportamiento estándar de aplicaciones web
+
+---
+
+[12/11/2025 10:24:44 p.m.] Comandos ejecutados: Migración de Categoria
+
+Comandos:
+1. php bin/console make:migration
+2. php bin/console doctrine:migrations:migrate
+
+¿Qué se busca?
+- Crear el archivo de migración para la tabla categoria
+- Ejecutar la migración para crear la tabla en la base de datos
+- Preparar la base de datos para la entidad Categoria
+
+Resultado:
+- Archivo de migración creado en migrations/
+- Migración ejecutada exitosamente
+- Tabla `categoria` creada en la base de datos con campos:
+  * id (int, auto_increment, primary key)
+  * nombre (varchar 255, not null)
+- Base de datos actualizada y lista para usar Categoria
+
+Próximo paso:
+- Crear la entidad Producto con relaciones a User y Categoria
+
+---
+
