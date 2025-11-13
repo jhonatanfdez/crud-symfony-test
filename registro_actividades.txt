@@ -1,7 +1,7 @@
 REGISTRO DE ACTIVIDADES - TUTORIAL SYMFONY
 ===========================================
+[13/11/2025 06:00:00 p.m.] v1.11.0 - Refactor visual de vistas de Categoría con Bootstrap 5
 
-Fecha de inicio: 12 de noviembre de 2025
 
 ---
 
@@ -121,13 +121,7 @@ SYMFONY vs LARAVEL:
   - Symfony es más rápido y ligero en su versión skeleton
   - Mejor para aplicaciones empresariales de gran escala
   
-✓ Flexibilidad:
-  - Symfony es más modular, puedes usar solo los componentes que necesites
-  - Laravel viene con más opiniones predefinidas
-  
-✓ Estándares:
   - Symfony sigue estrictamente los estándares PSR (PHP Standards Recommendations)
-  - Mejor para equipos grandes y proyectos a largo plazo
   
 ✓ Componentes reutilizables:
   - Los componentes de Symfony son usados por Laravel, Drupal, phpBB, y más
