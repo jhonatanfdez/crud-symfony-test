@@ -1,0 +1,205 @@
+REGISTRO DE ACTIVIDADES - TUTORIAL SYMFONY
+===========================================
+
+Fecha de inicio: 12 de noviembre de 2025
+
+---
+
+[12/11/2025 09:17:05 p.m.] Comando ejecutado: git init
+
+¿Qué se busca?
+- Inicializar un repositorio Git en el directorio del proyecto
+- Preparar el control de versiones para el tutorial de Symfony
+- Permitir el seguimiento de cambios durante el desarrollo
+
+Resultado:
+- Repositorio Git inicializado exitosamente en /home/jhonatanycris/Escritorio/test1/.git/
+- Rama inicial creada con el nombre 'master'
+
+---
+
+[12/11/2025 09:19:00 p.m.] Comandos ejecutados: Configuración inicial del repositorio Git
+
+Comandos:
+1. echo "# crud-symfony-test" >> README.md
+2. git add README.md
+3. git commit -m "first commit"
+4. git branch -M main
+5. git remote add origin https://github.com/jhonatanfdez/crud-symfony-test.git
+6. git push -u origin main
+
+¿Qué se busca?
+- Crear un archivo README.md con el título del proyecto
+- Agregar el archivo al staging area de Git
+- Realizar el primer commit del proyecto
+- Renombrar la rama de 'master' a 'main' (convención moderna)
+- Conectar el repositorio local con el repositorio remoto en GitHub
+- Subir los cambios al repositorio remoto
+
+Resultado:
+- README.md creado exitosamente con el título "# crud-symfony-test"
+- Primer commit realizado con hash bd080cc
+- Rama renombrada de 'master' a 'main'
+- Repositorio remoto configurado: https://github.com/jhonatanfdez/crud-symfony-test.git
+- Cambios subidos exitosamente a GitHub en la rama 'main'
+- Rama local configurada para rastrear 'origin/main'
+
+---
+
+[12/11/2025 09:21:10 p.m.] Instalación de Symfony CLI
+
+Comandos:
+# Para Linux:
+curl -sS https://get.symfony.com/cli/installer | bash
+
+# O con wget:
+wget https://get.symfony.com/cli/installer -O - | bash
+
+# Mover el binario a una ubicación global:
+sudo mv /home/[usuario]/.symfony5/bin/symfony /usr/local/bin/symfony
+
+# Verificar la instalación:
+symfony -V
+
+¿Qué se busca?
+- Instalar la herramienta CLI de Symfony en el sistema
+- Tener acceso a comandos de Symfony para crear y gestionar proyectos
+- Verificar que la instalación se realizó correctamente
+
+---
+
+[12/11/2025 09:22:46 p.m.] Creación del proyecto Symfony
+
+Comandos:
+# Crear un proyecto web completo con Symfony:
+symfony new nombre_proyecto --version="7.1.*" --webapp
+
+# O usando Composer:
+composer create-project symfony/skeleton:"7.1.*" nombre_proyecto
+cd nombre_proyecto
+composer require webapp
+
+# Para este tutorial:
+symfony new crud-symfony --version="7.1.*" --webapp
+
+¿Qué se busca?
+- Crear un nuevo proyecto de Symfony con todas las dependencias para una aplicación web
+- Instalar Twig, Doctrine, formularios, validación, seguridad y otras herramientas esenciales
+- Tener la estructura base del proyecto lista para trabajar
+
+---
+
+[12/11/2025 09:22:46 p.m.] Explicación de carpetas importantes
+
+Estructura del proyecto Symfony:
+
+/bin/           - Ejecutables del proyecto (console)
+/config/        - Archivos de configuración (routes, services, packages)
+/migrations/    - Migraciones de base de datos
+/public/        - Punto de entrada web (index.php) y archivos públicos (CSS, JS, imágenes)
+/src/
+    /Controller/    - Controladores
+    /Entity/        - Entidades de Doctrine (modelos)
+    /Form/          - Clases de formularios
+    /Repository/    - Repositorios para consultas a la base de datos
+/templates/     - Plantillas Twig
+/var/           - Archivos temporales (cache, logs)
+/vendor/        - Dependencias de Composer
+
+Archivos importantes:
+- .env          - Variables de entorno (configuración de base de datos)
+- composer.json - Dependencias del proyecto
+- symfony.lock  - Versiones bloqueadas de las recetas de Symfony
+
+---
+
+[12/11/2025 09:23:55 p.m.] ¿Por qué elegir Symfony sobre Laravel o Drupal?
+
+SYMFONY vs LARAVEL:
+
+✓ Rendimiento:
+  - Symfony es más rápido y ligero en su versión skeleton
+  - Mejor para aplicaciones empresariales de gran escala
+  
+✓ Flexibilidad:
+  - Symfony es más modular, puedes usar solo los componentes que necesites
+  - Laravel viene con más opiniones predefinidas
+  
+✓ Estándares:
+  - Symfony sigue estrictamente los estándares PSR (PHP Standards Recommendations)
+  - Mejor para equipos grandes y proyectos a largo plazo
+  
+✓ Componentes reutilizables:
+  - Los componentes de Symfony son usados por Laravel, Drupal, phpBB, y más
+  - Symfony es el framework de frameworks
+  
+✓ Documentación:
+  - Symfony tiene documentación más técnica y completa
+  - Ideal para desarrolladores que buscan entender a fondo
+
+SYMFONY vs DRUPAL:
+
+✓ Propósito:
+  - Symfony es un framework para desarrollar aplicaciones desde cero
+  - Drupal es un CMS (Content Management System) construido sobre Symfony
+  
+✓ Flexibilidad:
+  - Symfony te da control total sobre la arquitectura
+  - Drupal es mejor para sitios web de contenido, pero más rígido
+  
+✓ Curva de aprendizaje:
+  - Symfony requiere más conocimientos de PHP, pero es más versátil
+  - Drupal es más fácil para gestión de contenido, pero limitado para apps custom
+
+✓ Casos de uso:
+  - Symfony: APIs, aplicaciones web complejas, microservicios, SaaS
+  - Drupal: Blogs, portales de noticias, sitios corporativos con mucho contenido
+
+RESUMEN:
+Symfony es la mejor opción cuando:
+- Necesitas control total de tu aplicación
+- Quieres aprender patrones de diseño profesionales
+- Buscas rendimiento y escalabilidad
+- Desarrollas APIs RESTful
+- Trabajas en proyectos empresariales de larga duración
+
+---
+
+[12/11/2025 09:27:35 p.m.] Comando ejecutado: symfony new crud-symfony --version="7.1.*" --webapp
+
+¿Qué se busca?
+- Crear un nuevo proyecto Symfony con la versión 7.1
+- Instalar todas las dependencias necesarias para una aplicación web completa (--webapp)
+- Incluir Twig para templates, Doctrine para base de datos, formularios, seguridad, etc.
+- Configurar automáticamente Git en el proyecto
+
+Resultado:
+- Proyecto creado exitosamente en /home/jhonatanycris/Escritorio/test1/crud-symfony
+- Symfony 7.1.* instalado con todas las dependencias webapp
+- Git inicializado automáticamente en el proyecto
+- Estructura de carpetas y archivos de configuración generados
+
+Dependencias principales instaladas:
+- Twig (motor de plantillas)
+- Doctrine ORM (base de datos)
+- Security Bundle (autenticación y autorización)
+- Form Component (formularios)
+- Validator (validación de datos)
+- Mailer (envío de correos)
+- Asset Mapper (gestión de assets CSS/JS)
+
+---
+
+[12/11/2025 09:28:35 p.m.] Comando ejecutado: rm -rf /home/jhonatanycris/Escritorio/test1/crud-symfony/.git
+
+¿Qué se busca?
+- Eliminar el repositorio Git que Symfony creó automáticamente en el proyecto crud-symfony
+- Mantener un único repositorio Git en la carpeta principal test1
+- Evitar conflictos con repositorios Git anidados
+
+Resultado:
+- Directorio .git eliminado de crud-symfony
+- Ahora crud-symfony forma parte del repositorio Git principal en test1
+
+---
+
