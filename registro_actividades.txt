@@ -1658,3 +1658,131 @@ Próximo paso:
 
 ---
 
+[13/11/2025 04:13:11 p.m.] Comandos ejecutados: Commit, versionado y push del CRUD de Producto
+
+Comandos:
+1. git add .
+2. git commit -m "CRUD de Producto: Sistema completo de gestión de productos con relaciones..."
+3. git tag -a v1.8.0 -m "v1.8.0: CRUD de Producto con relaciones implementado..."
+4. git push origin main
+5. git push origin v1.8.0
+
+¿Qué se busca?
+- Guardar todos los archivos generados por make:crud Producto
+- Crear una nueva versión del proyecto (v1.8.0)
+- Documentar el sistema CRUD de Producto con relaciones
+- Subir cambios al repositorio remoto en GitHub
+
+Resultado:
+- Commit creado exitosamente con hash 7564658
+- 10 archivos modificados/creados, 386 inserciones, 1 eliminación
+- Archivos principales:
+  * crud-symfony/src/Controller/ProductoController.php (nuevo)
+  * crud-symfony/src/Form/ProductoType.php (nuevo)
+  * crud-symfony/templates/producto/*.html.twig (6 templates nuevos)
+  * registro_actividades.txt (documentación actualizada)
+- Tag v1.8.0 creado con descripción completa
+- Cambios subidos exitosamente a GitHub
+- Sistema CRUD de Producto completo y operativo con relaciones
+
+Versiones del proyecto actualizadas:
+- v1.0.0: Inicialización de proyecto Symfony 7.1
+- v1.1.0: Entidad User y migración de autenticación
+- v1.2.0: LoginFormAuthenticator con remember me
+- v1.3.0: RegistrationController con auto-autenticación
+- v1.3.1: Links de navegación entre login y registro
+- v1.4.0: HomeController y entidad Categoria
+- v1.4.1: Redirect de logout y migración de Categoria
+- v1.5.0: Entidad Producto con relaciones ManyToOne
+- v1.6.0: Sistema de roles automático (ADMIN/USER)
+- v1.6.1: Mejoras UX (redirección mediante controlador y fondo blanco)
+- v1.7.0: CRUD de Categoria implementado y funcional
+- v1.8.0: CRUD de Producto con relaciones implementado y funcional
+
+Estado actual del proyecto:
+- Sistema de autenticación completo (login, registro, logout)
+- Sistema de roles automático (primer usuario ADMIN)
+- Entidades: User, Categoria, Producto con relaciones
+- CRUD completo de Categoria
+- CRUD completo de Producto con relaciones a Categoria y User
+- Interfaz con SimpleCSS
+- Base de datos con todas las tablas y relaciones
+
+Próximo paso según contexto.txt:
+- Instalar sistema de API (API Platform o configuración manual)
+- Crear CRUD de User con salida JSON (estilo API)
+
+---
+
+[13/11/2025 04:41:31 p.m.] Mejoras en formulario de Producto: Campo user condicional y labels descriptivos
+
+Archivos modificados:
+- crud-symfony/src/Form/ProductoType.php
+- crud-symfony/src/Controller/ProductoController.php
+
+¿Qué se busca?
+- Ocultar el campo user en la vista de nuevo producto
+- Mostrar el campo user en la vista de edición (editable)
+- Asignar automáticamente el usuario actual al crear productos
+- Mejorar la usabilidad mostrando nombres/emails en lugar de IDs
+
+Cambios realizados:
+
+1. ProductoType.php - Campo user condicional:
+   - Agregada opción personalizada 'show_user' con valor false por defecto
+   - Campo user solo se agrega al formulario si show_user = true
+   - choice_label de categoria cambiado a 'nombre'
+   - choice_label de user cambiado a 'email'
+   - Implementación con condicional if ($options['show_user'])
+
+2. ProductoController.php - Método new():
+   - Agregada asignación automática: $producto->setUser($this->getUser())
+   - El usuario actual se asigna antes de persistir el producto
+   - No se pasa la opción show_user (usa el default false)
+
+3. ProductoController.php - Método edit():
+   - Agregada opción ['show_user' => true] al crear el formulario
+   - El campo user aparece en edición y es editable
+
+Código implementado en ProductoType:
+```php
+if ($options['show_user']) {
+    $builder->add('user', EntityType::class, [
+        'class' => User::class,
+        'choice_label' => 'email',
+    ]);
+}
+```
+
+Código en configureOptions:
+```php
+$resolver->setDefaults([
+    'data_class' => Producto::class,
+    'show_user' => false,
+]);
+```
+
+Resultado:
+- Vista NEW (/producto/new):
+  * Campo user NO aparece
+  * Usuario se asigna automáticamente al usuario logueado
+  * Selects muestran nombre de categoría (no ID)
+  
+- Vista EDIT (/producto/{id}/edit):
+  * Campo user SÍ aparece
+  * Campo user es editable (sin disabled)
+  * Select muestra email del usuario (no ID)
+  * Select muestra nombre de categoría (no ID)
+
+Beneficios:
+- Mejor experiencia de usuario (UX)
+- Evita asignaciones incorrectas al crear productos
+- Labels descriptivos en selects (nombres/emails vs IDs)
+- Flexibilidad para cambiar el usuario en edición si es necesario
+- Uso de opciones personalizadas en formularios Symfony (patrón estándar)
+
+Próximo paso:
+- Hacer commit y versionar estos cambios
+
+---
+

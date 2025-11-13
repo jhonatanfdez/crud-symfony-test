@@ -20,19 +20,24 @@ class ProductoType extends AbstractType
             ->add('fecha')
             ->add('categoria', EntityType::class, [
                 'class' => Categoria::class,
-                'choice_label' => 'id',
-            ])
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nombre',  // Mostrar el nombre de la categoría
             ])
         ;
+        
+        // Solo agregar el campo user si show_user es true (en EDIT)
+        if ($options['show_user']) {
+            $builder->add('user', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'email',  // Mostrar el email del usuario
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Producto::class,
+            'show_user' => false,  // Por defecto NO mostrar el campo user
         ]);
     }
 }

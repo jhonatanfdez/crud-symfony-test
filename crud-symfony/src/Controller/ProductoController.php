@@ -30,6 +30,9 @@ final class ProductoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Asignar el usuario actual automáticamente
+            $producto->setUser($this->getUser());
+            
             $entityManager->persist($producto);
             $entityManager->flush();
 
@@ -53,7 +56,9 @@ final class ProductoController extends AbstractController
     #[Route('/{id}/edit', name: 'app_producto_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Producto $producto, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(ProductoType::class, $producto);
+        $form = $this->createForm(ProductoType::class, $producto, [
+            'show_user' => true  // Mostrar el campo user en edición
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
