@@ -339,9 +339,9 @@
                
                Posicionado con position fixed para no interferir con hero-section
             #}
-            {% if app.flashes|length > 0 %}
+            {% for type, messages in app.flashes %}
+                {% if messages|length > 0 %}
             <div class="container" style="position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 1050; max-width: 600px;">
-                {% for type, messages in app.flashes %}
                     {% for message in messages %}
                         <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
                             {% if type == 'success' %}
@@ -357,9 +357,9 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     {% endfor %}
-                {% endfor %}
             </div>
-            {% endif %}
+                {% endif %}
+            {% endfor %}
             
             {% block body %}{% endblock %}
         </main>
