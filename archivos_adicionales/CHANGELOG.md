@@ -10,6 +10,177 @@
 
 ---
 
+## [v1.24.0] - 13 de noviembre de 2025, 11:15 PM
+
+### MEJORAS VISUALES Y DOCUMENTACIÓN CON CAPTURAS
+
+**Objetivo:**  
+Corregir el espaciado entre el navbar y la hero-section en el dashboard, mejorar la presentación de mensajes flash y agregar documentación visual con capturas de pantalla.
+
+**Problema a resolver:**
+- Espacio innecesario entre navbar y sección de bienvenida
+- Mensajes flash interferían con el layout normal
+- Falta de capturas de pantalla en la documentación
+- README desactualizado (apuntaba a v1.21.0 en lugar de v1.23.0)
+
+### Cambios realizados:
+
+#### 1. **Corrección de espaciado en templates**
+
+**templates/base_admin.html.twig** (MODIFICADO):
+
+a) **Mensajes flash flotantes:**
+```html
+<!-- ANTES: Mensajes en container normal (causaba espaciado) -->
+<div class="container mt-4">
+    {% for type, messages in app.flashes %}
+        <!-- mensajes -->
+    {% endfor %}
+</div>
+
+<!-- DESPUÉS: Mensajes flotantes con position fixed -->
+{% if app.flashes|length > 0 %}
+<div class="container" style="position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 1050; max-width: 600px;">
+    {% for type, messages in app.flashes %}
+        <!-- mensajes -->
+    {% endfor %}
+</div>
+{% endif %}
+```
+
+Características:
+- `position: fixed` → No ocupa espacio en el flujo del documento
+- `top: 70px` → Justo debajo del navbar
+- `z-index: 1050` → Siempre visible por encima del contenido
+- `transform: translateX(-50%)` → Centrado horizontal perfecto
+- `max-width: 600px` → Ancho limitado para mejor legibilidad
+- Condicional `{% if app.flashes|length > 0 %}` → Solo renderiza si hay mensajes
+
+b) **Nueva clase CSS para páginas normales:**
+```css
+/* Padding solo para páginas con contenido normal (NO home) */
+.page-content {
+    padding-top: 2rem;
+}
+```
+
+**templates/categoria/index.html.twig** (MODIFICADO):
+```html
+<!-- ANTES -->
+<div class="container mt-5">
+
+<!-- DESPUÉS -->
+<div class="container page-content">
+```
+
+**templates/producto/index.html.twig** (MODIFICADO):
+```html
+<!-- ANTES -->
+<div class="container mt-5">
+
+<!-- DESPUÉS -->
+<div class="container page-content">
+```
+
+**templates/home/index.html.twig** (MODIFICADO):
+```css
+.hero-section {
+    /* ... otros estilos ... */
+    margin-top: 0;  /* Explícitamente sin margen superior */
+}
+```
+
+#### 2. **Documentación visual**
+
+**README.md** (ACTUALIZADO):
+
+a) **Actualización de versión:**
+- De: `v1.21.0` (Sistema de Mensajes Flash)
+- A: `v1.23.0` (API REST para Productos)
+
+b) **Nueva sección de capturas de pantalla:**
+```markdown
+## 📸 Capturas de pantalla
+
+### Dashboard Principal
+![Dashboard](docs/screenshots/home.png)
+*Panel de administración con estadísticas en tiempo real y acceso rápido a módulos*
+
+### Registro de Usuario
+![Registro](docs/screenshots/registro.png)
+*Formulario de registro con validación y diseño moderno*
+
+### Gestión de Categorías
+![Categorías](docs/screenshots/categorias.png)
+*Listado de categorías con buscador y acciones CRUD*
+
+### Gestión de Productos
+![Productos](docs/screenshots/productos.png)
+*Catálogo completo de productos con filtros*
+```
+
+c) **Enlaces actualizados:**
+- Changelog: Ahora apunta a `CHANGELOG.md` en lugar de `registro_actividades.txt`
+- Tag: Actualizado a `v1.23.0`
+
+**docs/screenshots/README.md** (NUEVO):
+- Instrucciones para agregar capturas de pantalla
+- Lista de imágenes requeridas con nombres exactos
+- Formato y dimensiones recomendadas (PNG, 1920x1080, máx 500KB)
+- Descripción de cada captura necesaria
+
+### Resultado obtenido:
+
+**Mejoras visuales:**
+- ✅ Hero-section completamente pegada al navbar (sin espacio)
+- ✅ Mensajes flash flotantes que no interfieren con el layout
+- ✅ Mejor aprovechamiento del espacio en pantalla
+- ✅ Diseño más limpio y profesional
+- ✅ Categorías y productos mantienen espaciado correcto
+
+**Mejoras de UX:**
+- ✅ Mensajes flash centrados y siempre visibles
+- ✅ No hay saltos de layout cuando aparecen/desaparecen mensajes
+- ✅ Transición visual más suave entre páginas
+- ✅ Navbar sticky funciona perfectamente
+
+**Documentación:**
+- ✅ Sección de capturas de pantalla en README
+- ✅ 4 imágenes documentadas (home, registro, categorías, productos)
+- ✅ Instrucciones claras para agregar capturas
+- ✅ README actualizado a v1.23.0
+
+### Archivos modificados:
+
+- `templates/base_admin.html.twig` (mensajes flash flotantes + clase page-content)
+- `templates/categoria/index.html.twig` (clase page-content)
+- `templates/producto/index.html.twig` (clase page-content)
+- `templates/home/index.html.twig` (margin-top: 0 explícito)
+- `README.md` (capturas + actualización v1.23.0)
+
+### Archivos creados:
+
+- `docs/screenshots/README.md` (instrucciones para capturas)
+
+### Estadísticas:
+
+- **Commits incluidos:** 3 (`54adf25`, `584d1e4`, `e61dd01`)
+- **Líneas modificadas:** ~70
+- **Archivos afectados:** 5
+- **Archivos nuevos:** 1
+- **Tag:** `v1.24.0`
+- **Push:** ✅ Exitoso a origin/main
+
+### Próximos pasos sugeridos:
+
+- Agregar las 4 capturas de pantalla en `docs/screenshots/`
+- Crear v1.25.0 con nuevas funcionalidades (paginación, etc.)
+- Implementar dark mode toggle
+- Agregar breadcrumbs de navegación
+- Mejorar responsive design en móviles
+
+---
+
 ## [v1.16.0] - 13 de noviembre de 2025, 8:12 PM
 
 ### REDISEÑO LOGIN Y REGISTRO
@@ -1213,10 +1384,11 @@ git push origin main
 | v1.21.0 | 13/11/2025 10:00 PM | Sistema de mensajes flash | 8be6654, 990cf10 |
 | v1.22.0 | 13/11/2025 10:30 PM | Documentación completa y reorganización | 1fb1f85, 0d70bd9, 0b4a960 |
 | v1.23.0 | 13/11/2025 11:00 PM | API REST para productos | 6181936, ec09c88, febf09e |
+| v1.24.0 | 13/11/2025 11:15 PM | Mejoras visuales y documentación | 54adf25, 584d1e4, e61dd01 |
 
 ---
 
-**Última actualización:** 13 de noviembre de 2025, 11:15 PM  
-**Total de versiones documentadas:** 8 (v1.16.0 - v1.23.0)  
-**Líneas totales de código agregadas:** ~5,000+  
-**Commits totales:** 15+
+**Última actualización:** 13 de noviembre de 2025, 11:20 PM  
+**Total de versiones documentadas:** 9 (v1.16.0 - v1.24.0)  
+**Líneas totales de código agregadas:** ~5,100+  
+**Commits totales:** 18+

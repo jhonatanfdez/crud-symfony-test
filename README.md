@@ -4,9 +4,9 @@
 
 Proyecto educativo en Symfony 7.1 que enseña paso a paso cómo construir una aplicación web completa con autenticación, CRUD, API REST, sistema de roles, mensajes flash y búsquedas. Ideal para aprender Symfony desde cero hasta funcionalidades avanzadas.
 
-**Estado actual: v1.23.0** — API REST para Productos implementada: 5 endpoints JSON completos (GET listar, GET detalle, POST crear, PUT actualizar, DELETE eliminar) con validación exhaustiva, códigos HTTP apropiados, serialización manual para evitar referencias circulares y documentación profesional de 253 líneas.
+**Estado actual: v1.24.0** — Mejoras visuales y documentación: eliminado espacio entre navbar y hero-section, mensajes flash flotantes con position fixed, nueva clase page-content para espaciado correcto, sección de capturas de pantalla agregada al README, y documentación actualizada a v1.23.0.
 
-• Changelog: ver [CHANGELOG.md](https://github.com/jhonatanfdez/crud-symfony-test/blob/main/archivos_adicionales/CHANGELOG.md) · Tag: [v1.23.0](https://github.com/jhonatanfdez/crud-symfony-test/releases/tag/v1.23.0)
+• Changelog: ver [CHANGELOG.md](https://github.com/jhonatanfdez/crud-symfony-test/blob/main/archivos_adicionales/CHANGELOG.md) · Tag: [v1.24.0](https://github.com/jhonatanfdez/crud-symfony-test/releases/tag/v1.24.0)
 
 ---
 
