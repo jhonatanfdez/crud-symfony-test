@@ -169,6 +169,11 @@
                 animation: fadeInUp 0.6s ease;
             }
             
+            /* Padding para contenido normal (no hero sections) */
+            .content-wrapper > .container:first-child {
+                padding-top: 2rem;
+            }
+            
             /* ====================================================================
                SCROLLBAR PERSONALIZADO - Navegadores basados en Chromium
                ==================================================================== */
@@ -332,7 +337,7 @@
                - warning: Advertencias (amarillo)
                - info: Información general (azul)
             #}
-            <div class="container mt-4">
+            <div class="container">
                 {% for type, messages in app.flashes %}
                     {% for message in messages %}
                         <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
