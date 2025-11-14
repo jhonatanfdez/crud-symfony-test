@@ -4,9 +4,9 @@
 
 Proyecto educativo en Symfony 7.1 que enseña paso a paso cómo construir una aplicación web completa con autenticación, CRUD, API REST, sistema de roles, mensajes flash y búsquedas. Ideal para aprender Symfony desde cero hasta funcionalidades avanzadas.
 
-**Estado actual: v1.21.0** — Sistema de Mensajes Flash implementado: retroalimentación visual completa para todas las acciones CRUD (crear, editar, eliminar) con alertas de colores (verde para éxito, rojo para error), iconos de Bootstrap Icons, alertas dismissibles y experiencia de usuario mejorada significativamente.
+**Estado actual: v1.23.0** — API REST para Productos implementada: 5 endpoints JSON completos (GET listar, GET detalle, POST crear, PUT actualizar, DELETE eliminar) con validación exhaustiva, códigos HTTP apropiados, serialización manual para evitar referencias circulares y documentación profesional de 253 líneas.
 
-• Changelog: ver [v1.21.0 en registro_actividades.txt](https://github.com/jhonatanfdez/crud-symfony-test/blob/main/archivos_adicionales/registro_actividades.txt) · Tag: [v1.21.0](https://github.com/jhonatanfdez/crud-symfony-test/releases/tag/v1.21.0)
+• Changelog: ver [CHANGELOG.md](https://github.com/jhonatanfdez/crud-symfony-test/blob/main/archivos_adicionales/CHANGELOG.md) · Tag: [v1.23.0](https://github.com/jhonatanfdez/crud-symfony-test/releases/tag/v1.23.0)
 
 ---
 
@@ -105,7 +105,7 @@ php -S localhost:8000 -t public/
 
 • **v1.20.0**: Control de Acceso ROLE_ADMIN para Categorías 🔒 - Solo usuarios con ROLE_ADMIN pueden crear, editar y eliminar categorías. Los usuarios con ROLE_USER solo pueden visualizar. Implementado con `isGranted('ROLE_ADMIN')` en controlador, templates ocultan botones según permisos, mensajes flash informativos para acceso denegado, documentación completa de asignación de roles, y doble validación (backend + frontend).
 
-• **v1.19.0**: Reestructuración del Repositorio 📁 - Movido `.git` de `/test1/` a `/test1/crud-symfony/` para corregir estructura en GitHub (90 files reorganizados), eliminada carpeta extra en GitHub, archivos adicionales organizados en `archivos_adicionales/` (comando, contexto.txt, registro_actividades.txt, ASIGNAR_ROL_ADMIN.md).
+• **v1.19.0**: Reestructuración del Repositorio 📁 - Movido `.git` de `/test1/` a `/test1/crud-symfony/` para corregir estructura en GitHub (90 files reorganizados), eliminada carpeta extra en GitHub, archivos adicionales organizados en `archivos_adicionales/` (comando, contexto.txt, CHANGELOG.md, ASIGNAR_ROL_ADMIN.md).
 
 • **v1.18.0**: Buscador de Productos implementado - Búsqueda por nombre de producto con formulario GET, método `findBySearchQuery()` en repositorio con query builder, plantilla con campo de búsqueda, estilos Bootstrap, y mensajes informativos cuando no hay resultados.
 
@@ -717,7 +717,7 @@ crud-symfony/
 │   ├── comando               # Historial de comandos ejecutados
 │   ├── contexto.txt          # Contexto del proyecto educativo
 │   ├── FORMULARIOS_GUIA.md   # Guía de formularios Symfony
-│   └── registro_actividades.txt  # Changelog detallado
+│   └── CHANGELOG.md              # Changelog detallado en formato Markdown
 ├── config/                   # Configuración de la aplicación
 │   ├── packages/            # Configuración de bundles
 │   └── routes.yaml          # Rutas globales
@@ -916,7 +916,7 @@ git tag -a v1.21.0 -m "Versión 1.21.0 - Sistema de Mensajes Flash
 
 ### Changelog
 
-Archivo `registro_actividades.txt` en `archivos_adicionales/` siguiendo estructura:
+Archivo `CHANGELOG.md` en `archivos_adicionales/` en formato Markdown profesional siguiendo estructura:
 - Versión y fecha
 - Objetivo
 - Problema a resolver
@@ -952,7 +952,7 @@ Este proyecto está diseñado como **material didáctico** para enseñar Symfony
 - `archivos_adicionales/contexto.txt` - Plan educativo completo
 - `archivos_adicionales/FORMULARIOS_GUIA.md` - Guía de formularios
 - `archivos_adicionales/ASIGNAR_ROL_ADMIN.md` - Asignación de roles
-- `archivos_adicionales/registro_actividades.txt` - Changelog detallado
+- `archivos_adicionales/CHANGELOG.md` - Changelog detallado en formato Markdown
 - `archivos_adicionales/comando` - Historial de comandos
 
 ---
