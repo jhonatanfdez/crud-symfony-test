@@ -11,6 +11,140 @@ Database: MySQL (crud_symfony)
 Frontend: Bootstrap 5.3.8 + Bootstrap Icons 1.11.3
 
 ================================================================================
+VERSIÓN v1.21.0 - SISTEMA DE MENSAJES FLASH PARA RETROALIMENTACIÓN
+Fecha: 13 de noviembre de 2025, 10:00 PM
+================================================================================
+
+OBJETIVO:
+Implementar mensajes flash (notificaciones temporales) para proporcionar
+retroalimentación visual al usuario después de cada acción CRUD, diferenciando
+mensajes de éxito (verde) y mensajes de error (rojo).
+
+PROBLEMA A RESOLVER:
+- Los usuarios no recibían confirmación visual de las acciones realizadas
+- No había feedback claro sobre si una operación fue exitosa o falló
+- Experiencia de usuario mejorable sin notificaciones informativas
+
+IMPLEMENTACIÓN REALIZADA:
+
+1. CONTROLADOR: src/Controller/CategoriaController.php
+   
+   Método new():
+   - Agregado: $this->addFlash('success', 'La categoría ha sido creada exitosamente')
+   - Ejecuta después de persistir la nueva categoría
+   
+   Método edit():
+   - Agregado: $this->addFlash('success', 'La categoría ha sido actualizada exitosamente')
+   - Ejecuta después de actualizar la categoría existente
+   
+   Método delete():
+   - Agregado: $this->addFlash('success', 'La categoría ha sido eliminada exitosamente')
+   - Ejecuta después de eliminar la categoría
+   
+   Nota: Los mensajes de error para usuarios sin ROLE_ADMIN ya existían desde v1.20.0
+
+2. CONTROLADOR: src/Controller/ProductoController.php
+   
+   Método new():
+   - Agregado: $this->addFlash('success', 'El producto ha sido creado exitosamente')
+   - Ejecuta después de persistir el nuevo producto
+   
+   Método edit():
+   - Agregado: $this->addFlash('success', 'El producto ha sido actualizado exitosamente')
+   - Ejecuta después de actualizar el producto existente
+   
+   Método delete():
+   - Agregado: $this->addFlash('success', 'El producto ha sido eliminado exitosamente')
+   - Ejecuta después de eliminar el producto
+
+3. TEMPLATE: templates/base_admin.html.twig
+   
+   Sistema de visualización de mensajes flash:
+   
+   - Ubicación: Container mt-4, antes del bloque {% block body %}
+   
+   - Código implementado:
+     ```twig
+     <div class="container mt-4">
+         {% for type, messages in app.flashes %}
+             {% for message in messages %}
+                 <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                     {% if type == 'success' %}
+                         <i class="bi bi-check-circle-fill me-2"></i>
+                     {% elseif type == 'error' %}
+                         <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                     {% elseif type == 'warning' %}
+                         <i class="bi bi-exclamation-circle-fill me-2"></i>
+                     {% elseif type == 'info' %}
+                         <i class="bi bi-info-circle-fill me-2"></i>
+                     {% endif %}
+                     {{ message }}
+                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                 </div>
+             {% endfor %}
+         {% endfor %}
+     </div>
+     ```
+   
+   - Mapeo de colores Bootstrap:
+     * 'success' → alert-success (verde)
+     * 'error' → alert-danger (rojo)
+     * 'warning' → alert-warning (amarillo)
+     * 'info' → alert-info (azul)
+   
+   - Iconos utilizados (Bootstrap Icons):
+     * Success: bi-check-circle-fill
+     * Error: bi-exclamation-triangle-fill
+     * Warning: bi-exclamation-circle-fill
+     * Info: bi-info-circle-fill
+   
+   - Características:
+     * Alertas dismissibles (pueden cerrarse con botón X)
+     * Animación fade show de Bootstrap
+     * Espaciado margin-end entre icono y texto
+     * Accesibilidad con role="alert" y aria-label
+
+FUNCIONALIDAD POR TIPO DE MENSAJE:
+
+1. Mensajes de ÉXITO (verde - alert-success):
+   - Categoría creada exitosamente
+   - Categoría actualizada exitosamente
+   - Categoría eliminada exitosamente
+   - Producto creado exitosamente
+   - Producto actualizado exitosamente
+   - Producto eliminado exitosamente
+
+2. Mensajes de ERROR (rojo - alert-danger):
+   - "Usted no tiene privilegios para esta acción" (usuarios sin ROLE_ADMIN)
+
+EXPERIENCIA DE USUARIO:
+
+- Al crear/editar/eliminar: Mensaje verde con icono de check aparece temporalmente
+- Al intentar acción sin permisos: Mensaje rojo con icono de advertencia
+- Mensajes se pueden cerrar manualmente con botón X
+- Interfaz clara y profesional con colores estándar de Bootstrap
+
+ARCHIVOS MODIFICADOS:
+1. src/Controller/CategoriaController.php - 3 mensajes flash de éxito
+2. src/Controller/ProductoController.php - 3 mensajes flash de éxito
+3. templates/base_admin.html.twig - Sistema de visualización de alertas
+4. archivos_adicionales/registro_actividades.txt - Documentación actualizada
+
+TESTING RECOMENDADO:
+1. Crear una categoría → Verificar mensaje verde "creada exitosamente"
+2. Editar una categoría → Verificar mensaje verde "actualizada exitosamente"
+3. Eliminar una categoría → Verificar mensaje verde "eliminada exitosamente"
+4. Repetir para productos
+5. Intentar acción sin ROLE_ADMIN → Verificar mensaje rojo de error
+6. Probar botón de cerrar en las alertas
+
+COMMIT:
+- Hash: 8be6654
+- Mensaje: "Mensajes Flash implementados en Categorías y Productos"
+- Archivos: 4 modificados, 233 líneas agregadas
+- Push: Exitoso a GitHub
+
+================================================================================
 VERSIÓN v1.20.0 - CONTROL DE ACCESO ROLE_ADMIN PARA CATEGORÍAS
 Fecha: 13 de noviembre de 2025, 9:30 PM
 ================================================================================
