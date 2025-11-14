@@ -125,6 +125,10 @@ php -S localhost:8000 -t public/
 ![Dashboard](docs/screenshots/home.png)
 *Panel de administración con estadísticas en tiempo real y acceso rápido a módulos*
 
+### Inicio de Sesión
+![Login](docs/screenshots/login.png)
+*Formulario de login con diseño moderno y gradientes*
+
 ### Registro de Usuario
 ![Registro](docs/screenshots/registro.png)
 *Formulario de registro con validación y diseño moderno*

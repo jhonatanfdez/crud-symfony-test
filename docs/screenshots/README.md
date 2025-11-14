@@ -4,19 +4,23 @@ Esta carpeta contiene las capturas de pantalla utilizadas en el README.md princi
 
 ## Imágenes requeridas:
 
-1. **home.png** - Dashboard principal
+1. **home.png** - Dashboard principal ✅ AGREGADA
    - Vista del panel de administración
    - Muestra: sección de bienvenida, estadísticas, módulos del sistema
 
-2. **registro.png** - Página de registro
+2. **login.png** - Página de login ✅ AGREGADA
+   - Formulario de inicio de sesión
+   - Muestra: campos de email y contraseña, diseño con gradientes
+
+3. **registro.png** - Página de registro ✅ AGREGADA
    - Formulario de creación de cuenta
    - Muestra: campos de email y contraseña, botón de registro
 
-3. **categorias.png** - Gestión de categorías
+4. **categorias.png** - Gestión de categorías ✅ AGREGADA
    - Listado de categorías con tabla
    - Muestra: buscador, botón "Nueva Categoría", acciones (Ver, Editar, Eliminar)
 
-4. **productos.png** - Gestión de productos
+5. **productos.png** - Gestión de productos ✅ AGREGADA
    - Listado de productos con tabla
    - Muestra: buscador, botón "Nuevo Producto", información de productos (nombre, precio, categoría, fecha)
 
