@@ -59,6 +59,13 @@ final class CategoriaController extends AbstractController
     #[Route('/new', name: 'app_categoria_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        // Verificar que el usuario tenga rol ADMIN
+        // Si no tiene el rol, redirige al index y muestra mensaje flash
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Usted no tiene privilegios para esta acción');
+            return $this->redirectToRoute('app_categoria_index');
+        }
+        
         // Crear una nueva instancia vacía de Categoria
         $categorium = new Categoria();
         
@@ -119,6 +126,13 @@ final class CategoriaController extends AbstractController
     #[Route('/{id}/edit', name: 'app_categoria_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Categoria $categorium, EntityManagerInterface $entityManager): Response
     {
+        // Verificar que el usuario tenga rol ADMIN
+        // Si no tiene el rol, redirige al index y muestra mensaje flash
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Usted no tiene privilegios para esta acción');
+            return $this->redirectToRoute('app_categoria_index');
+        }
+        
         // Crear el formulario prellenado con los datos de la categoría existente
         $form = $this->createForm(CategoriaType::class, $categorium);
         
@@ -156,6 +170,13 @@ final class CategoriaController extends AbstractController
     #[Route('/{id}', name: 'app_categoria_delete', methods: ['POST'])]
     public function delete(Request $request, Categoria $categorium, EntityManagerInterface $entityManager): Response
     {
+        // Verificar que el usuario tenga rol ADMIN
+        // Si no tiene el rol, redirige al index y muestra mensaje flash
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Usted no tiene privilegios para esta acción');
+            return $this->redirectToRoute('app_categoria_index', [], Response::HTTP_SEE_OTHER);
+        }
+        
         // Verificar que el token CSRF es válido para evitar ataques de falsificación
         // El token debe coincidir con el generado en el formulario de eliminación
         if ($this->isCsrfTokenValid('delete'.$categorium->getId(), $request->getPayload()->getString('_token'))) {

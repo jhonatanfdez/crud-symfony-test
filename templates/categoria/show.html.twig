@@ -63,6 +63,8 @@
         <a href="{{ path('app_categoria_index') }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Volver al listado
         </a>
+        {# Mostrar botones Editar y Eliminar solo si el usuario tiene rol ADMIN #}
+        {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_categoria_edit', {'id': categorium.id}) }}" class="btn btn-warning">
             <i class="bi bi-pencil"></i> Editar
         </a>
@@ -76,6 +78,7 @@
                 <i class="bi bi-trash"></i> Eliminar
             </button>
         </form>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

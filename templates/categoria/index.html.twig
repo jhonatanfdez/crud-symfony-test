@@ -34,11 +34,14 @@
                 <i class="bi bi-folder"></i> Categorías
             </h1>
         </div>
+        {# Mostrar botón "Nueva Categoría" solo si el usuario tiene rol ADMIN #}
+        {% if is_granted('ROLE_ADMIN') %}
         <div class="col-auto">
             <a href="{{ path('app_categoria_new') }}" class="btn btn-primary btn-lg">
                 <i class="bi bi-plus-circle"></i> Nueva Categoría
             </a>
         </div>
+        {% endif %}
     </div>
 
     {# Formulario de búsqueda #}
@@ -119,6 +122,8 @@
                                            title="Ver detalles">
                                             <i class="bi bi-eye"></i> Ver
                                         </a>
+                                        {# Mostrar botones Editar y Eliminar solo si el usuario tiene rol ADMIN #}
+                                        {% if is_granted('ROLE_ADMIN') %}
                                         <a href="{{ path('app_categoria_edit', {'id': categorium.id}) }}" 
                                            class="btn btn-warning" 
                                            title="Editar">
@@ -133,6 +138,7 @@
                                                 <i class="bi bi-trash"></i> Eliminar
                                             </button>
                                         </form>
+                                        {% endif %}
                                     </div>
                                 </td>
                             </tr>
