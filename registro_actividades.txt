@@ -5240,3 +5240,367 @@ Resultado:
 
 ---
 
+[13/11/2025 08:27:01 p.m.] v1.17.0 - ProductoType mejorado con propiedades completas y clase personalizada
+
+**CAMBIOS IMPLEMENTADOS:**
+
+1. **src/Form/ProductoType.php - Formulario con todas las propiedades:**
+
+   **Imports agregados:**
+   ```php
+   use Symfony\Component\Form\Extension\Core\Type\TextType;
+   use Symfony\Component\Form\Extension\Core\Type\NumberType;
+   use Symfony\Component\Validator\Constraints\NotBlank;
+   use Symfony\Component\Validator\Constraints\Length;
+   use Symfony\Component\Validator\Constraints\Positive;
+   use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+   ```
+
+   **Campo NOMBRE - TextType completo:**
+   - Label: "Nombre del Producto" con clase fw-bold
+   - Placeholder: "Ej: Laptop HP Pavilion 15"
+   - Help text: "Ingresa un nombre descriptivo para el producto (máximo 255 caracteres)"
+   - Atributos HTML: class, maxlength=255, autocomplete=off
+   - Validaciones:
+     * NotBlank: Campo obligatorio con mensaje personalizado
+     * Length: min=3, max=255 con mensajes personalizados
+   
+   **Código del campo nombre:**
+   ```php
+   ->add('nombre', TextType::class, [
+       'label' => 'Nombre del Producto',
+       'label_attr' => [
+           'class' => 'fw-bold',
+       ],
+       'attr' => [
+           'placeholder' => 'Ej: Laptop HP Pavilion 15',
+           'class' => 'form-control',
+           'maxlength' => 255,
+           'autocomplete' => 'off',
+       ],
+       'help' => 'Ingresa un nombre descriptivo para el producto (máximo 255 caracteres)',
+       'help_attr' => [
+           'class' => 'text-muted small',
+       ],
+       'required' => true,
+       'constraints' => [
+           new NotBlank([
+               'message' => 'El nombre del producto es obligatorio',
+           ]),
+           new Length([
+               'min' => 3,
+               'max' => 255,
+               'minMessage' => 'El nombre debe tener al menos {{ limit }} caracteres',
+               'maxMessage' => 'El nombre no puede exceder {{ limit }} caracteres',
+           ]),
+       ],
+   ])
+   ```
+
+   **Campo PRECIO - NumberType completo:**
+   - Tipo: NumberType (cambiado desde campo genérico)
+   - Label: "Precio del Producto" con clase fw-bold
+   - Placeholder: "0.00"
+   - Help text: "Precio en dólares (máximo $999,999.99). Usa formato decimal: 1234.56"
+   - Scale: 2 decimales
+   - HTML5: true (usa input type="number")
+   - Atributos: step=0.01, min=0.01
+   - Validaciones:
+     * NotBlank: Campo obligatorio
+     * Positive: Debe ser mayor a 0
+     * LessThanOrEqual: Máximo 999,999.99
+   
+   **Código del campo precio:**
+   ```php
+   ->add('precio', NumberType::class, [
+       'label' => 'Precio del Producto',
+       'label_attr' => [
+           'class' => 'fw-bold',
+       ],
+       'attr' => [
+           'placeholder' => '0.00',
+           'class' => 'form-control',
+           'step' => '0.01',
+           'min' => '0.01',
+       ],
+       'help' => 'Precio en dólares (máximo $999,999.99). Usa formato decimal: 1234.56',
+       'help_attr' => [
+           'class' => 'text-muted small',
+       ],
+       'required' => true,
+       'scale' => 2,
+       'html5' => true,
+       'constraints' => [
+           new NotBlank([
+               'message' => 'El precio es obligatorio',
+           ]),
+           new Positive([
+               'message' => 'El precio debe ser mayor a 0',
+           ]),
+           new LessThanOrEqual([
+               'value' => 999999.99,
+               'message' => 'El precio no puede exceder $999,999.99',
+           ]),
+       ],
+   ])
+   ```
+
+   **Campo CATEGORIA - EntityType mejorado:**
+   - Label: "Categoría" con clase fw-bold
+   - Placeholder: "-- Selecciona una categoría --"
+   - Help text: "Selecciona la categoría a la que pertenece este producto"
+   - Clase form-select de Bootstrap
+   - Validación NotBlank con mensaje personalizado
+   
+   **Código del campo categoría:**
+   ```php
+   ->add('categoria', EntityType::class, [
+       'class' => Categoria::class,
+       'choice_label' => 'nombre',
+       'label' => 'Categoría',
+       'label_attr' => [
+           'class' => 'fw-bold',
+       ],
+       'attr' => [
+           'class' => 'form-select',
+       ],
+       'placeholder' => '-- Selecciona una categoría --',
+       'help' => 'Selecciona la categoría a la que pertenece este producto',
+       'help_attr' => [
+           'class' => 'text-muted small',
+       ],
+       'required' => true,
+       'constraints' => [
+           new NotBlank([
+               'message' => 'Debes seleccionar una categoría',
+           ]),
+       ],
+   ])
+   ```
+
+   **Campo FECHA - Mejorado con más propiedades:**
+   - Solo visible si is_edit=true
+   - Label: "Fecha de Creación" con clase fw-bold
+   - Siempre disabled y readonly
+   - Help text con clase text-warning: "La fecha de creación no se puede modificar"
+   - Widget: single_text
+   
+   **Campo USER - Mejorado con más propiedades:**
+   - Solo visible si show_user=true
+   - Label: "Usuario Asignado" con clase fw-bold
+   - Placeholder: "-- Selecciona un usuario --"
+   - Help text: "Usuario responsable de este producto"
+   - Clase form-select
+   - Required: false (opcional)
+
+   **ConfigureOptions mejorado:**
+   ```php
+   public function configureOptions(OptionsResolver $resolver): void
+   {
+       $resolver->setDefaults([
+           'data_class' => Producto::class,
+           'show_user' => false,
+           'is_edit' => false,
+       ]);
+       
+       // Validar tipos de opciones
+       $resolver->setAllowedTypes('show_user', 'bool');
+       $resolver->setAllowedTypes('is_edit', 'bool');
+   }
+   ```
+
+   **Comentarios agregados:**
+   - Comentarios extensos explicando cada propiedad
+   - Secciones separadas con líneas de ===
+   - Explicación de cada opción (label, attr, help, constraints, etc.)
+   - Documentación de opciones personalizadas (show_user, is_edit)
+   - Ejemplo alternativo al final para usar CategoriaSelectType
+
+2. **src/Form/CategoriaSelectType.php - Nueva clase personalizada:**
+
+   Clase reutilizable que extiende EntityType para seleccionar categorías.
+   
+   **Características:**
+   - Extiende AbstractType y usa EntityType como padre
+   - Configuración predeterminada centralizada
+   - Query builder con ordenamiento alfabético
+   - Placeholder predeterminado
+   - Estilos Bootstrap 5 (form-select-lg)
+   - Label con clase fw-bold text-primary
+   - Help text con clase text-muted small fst-italic
+   - Completamente reutilizable en otros formularios
+   
+   **Código completo:**
+   ```php
+   class CategoriaSelectType extends AbstractType
+   {
+       public function configureOptions(OptionsResolver $resolver): void
+       {
+           $resolver->setDefaults([
+               'class' => Categoria::class,
+               'choice_label' => 'nombre',
+               'query_builder' => function (EntityRepository $er) {
+                   return $er->createQueryBuilder('c')
+                       ->orderBy('c.nombre', 'ASC');
+               },
+               'placeholder' => '-- Selecciona una categoría --',
+               'required' => true,
+               'attr' => [
+                   'class' => 'form-select form-select-lg',
+               ],
+               'label' => 'Categoría',
+               'label_attr' => [
+                   'class' => 'fw-bold text-primary',
+               ],
+               'help' => 'Selecciona la categoría a la que pertenece este producto',
+               'help_attr' => [
+                   'class' => 'text-muted small fst-italic',
+               ],
+               'allow_extra_options' => true,
+           ]);
+       }
+
+       public function getParent(): string
+       {
+           return EntityType::class;
+       }
+
+       public function getBlockPrefix(): string
+       {
+           return 'categoria_select';
+       }
+   }
+   ```
+
+   **Ventajas de la clase personalizada:**
+   - Reutilización: Se puede usar en múltiples formularios
+   - Consistencia: Mismo estilo en todos los selects de categoría
+   - Mantenibilidad: Un solo lugar para cambiar configuración
+   - Menos código: Solo necesitas `->add('categoria', CategoriaSelectType::class)`
+   
+   **Documentación incluida:**
+   - PHPDoc completo explicando propósito y ventajas
+   - Ejemplos de uso en otros formularios
+   - Comentarios en cada método
+
+3. **FORMULARIOS_GUIA.md - Documentación completa de formularios:**
+
+   Archivo markdown de 600+ líneas con guía exhaustiva de formularios en Symfony.
+   
+   **Contenido del documento:**
+   
+   **1. Estructura básica de formularios**
+   **2. Tipos de campos disponibles (10+ tipos):**
+   - TextType: Campos de texto simple
+   - NumberType: Campos numéricos con decimales
+   - TextareaType: Áreas de texto grandes
+   - EmailType: Validación de email
+   - PasswordType: Campos de contraseña
+   - ChoiceType: Listas desplegables
+   - EntityType: Select con datos de BD
+   - CheckboxType: Casillas de verificación
+   - DateType/DateTimeType: Selectores de fecha
+   - FileType: Upload de archivos
+   
+   **3. Opciones comunes (10+ opciones):**
+   - label: Etiqueta del campo
+   - label_attr: Atributos HTML del label
+   - attr: Atributos HTML del input
+   - placeholder: Texto dentro del input
+   - help: Texto de ayuda
+   - help_attr: Atributos del texto de ayuda
+   - required: Campo obligatorio
+   - disabled: Deshabilitar campo
+   - mapped: Mapeo con entidad
+   - data: Valor predeterminado
+   
+   **4. Validaciones (8+ constraints):**
+   - NotBlank: No puede estar vacío
+   - Length: Longitud mínima/máxima
+   - Email: Formato de email
+   - Positive: Número positivo
+   - Range: Rango de valores
+   - LessThanOrEqual: Menor o igual
+   - Regex: Expresión regular
+   - Múltiples validaciones combinadas
+   
+   **5. Opciones específicas por tipo:**
+   - NumberType: scale, html5, grouping, rounding_mode
+   - EntityType: class, choice_label, query_builder, multiple, expanded
+   - ChoiceType: choices, multiple, expanded
+   - DateType: widget, html5, format, years
+   - FileType: mapped, multiple, accept
+   
+   **6. Campos condicionales**
+   **7. Clases personalizadas**
+   **8. Integración con Bootstrap 5**
+   **9. Ejemplo completo funcional**
+   **10. Recursos adicionales**
+   
+   Cada sección incluye:
+   - Explicación conceptual
+   - Ejemplos de código
+   - Comentarios detallados
+   - Casos de uso
+   - Mejores prácticas
+
+**PROPIEDADES DEMOSTRADAS EN PRODUCTOTYPE:**
+
+✅ **label** - Etiquetas personalizadas en todos los campos
+✅ **label_attr** - Clases CSS para labels (fw-bold)
+✅ **attr** - Atributos HTML (placeholder, class, maxlength, step, min, autocomplete)
+✅ **placeholder** - Textos de ayuda dentro de inputs
+✅ **help** - Textos informativos debajo de campos
+✅ **help_attr** - Estilos para textos de ayuda (text-muted, small, text-warning)
+✅ **required** - Campos obligatorios y opcionales
+✅ **disabled** - Campo fecha deshabilitado en edición
+✅ **constraints** - Múltiples validaciones (NotBlank, Length, Positive, LessThanOrEqual)
+✅ **scale** - Decimales en NumberType
+✅ **html5** - Input type="number" moderno
+✅ **widget** - single_text para DateTime
+✅ **choice_label** - Campo a mostrar en EntityType
+✅ **class** - Entidad para EntityType
+✅ Opciones personalizadas (show_user, is_edit) con validación de tipos
+
+**ARCHIVOS CREADOS:**
+
+1. `src/Form/CategoriaSelectType.php` - 106 líneas - Clase personalizada reutilizable
+2. `FORMULARIOS_GUIA.md` - 600+ líneas - Documentación completa
+
+**ARCHIVOS MODIFICADOS:**
+
+1. `src/Form/ProductoType.php` - De ~65 líneas a ~240 líneas
+
+**ESTADÍSTICAS:**
+
+- Total de propiedades demostradas: 15+
+- Tipos de campos usados: 4 (TextType, NumberType, EntityType, DateTimeType)
+- Validaciones implementadas: 5 (NotBlank, Length, Positive, LessThanOrEqual, setAllowedTypes)
+- Comentarios agregados: 100+ líneas
+- Ejemplo de clase personalizada: 1 completa con PHPDoc
+- Guía de referencia: 600+ líneas con 10 secciones
+
+**OBJETIVOS EDUCATIVOS CUMPLIDOS:**
+
+✅ Mostrar TODAS las propiedades disponibles en formularios
+✅ Demostrar uso de diferentes tipos de campos
+✅ Implementar validaciones con constraints
+✅ Crear clase personalizada reutilizable
+✅ Documentar exhaustivamente el código
+✅ Proporcionar guía de referencia completa
+✅ Ejemplos prácticos y funcionales
+✅ Integración con Bootstrap 5
+
+Resultado:
+✅ ProductoType con todas las propiedades demostradas (label, placeholder, help, constraints)
+✅ Campo precio usa NumberType con scale, html5, step
+✅ Todos los campos tienen label_attr, attr, help_attr personalizados
+✅ Validaciones completas: NotBlank, Length, Positive, LessThanOrEqual
+✅ Comentarios extensos explicando cada propiedad
+✅ Clase CategoriaSelectType creada como ejemplo de reutilización
+✅ FORMULARIOS_GUIA.md con documentación completa de 600+ líneas
+✅ ConfigureOptions mejorado con validación de tipos
+✅ Código 100% funcional y educativo
+
+---
+
