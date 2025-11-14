@@ -360,6 +360,322 @@ Este proyecto es un **tutorial educativo completo** diseñado para enseñar Symf
 
 ---
 
+## 🚀 API REST para Productos (v1.23.0) — NUEVO
+
+### Endpoints disponibles
+
+El proyecto incluye una API REST completa para gestionar productos mediante peticiones HTTP con respuestas JSON.
+
+**Base URL:** `/api/producto`
+
+| Método | Endpoint | Descripción | Autenticación |
+|--------|----------|-------------|---------------|
+| `GET` | `/api/producto` | Listar todos los productos | No requerida |
+| `GET` | `/api/producto/{id}` | Obtener un producto específico | No requerida |
+| `POST` | `/api/producto` | Crear nuevo producto | No requerida* |
+| `PUT` | `/api/producto/{id}` | Actualizar producto existente | Requerida |
+| `DELETE` | `/api/producto/{id}` | Eliminar producto | No requerida* |
+
+*Autenticación desactivada para facilitar pruebas educativas.
+
+---
+
+### 📋 Ejemplos de uso
+
+#### 1. Listar todos los productos
+
+```bash
+GET http://localhost:8000/api/producto
+```
+
+**Respuesta (200 OK):**
+```json
+[
+  {
+    "id": 1,
+    "nombre": "Laptop Dell XPS 15",
+    "precio": 1500.99,
+    "fecha": "2025-11-13",
+    "categoria": {
+      "id": 1,
+      "nombre": "Electrónica"
+    },
+    "usuario": {
+      "id": 1,
+      "email": "admin@test.com"
+    }
+  },
+  {
+    "id": 2,
+    "nombre": "Mouse Logitech",
+    "precio": 25.50,
+    "fecha": "2025-11-13",
+    "categoria": {
+      "id": 1,
+      "nombre": "Electrónica"
+    },
+    "usuario": {
+      "id": 1,
+      "email": "admin@test.com"
+    }
+  }
+]
+```
+
+---
+
+#### 2. Obtener un producto específico
+
+```bash
+GET http://localhost:8000/api/producto/1
+```
+
+**Respuesta (200 OK):**
+```json
+{
+  "id": 1,
+  "nombre": "Laptop Dell XPS 15",
+  "precio": 1500.99,
+  "fecha": "2025-11-13",
+  "categoria": {
+    "id": 1,
+    "nombre": "Electrónica"
+  },
+  "usuario": {
+    "id": 1,
+    "email": "admin@test.com"
+  }
+}
+```
+
+**Respuesta de error (404 Not Found):**
+```json
+{
+  "error": "Not Found"
+}
+```
+
+---
+
+#### 3. Crear un nuevo producto
+
+```bash
+POST http://localhost:8000/api/producto
+Content-Type: application/json
+
+{
+  "nombre": "Teclado Mecánico",
+  "precio": 89.99,
+  "categoria_id": 1
+}
+```
+
+**Respuesta (201 Created):**
+```json
+{
+  "mensaje": "Producto creado exitosamente",
+  "producto": {
+    "id": 3,
+    "nombre": "Teclado Mecánico",
+    "precio": 89.99,
+    "fecha": "2025-11-13",
+    "categoria": {
+      "id": 1,
+      "nombre": "Electrónica"
+    },
+    "usuario": {
+      "id": 1,
+      "email": "admin@test.com"
+    }
+  }
+}
+```
+
+**Campos requeridos:**
+- `nombre` (string): Nombre del producto
+- `precio` (float): Precio del producto
+- `categoria_id` (int): ID de una categoría existente
+
+**Campos opcionales:**
+- `fecha` (string): Fecha en formato YYYY-MM-DD (se asigna automáticamente si no se envía)
+
+**Posibles errores:**
+
+**400 Bad Request - JSON inválido:**
+```json
+{
+  "error": "JSON inválido o vacío"
+}
+```
+
+**400 Bad Request - Campos faltantes:**
+```json
+{
+  "error": "Faltan campos requeridos: nombre, precio, categoria_id"
+}
+```
+
+**404 Not Found - Categoría no existe:**
+```json
+{
+  "error": "Categoría no encontrada"
+}
+```
+
+---
+
+#### 4. Actualizar un producto existente
+
+```bash
+PUT http://localhost:8000/api/producto/3
+Content-Type: application/json
+
+{
+  "nombre": "Teclado Mecánico RGB",
+  "precio": 99.99
+}
+```
+
+**Respuesta (200 OK):**
+```json
+{
+  "mensaje": "Producto actualizado exitosamente",
+  "producto": {
+    "id": 3,
+    "nombre": "Teclado Mecánico RGB",
+    "precio": 99.99,
+    "fecha": "2025-11-13",
+    "categoria": {
+      "id": 1,
+      "nombre": "Electrónica"
+    },
+    "usuario": {
+      "id": 1,
+      "email": "admin@test.com"
+    }
+  }
+}
+```
+
+**Nota:** Solo se actualizan los campos enviados. Los demás mantienen su valor actual.
+
+**Campos opcionales (actualización parcial):**
+- `nombre` (string): Nuevo nombre
+- `precio` (float): Nuevo precio
+- `categoria_id` (int): Nueva categoría
+
+---
+
+#### 5. Eliminar un producto
+
+```bash
+DELETE http://localhost:8000/api/producto/3
+```
+
+**Respuesta (200 OK):**
+```json
+{
+  "mensaje": "Producto eliminado exitosamente",
+  "id": 3
+}
+```
+
+**Nota:** La eliminación es permanente (no soft delete).
+
+---
+
+### 🧪 Probar la API
+
+#### Opción 1: Con cURL (Terminal)
+
+```bash
+# Listar productos
+curl http://localhost:8000/api/producto
+
+# Ver producto específico
+curl http://localhost:8000/api/producto/1
+
+# Crear producto
+curl -X POST http://localhost:8000/api/producto \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Monitor LG 27 pulgadas","precio":299.99,"categoria_id":1}'
+
+# Actualizar producto
+curl -X PUT http://localhost:8000/api/producto/1 \
+  -H "Content-Type: application/json" \
+  -d '{"precio":1599.99}'
+
+# Eliminar producto
+curl -X DELETE http://localhost:8000/api/producto/3
+```
+
+#### Opción 2: Con Postman o Thunder Client
+
+1. **Instalar Thunder Client** (extensión de VS Code) o **Postman**
+2. **Crear nueva petición**
+3. **Configurar:**
+   - Método: `GET`, `POST`, `PUT` o `DELETE`
+   - URL: `http://localhost:8000/api/producto` (o con /{id})
+   - Headers: `Content-Type: application/json` (para POST/PUT)
+   - Body (raw JSON): Datos del producto
+4. **Enviar petición**
+
+#### Opción 3: Con JavaScript/Fetch
+
+```javascript
+// Listar productos
+fetch('http://localhost:8000/api/producto')
+  .then(response => response.json())
+  .then(data => console.log(data));
+
+// Crear producto
+fetch('http://localhost:8000/api/producto', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    nombre: 'Audífonos Sony',
+    precio: 49.99,
+    categoria_id: 1
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+---
+
+### 📖 Documentación técnica
+
+**Controlador:** `src/Controller/ProductoApiController.php`
+
+**Características implementadas:**
+- ✅ Respuestas JSON estructuradas
+- ✅ Códigos HTTP apropiados (200, 201, 400, 404)
+- ✅ Validación exhaustiva de datos
+- ✅ Manejo de errores con mensajes descriptivos
+- ✅ Serialización manual para evitar referencias circulares
+- ✅ Actualización parcial (PATCH-like con PUT)
+- ✅ Comentarios profesionales en el código
+- ✅ ParamConverter automático para objetos
+- ✅ Inyección de dependencias
+- ✅ Separación de responsabilidades
+
+**Códigos de estado HTTP:**
+- `200 OK` - Operación exitosa (GET, PUT, DELETE)
+- `201 Created` - Recurso creado exitosamente (POST)
+- `400 Bad Request` - Datos inválidos o faltantes
+- `404 Not Found` - Recurso no encontrado
+- `401 Unauthorized` - Usuario no autenticado (si está activada)
+
+**Seguridad:**
+- Autenticación desactivada en `POST` y `DELETE` para pruebas educativas
+- Autenticación activa en `PUT` (requiere sesión)
+- En producción: descomentar `$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY')`
+
+---
+
 ## Próximos módulos (Roadmap)
 
 • Autenticación con login/registro ✅ Completado en v1.13.0  
@@ -368,7 +684,7 @@ Este proyecto es un **tutorial educativo completo** diseñado para enseñar Symf
 • Mensajes flash para retroalimentación ✅ Completado en v1.17.0 y v1.21.0  
 • Buscador de productos ✅ Completado en v1.18.0  
 • Control de acceso por roles ✅ Completado en v1.20.0  
-• API REST con endpoints JSON (próximamente)  
+• API REST con endpoints JSON ✅ **Completado en v1.23.0**  
 • CRUD de usuarios con respuesta JSON (próximamente)  
 • Paginación para listados grandes (próximamente)  
 • Upload de imágenes para productos (próximamente)  
