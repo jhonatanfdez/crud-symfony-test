@@ -4623,3 +4623,445 @@ Resultado:
 
 ---
 
+[13/11/2025 07:56:40 p.m.] Implementación de búsqueda por nombre en Categorías y Productos
+
+¿Qué se hizo?
+Se implementó un sistema de búsqueda por nombre para los módulos de Categoría y Producto, permitiendo filtrar los listados mediante un formulario de búsqueda con retroalimentación visual.
+
+**Objetivo:**
+- Permitir buscar categorías y productos por nombre
+- Búsqueda parcial (no necesita ser exacto)
+- Mantener el término de búsqueda visible después de buscar
+- Mostrar botón para limpiar la búsqueda
+- Mensajes contextuales según haya o no resultados
+
+---
+
+**CAMBIOS EN CATEGORÍAS:**
+
+**1. CategoriaRepository (src/Repository/CategoriaRepository.php)**
+
+Agregado método `findByNombre()` para búsqueda con LIKE:
+
+```php
+/**
+ * Busca categorías por nombre
+ * 
+ * Este método permite buscar categorías cuyo nombre contenga el término de búsqueda.
+ * Usa LIKE con % para buscar coincidencias parciales (no necesita ser exacto).
+ * 
+ * @param string|null $searchTerm - El término de búsqueda (puede ser null o vacío)
+ * @return Categoria[] - Retorna un array de objetos Categoria que coinciden
+ */
+public function findByNombre(?string $searchTerm): array
+{
+    // Crear un QueryBuilder para construir la consulta SQL
+    // 'c' es el alias que usamos para referirnos a la entidad Categoria
+    $qb = $this->createQueryBuilder('c');
+    
+    // Verificar si hay un término de búsqueda
+    // Si searchTerm no está vacío, agregamos la condición WHERE
+    if ($searchTerm) {
+        $qb
+            // WHERE c.nombre LIKE :searchTerm
+            // Busca categorías cuyo nombre contenga el término
+            ->andWhere('c.nombre LIKE :searchTerm')
+            
+            // Reemplazar :searchTerm con el valor real
+            // El % antes y después permite buscar en cualquier parte del nombre
+            // Ejemplo: si buscas "lap", encontrará "Laptops", "Laptop Gaming", etc.
+            ->setParameter('searchTerm', '%' . $searchTerm . '%');
+    }
+    
+    // Ordenar los resultados por nombre de forma ascendente (A-Z)
+    $qb->orderBy('c.nombre', 'ASC');
+    
+    // Ejecutar la consulta y obtener los resultados
+    return $qb->getQuery()->getResult();
+}
+```
+
+**Funcionamiento del QueryBuilder:**
+- `createQueryBuilder('c')` → Crea un constructor de consultas con alias 'c'
+- `andWhere('c.nombre LIKE :searchTerm')` → Agrega condición WHERE con LIKE
+- `setParameter('searchTerm', '%' . $searchTerm . '%')` → Reemplaza el placeholder con el valor real
+- Los `%` permiten coincidencias parciales en cualquier posición
+- `orderBy('c.nombre', 'ASC')` → Ordena alfabéticamente
+
+---
+
+**2. CategoriaController (src/Controller/CategoriaController.php)**
+
+Modificado método `index()` para recibir y procesar búsqueda:
+
+```php
+/**
+ * Muestra el listado de categorías con opción de búsqueda
+ * 
+ * Este método maneja la página principal de categorías.
+ * Permite buscar categorías por nombre si se proporciona un término de búsqueda.
+ * 
+ * @param Request $request - Objeto que contiene los datos de la petición HTTP (incluye parámetros GET)
+ * @param CategoriaRepository $categoriaRepository - Repositorio para acceder a la base de datos
+ * @return Response - Respuesta HTTP con la vista renderizada
+ */
+#[Route(name: 'app_categoria_index', methods: ['GET'])]
+public function index(Request $request, CategoriaRepository $categoriaRepository): Response
+{
+    // Obtener el parámetro 'search' de la URL (parámetro GET)
+    // Por ejemplo: /categoria?search=laptops
+    // Si no existe el parámetro, $searchTerm será null
+    $searchTerm = $request->query->get('search');
+    
+    // Buscar categorías usando el método que creamos en el repositorio
+    // Si $searchTerm es null o vacío, el método retornará todas las categorías
+    // Si tiene un valor, retornará solo las que coincidan con el nombre
+    $categorias = $categoriaRepository->findByNombre($searchTerm);
+    
+    // Renderizar la vista y pasarle dos variables:
+    // - categorias: array con las categorías encontradas
+    // - searchTerm: el término de búsqueda (para mostrarlo en el campo de búsqueda)
+    return $this->render('categoria/index.html.twig', [
+        'categorias' => $categorias,
+        'searchTerm' => $searchTerm,  // Pasar el término de búsqueda a la vista
+    ]);
+}
+```
+
+**Flujo de búsqueda:**
+1. Usuario ingresa término en formulario
+2. Formulario hace GET a `/categoria?search=término`
+3. Controlador obtiene el parámetro con `$request->query->get('search')`
+4. Llama al repositorio con el término
+5. Repositorio ejecuta consulta SQL con LIKE
+6. Retorna resultados a la vista
+
+---
+
+**3. categoria/index.html.twig (templates/categoria/index.html.twig)**
+
+Agregado formulario de búsqueda completo:
+
+```twig
+{# Formulario de búsqueda #}
+{# Este formulario envía una petición GET con el parámetro 'search' #}
+{# Al hacer submit, recarga la página con ?search=término en la URL #}
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ path('app_categoria_index') }}" class="row g-3">
+            <div class="col-md-10">
+                {# Campo de texto para ingresar el término de búsqueda #}
+                {# value={{ searchTerm }} mantiene el valor después de buscar #}
+                <input 
+                    type="text" 
+                    name="search" 
+                    class="form-control form-control-lg" 
+                    placeholder="Buscar categoría por nombre..." 
+                    value="{{ searchTerm }}"
+                    autofocus
+                >
+            </div>
+            <div class="col-md-2">
+                {# Botón para ejecutar la búsqueda #}
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+            </div>
+        </form>
+        
+        {# Mostrar botón para limpiar búsqueda solo si hay un término activo #}
+        {% if searchTerm %}
+            <div class="mt-3">
+                {# Link que vuelve a la página sin parámetros (muestra todas las categorías) #}
+                <a href="{{ path('app_categoria_index') }}" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-x-circle"></i> Limpiar búsqueda
+                </a>
+                <span class="text-muted ms-2">
+                    Buscando: "<strong>{{ searchTerm }}</strong>"
+                </span>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{# Verificar si no se encontraron categorías #}
+{% if categorias is empty %}
+    <div class="alert alert-info" role="alert">
+        <i class="bi bi-info-circle"></i> 
+        {# Mensaje diferente si hay búsqueda activa o no #}
+        {% if searchTerm %}
+            No se encontraron categorías que coincidan con "<strong>{{ searchTerm }}</strong>".
+            <a href="{{ path('app_categoria_index') }}" class="alert-link">Ver todas las categorías</a>
+        {% else %}
+            No hay categorías registradas. 
+            <a href="{{ path('app_categoria_new') }}" class="alert-link">Crear la primera</a>
+        {% endif %}
+    </div>
+{% else %}
+```
+
+**Elementos del formulario:**
+- Campo input grande con placeholder
+- Atributo `name="search"` → se envía como parámetro GET
+- `value="{{ searchTerm }}"` → mantiene el valor después de buscar
+- `autofocus` → cursor automático en el campo
+- Botón "Buscar" con icono
+- Botón "Limpiar búsqueda" (solo si hay término)
+- Indicador visual "Buscando: término"
+- Mensaje contextual si no hay resultados
+
+---
+
+**CAMBIOS EN PRODUCTOS:**
+
+**4. ProductoRepository (src/Repository/ProductoRepository.php)**
+
+Agregado método `findByNombre()` idéntico a categorías:
+
+```php
+/**
+ * Busca productos por nombre
+ * 
+ * Este método permite buscar productos cuyo nombre contenga el término de búsqueda.
+ * Usa LIKE con % para buscar coincidencias parciales (no necesita ser exacto).
+ * 
+ * @param string|null $searchTerm - El término de búsqueda (puede ser null o vacío)
+ * @return Producto[] - Retorna un array de objetos Producto que coinciden
+ */
+public function findByNombre(?string $searchTerm): array
+{
+    // Crear un QueryBuilder para construir la consulta SQL
+    // 'p' es el alias que usamos para referirnos a la entidad Producto
+    $qb = $this->createQueryBuilder('p');
+    
+    // Verificar si hay un término de búsqueda
+    // Si searchTerm no está vacío, agregamos la condición WHERE
+    if ($searchTerm) {
+        $qb
+            // WHERE p.nombre LIKE :searchTerm
+            // Busca productos cuyo nombre contenga el término
+            ->andWhere('p.nombre LIKE :searchTerm')
+            
+            // Reemplazar :searchTerm con el valor real
+            // El % antes y después permite buscar en cualquier parte del nombre
+            // Ejemplo: si buscas "mouse", encontrará "Mouse Gamer", "Mouse Inalámbrico", etc.
+            ->setParameter('searchTerm', '%' . $searchTerm . '%');
+    }
+    
+    // Ordenar los resultados por nombre de forma ascendente (A-Z)
+    $qb->orderBy('p.nombre', 'ASC');
+    
+    // Ejecutar la consulta y obtener los resultados
+    return $qb->getQuery()->getResult();
+}
+```
+
+---
+
+**5. ProductoController (src/Controller/ProductoController.php)**
+
+Modificado método `index()` con búsqueda y autenticación:
+
+```php
+/**
+ * Muestra el listado de productos con opción de búsqueda
+ * 
+ * Este método maneja la página principal de productos.
+ * Permite buscar productos por nombre si se proporciona un término de búsqueda.
+ * 
+ * @param Request $request - Objeto que contiene los datos de la petición HTTP (incluye parámetros GET)
+ * @param ProductoRepository $productoRepository - Repositorio para acceder a la base de datos
+ * @return Response - Respuesta HTTP con la vista renderizada
+ */
+#[Route(name: 'app_producto_index', methods: ['GET'])]
+public function index(Request $request, ProductoRepository $productoRepository): Response
+{
+    // Verificar que el usuario esté autenticado antes de mostrar el listado
+    // Si no está autenticado, Symfony lo redirigirá automáticamente al login
+    $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+    
+    // Obtener el parámetro 'search' de la URL (parámetro GET)
+    // Por ejemplo: /producto?search=laptop
+    // Si no existe el parámetro, $searchTerm será null
+    $searchTerm = $request->query->get('search');
+    
+    // Buscar productos usando el método que creamos en el repositorio
+    // Si $searchTerm es null o vacío, el método retornará todos los productos
+    // Si tiene un valor, retornará solo los que coincidan con el nombre
+    $productos = $productoRepository->findByNombre($searchTerm);
+    
+    // Renderizar la vista y pasarle dos variables:
+    // - productos: array con los productos encontrados
+    // - searchTerm: el término de búsqueda (para mostrarlo en el campo de búsqueda)
+    return $this->render('producto/index.html.twig', [
+        'productos' => $productos,
+        'searchTerm' => $searchTerm,  // Pasar el término de búsqueda a la vista
+    ]);
+}
+```
+
+---
+
+**6. producto/index.html.twig (templates/producto/index.html.twig)**
+
+Agregado formulario de búsqueda (idéntico a categorías):
+
+```twig
+{# Formulario de búsqueda #}
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ path('app_producto_index') }}" class="row g-3">
+            <div class="col-md-10">
+                <input 
+                    type="text" 
+                    name="search" 
+                    class="form-control form-control-lg" 
+                    placeholder="Buscar producto por nombre..." 
+                    value="{{ searchTerm }}"
+                    autofocus
+                >
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+            </div>
+        </form>
+        
+        {% if searchTerm %}
+            <div class="mt-3">
+                <a href="{{ path('app_producto_index') }}" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-x-circle"></i> Limpiar búsqueda
+                </a>
+                <span class="text-muted ms-2">
+                    Buscando: "<strong>{{ searchTerm }}</strong>"
+                </span>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{# Mensajes contextuales #}
+{% if productos is empty %}
+    <div class="alert alert-info" role="alert">
+        <i class="bi bi-info-circle"></i> 
+        {% if searchTerm %}
+            No se encontraron productos que coincidan con "<strong>{{ searchTerm }}</strong>".
+            <a href="{{ path('app_producto_index') }}" class="alert-link">Ver todos los productos</a>
+        {% else %}
+            No hay productos registrados. 
+            <a href="{{ path('app_producto_new') }}" class="alert-link">Crear el primero</a>
+        {% endif %}
+    </div>
+{% else %}
+```
+
+---
+
+**7. producto/show.html.twig - Campo Usuario agregado**
+
+Agregado campo para mostrar el usuario que creó el producto:
+
+```twig
+<tr>
+    <th scope="row">
+        <i class="bi bi-person-circle"></i> Usuario:
+    </th>
+    <td>
+        {% if producto.user %}
+            <span class="badge bg-success fs-6">
+                <i class="bi bi-person-fill"></i> {{ producto.user.email }}
+            </span>
+        {% else %}
+            <span class="badge bg-secondary">Sin usuario</span>
+        {% endif %}
+    </td>
+</tr>
+```
+
+---
+
+**CONCEPTOS TÉCNICOS EXPLICADOS:**
+
+**1. LIKE con % en SQL:**
+```sql
+-- Búsqueda exacta (sin %):
+WHERE nombre = 'Laptop'  -- Solo encuentra "Laptop" exactamente
+
+-- Búsqueda parcial (con %):
+WHERE nombre LIKE '%Laptop%'  -- Encuentra: "Laptop", "Laptop Gaming", "Mi Laptop", etc.
+WHERE nombre LIKE 'Laptop%'   -- Encuentra: "Laptop", "Laptop Gaming" (empieza con)
+WHERE nombre LIKE '%Laptop'   -- Encuentra: "Laptop", "Mi Laptop" (termina con)
+```
+
+**2. Request::query->get():**
+```php
+// URL: /categoria?search=laptop&page=2
+$search = $request->query->get('search');  // "laptop"
+$page = $request->query->get('page');      // "2"
+$otro = $request->query->get('otro');      // null (no existe)
+```
+
+**3. Formulario GET vs POST:**
+- **GET**: Parámetros en la URL (?search=término)
+  - Visible en la barra de direcciones
+  - Permite compartir URLs con búsquedas
+  - Se puede guardar como favorito
+  - Ideal para búsquedas y filtros
+
+- **POST**: Parámetros ocultos en el cuerpo
+  - No visible en la URL
+  - Ideal para formularios de creación/edición
+  - Más seguro para datos sensibles
+
+**4. QueryBuilder vs DQL vs SQL:**
+```php
+// QueryBuilder (orientado a objetos):
+$qb->andWhere('c.nombre LIKE :term')->setParameter('term', '%' . $term . '%');
+
+// DQL (Doctrine Query Language - similar a SQL):
+$query = "SELECT c FROM App\Entity\Categoria c WHERE c.nombre LIKE :term";
+
+// SQL puro (menos recomendado):
+$sql = "SELECT * FROM categoria WHERE nombre LIKE '%{$term}%'";  // ⚠️ Peligro: SQL injection
+```
+
+---
+
+**VENTAJAS DE ESTA IMPLEMENTACIÓN:**
+
+✅ **Búsqueda flexible:** No necesita escribir el nombre exacto
+✅ **UX mejorada:** Campo mantiene el término después de buscar
+✅ **Feedback visual:** Muestra qué se está buscando
+✅ **Fácil limpieza:** Botón para volver al listado completo
+✅ **Mensajes contextuales:** Diferentes mensajes según el contexto
+✅ **URLs compartibles:** Puedes compartir la búsqueda por URL
+✅ **Ordenamiento:** Resultados ordenados alfabéticamente
+✅ **Código documentado:** Comentarios extensos en todos los archivos
+✅ **Consistencia:** Misma implementación en ambos módulos
+
+**EJEMPLOS DE USO:**
+
+| Búsqueda | Encuentra |
+|----------|-----------|
+| "lap" | Laptops, Laptop Gaming, Laptop Oficina |
+| "mouse" | Mouse Gamer, Mouse Inalámbrico, Mouse Pad |
+| "gam" | Gaming, Mouse Gamer, Laptop Gaming |
+| "a" | Todos los que contengan la letra "a" |
+| "" (vacío) | Todos los registros |
+
+Resultado:
+✅ Búsqueda por nombre implementada en Categorías
+✅ Búsqueda por nombre implementada en Productos
+✅ Método `findByNombre()` en ambos repositorios
+✅ Controladores modificados para procesar búsqueda
+✅ Formularios de búsqueda en ambas vistas
+✅ Botón "Limpiar búsqueda" funcional
+✅ Mensajes contextuales según resultados
+✅ Campo de usuario agregado en producto/show
+✅ Código completamente documentado con comentarios
+✅ QueryBuilder con LIKE y ordenamiento
+✅ URLs amigables para compartir búsquedas
+
+---
+

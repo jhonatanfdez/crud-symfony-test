@@ -14,14 +14,39 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/producto')]
 final class ProductoController extends AbstractController
 {
+    /**
+     * Muestra el listado de productos con opción de búsqueda
+     * 
+     * Este método maneja la página principal de productos.
+     * Permite buscar productos por nombre si se proporciona un término de búsqueda.
+     * 
+     * @param Request $request - Objeto que contiene los datos de la petición HTTP (incluye parámetros GET)
+     * @param ProductoRepository $productoRepository - Repositorio para acceder a la base de datos
+     * @return Response - Respuesta HTTP con la vista renderizada
+     */
     #[Route(name: 'app_producto_index', methods: ['GET'])]
-    public function index(ProductoRepository $productoRepository): Response
+    public function index(Request $request, ProductoRepository $productoRepository): Response
     {
         // Verificar que el usuario esté autenticado antes de mostrar el listado
+        // Si no está autenticado, Symfony lo redirigirá automáticamente al login
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         
+        // Obtener el parámetro 'search' de la URL (parámetro GET)
+        // Por ejemplo: /producto?search=laptop
+        // Si no existe el parámetro, $searchTerm será null
+        $searchTerm = $request->query->get('search');
+        
+        // Buscar productos usando el método que creamos en el repositorio
+        // Si $searchTerm es null o vacío, el método retornará todos los productos
+        // Si tiene un valor, retornará solo los que coincidan con el nombre
+        $productos = $productoRepository->findByNombre($searchTerm);
+        
+        // Renderizar la vista y pasarle dos variables:
+        // - productos: array con los productos encontrados
+        // - searchTerm: el término de búsqueda (para mostrarlo en el campo de búsqueda)
         return $this->render('producto/index.html.twig', [
-            'productos' => $productoRepository->findAll(),
+            'productos' => $productos,
+            'searchTerm' => $searchTerm,  // Pasar el término de búsqueda a la vista
         ]);
     }
 

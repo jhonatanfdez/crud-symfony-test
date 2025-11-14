@@ -70,6 +70,20 @@
                             {% endif %}
                         </td>
                     </tr>
+                    <tr>
+                        <th scope="row">
+                            <i class="bi bi-person-circle"></i> Usuario:
+                        </th>
+                        <td>
+                            {% if producto.user %}
+                                <span class="badge bg-success fs-6">
+                                    <i class="bi bi-person-fill"></i> {{ producto.user.email }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">Sin usuario</span>
+                            {% endif %}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

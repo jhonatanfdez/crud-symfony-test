@@ -14,11 +14,35 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/categoria')]
 final class CategoriaController extends AbstractController
 {
+    /**
+     * Muestra el listado de categorías con opción de búsqueda
+     * 
+     * Este método maneja la página principal de categorías.
+     * Permite buscar categorías por nombre si se proporciona un término de búsqueda.
+     * 
+     * @param Request $request - Objeto que contiene los datos de la petición HTTP (incluye parámetros GET)
+     * @param CategoriaRepository $categoriaRepository - Repositorio para acceder a la base de datos
+     * @return Response - Respuesta HTTP con la vista renderizada
+     */
     #[Route(name: 'app_categoria_index', methods: ['GET'])]
-    public function index(CategoriaRepository $categoriaRepository): Response
+    public function index(Request $request, CategoriaRepository $categoriaRepository): Response
     {
+        // Obtener el parámetro 'search' de la URL (parámetro GET)
+        // Por ejemplo: /categoria?search=laptops
+        // Si no existe el parámetro, $searchTerm será null
+        $searchTerm = $request->query->get('search');
+        
+        // Buscar categorías usando el método que creamos en el repositorio
+        // Si $searchTerm es null o vacío, el método retornará todas las categorías
+        // Si tiene un valor, retornará solo las que coincidan con el nombre
+        $categorias = $categoriaRepository->findByNombre($searchTerm);
+        
+        // Renderizar la vista y pasarle dos variables:
+        // - categorias: array con las categorías encontradas
+        // - searchTerm: el término de búsqueda (para mostrarlo en el campo de búsqueda)
         return $this->render('categoria/index.html.twig', [
-            'categorias' => $categoriaRepository->findAll(),
+            'categorias' => $categorias,
+            'searchTerm' => $searchTerm,  // Pasar el término de búsqueda a la vista
         ]);
     }
 

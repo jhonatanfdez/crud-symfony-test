@@ -17,10 +17,59 @@
         </div>
     </div>
 
+    {# Formulario de búsqueda #}
+    {# Este formulario envía una petición GET con el parámetro 'search' #}
+    {# Al hacer submit, recarga la página con ?search=término en la URL #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ path('app_categoria_index') }}" class="row g-3">
+                <div class="col-md-10">
+                    {# Campo de texto para ingresar el término de búsqueda #}
+                    {# value={{ searchTerm }} mantiene el valor después de buscar #}
+                    <input 
+                        type="text" 
+                        name="search" 
+                        class="form-control form-control-lg" 
+                        placeholder="Buscar categoría por nombre..." 
+                        value="{{ searchTerm }}"
+                        autofocus
+                    >
+                </div>
+                <div class="col-md-2">
+                    {# Botón para ejecutar la búsqueda #}
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                </div>
+            </form>
+            
+            {# Mostrar botón para limpiar búsqueda solo si hay un término activo #}
+            {% if searchTerm %}
+                <div class="mt-3">
+                    {# Link que vuelve a la página sin parámetros (muestra todas las categorías) #}
+                    <a href="{{ path('app_categoria_index') }}" class="btn btn-secondary btn-sm">
+                        <i class="bi bi-x-circle"></i> Limpiar búsqueda
+                    </a>
+                    <span class="text-muted ms-2">
+                        Buscando: "<strong>{{ searchTerm }}</strong>"
+                    </span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Verificar si no se encontraron categorías #}
     {% if categorias is empty %}
         <div class="alert alert-info" role="alert">
-            <i class="bi bi-info-circle"></i> No hay categorías registradas. 
-            <a href="{{ path('app_categoria_new') }}" class="alert-link">Crear la primera</a>
+            <i class="bi bi-info-circle"></i> 
+            {# Mensaje diferente si hay búsqueda activa o no #}
+            {% if searchTerm %}
+                No se encontraron categorías que coincidan con "<strong>{{ searchTerm }}</strong>".
+                <a href="{{ path('app_categoria_index') }}" class="alert-link">Ver todas las categorías</a>
+            {% else %}
+                No hay categorías registradas. 
+                <a href="{{ path('app_categoria_new') }}" class="alert-link">Crear la primera</a>
+            {% endif %}
         </div>
     {% else %}
         <div class="card shadow-sm">
