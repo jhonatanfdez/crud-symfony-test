@@ -169,8 +169,8 @@
                 animation: fadeInUp 0.6s ease;
             }
             
-            /* Padding para contenido normal (no hero sections) */
-            .content-wrapper > .container:first-child {
+            /* Padding solo para páginas con contenido normal (NO home) */
+            .page-content {
                 padding-top: 2rem;
             }
             
@@ -336,8 +336,11 @@
                - error: Errores o permisos denegados (rojo)
                - warning: Advertencias (amarillo)
                - info: Información general (azul)
+               
+               Posicionado con position fixed para no interferir con hero-section
             #}
-            <div class="container">
+            {% if app.flashes|length > 0 %}
+            <div class="container" style="position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 1050; max-width: 600px;">
                 {% for type, messages in app.flashes %}
                     {% for message in messages %}
                         <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
@@ -356,6 +359,7 @@
                     {% endfor %}
                 {% endfor %}
             </div>
+            {% endif %}
             
             {% block body %}{% endblock %}
         </main>

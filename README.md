@@ -119,6 +119,26 @@ php -S localhost:8000 -t public/
 
 ---
 
+## 📸 Capturas de pantalla
+
+### Dashboard Principal
+![Dashboard](docs/screenshots/home.png)
+*Panel de administración con estadísticas en tiempo real y acceso rápido a módulos*
+
+### Registro de Usuario
+![Registro](docs/screenshots/registro.png)
+*Formulario de registro con validación y diseño moderno*
+
+### Gestión de Categorías
+![Categorías](docs/screenshots/categorias.png)
+*Listado de categorías con buscador y acciones CRUD*
+
+### Gestión de Productos
+![Productos](docs/screenshots/productos.png)
+*Catálogo completo de productos con filtros*
+
+---
+
 ## Objetivo del proyecto
 
 Este proyecto es un **tutorial educativo completo** diseñado para enseñar Symfony 7.1 desde los fundamentos hasta características avanzadas. Cubre:
