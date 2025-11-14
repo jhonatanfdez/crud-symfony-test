@@ -11,6 +11,434 @@ Database: MySQL (crud_symfony)
 Frontend: Bootstrap 5.3.8 + Bootstrap Icons 1.11.3
 
 ================================================================================
+VERSIÓN v1.23.0 - API REST PARA PRODUCTOS CON JSON
+Fecha: 13 de noviembre de 2025, 11:00 PM
+================================================================================
+
+OBJETIVO:
+Implementar una API REST completa para la entidad Producto, permitiendo operaciones
+CRUD mediante peticiones HTTP con respuestas JSON. El objetivo es aprender desarrollo
+de APIs RESTful en Symfony, manejo de JSON, códigos HTTP y autenticación opcional.
+
+PROBLEMA A RESOLVER:
+- El CRUD actual solo funciona con vistas HTML tradicionales
+- No hay forma de interactuar con productos desde aplicaciones externas (frontend separado, mobile apps, etc.)
+- Necesidad de aprender desarrollo de APIs modernas
+- Gestión de respuestas JSON estructuradas y códigos HTTP apropiados
+- Manejo de errores en formato JSON
+- Serialización manual para evitar referencias circulares de Doctrine
+
+IMPLEMENTACIÓN REALIZADA:
+
+1. ARCHIVO: src/Controller/ProductoApiController.php (NUEVO - 439 LÍNEAS)
+   
+   Controlador API con 5 endpoints RESTful:
+   
+   a) GET /api/producto - Listar todos los productos
+      - URL: http://localhost:8000/api/producto
+      - Autenticación: No requerida
+      - Respuesta: Array JSON con todos los productos
+      - Incluye: categoria y usuario anidados
+      - Serialización manual para evitar referencias circulares
+      - Código HTTP: 200 OK
+      - Comentarios: 56 líneas de documentación
+      
+      Ejemplo de respuesta:
+      [
+        {
+          "id": 1,
+          "nombre": "Laptop Dell XPS 15",
+          "precio": 1500.99,
+          "fecha": "2025-11-13",
+          "categoria": {"id": 1, "nombre": "Electrónica"},
+          "usuario": {"id": 1, "email": "admin@test.com"}
+        }
+      ]
+   
+   b) GET /api/producto/{id} - Obtener producto específico
+      - URL: http://localhost:8000/api/producto/1
+      - Autenticación: No requerida
+      - Parámetro: id (integer)
+      - ParamConverter: Carga automática del objeto Producto
+      - Respuesta: Objeto JSON del producto
+      - Error 404: Si el producto no existe
+      - Código HTTP: 200 OK | 404 Not Found
+      - Comentarios: 31 líneas de documentación
+      
+      Ejemplo de respuesta:
+      {
+        "id": 1,
+        "nombre": "Laptop Dell XPS 15",
+        "precio": 1500.99,
+        "fecha": "2025-11-13",
+        "categoria": {"id": 1, "nombre": "Electrónica"},
+        "usuario": {"id": 1, "email": "admin@test.com"}
+      }
+   
+   c) POST /api/producto - Crear nuevo producto
+      - URL: http://localhost:8000/api/producto
+      - Método: POST
+      - Autenticación: No requerida (desactivada para pruebas)
+      - Content-Type: application/json
+      - Body: JSON con campos del producto
+      
+      Campos requeridos:
+      - nombre (string): Nombre del producto
+      - precio (float): Precio del producto
+      - categoria_id (int): ID de categoría existente
+      
+      Campos opcionales:
+      - fecha (string): Fecha en formato YYYY-MM-DD (auto-asignada si no se envía)
+      
+      Validaciones:
+      ✓ JSON válido y no vacío
+      ✓ Todos los campos requeridos presentes
+      ✓ Categoría existe en base de datos
+      ✓ Usuario actual asignado automáticamente desde sesión
+      
+      Respuestas:
+      - 201 Created: Producto creado exitosamente
+      - 400 Bad Request: JSON inválido o campos faltantes
+      - 404 Not Found: Categoría no encontrada
+      
+      Código HTTP: 201 Created | 400 Bad Request | 404 Not Found
+      Comentarios: 69 líneas de documentación
+      
+      Ejemplo de request:
+      POST /api/producto
+      Content-Type: application/json
+      
+      {
+        "nombre": "Teclado Mecánico",
+        "precio": 89.99,
+        "categoria_id": 1
+      }
+      
+      Ejemplo de respuesta (201):
+      {
+        "mensaje": "Producto creado exitosamente",
+        "producto": {
+          "id": 3,
+          "nombre": "Teclado Mecánico",
+          "precio": 89.99,
+          "fecha": "2025-11-13",
+          "categoria": {"id": 1, "nombre": "Electrónica"},
+          "usuario": {"id": 1, "email": "admin@test.com"}
+        }
+      }
+   
+   d) PUT /api/producto/{id} - Actualizar producto existente
+      - URL: http://localhost:8000/api/producto/1
+      - Método: PUT
+      - Autenticación: Requerida (usuario debe estar logueado)
+      - Content-Type: application/json
+      - Body: JSON con campos a actualizar
+      
+      Características:
+      ✓ Actualización parcial (solo campos enviados)
+      ✓ Valida categoría si se envía categoria_id
+      ✓ Usuario actual obtenido desde sesión
+      ✓ Fecha modificable si se envía
+      
+      Validaciones:
+      ✓ JSON válido
+      ✓ Producto existe (404 si no)
+      ✓ Categoría existe si se envía categoria_id
+      ✓ Usuario autenticado (401 si no)
+      
+      Respuestas:
+      - 200 OK: Producto actualizado exitosamente
+      - 400 Bad Request: JSON inválido
+      - 404 Not Found: Producto o categoría no encontrado
+      - 401 Unauthorized: Usuario no autenticado
+      
+      Código HTTP: 200 OK | 400 Bad Request | 404 Not Found | 401 Unauthorized
+      Comentarios: 64 líneas de documentación
+      
+      Ejemplo de request:
+      PUT /api/producto/3
+      Content-Type: application/json
+      
+      {
+        "nombre": "Teclado Mecánico RGB",
+        "precio": 99.99
+      }
+      
+      Ejemplo de respuesta (200):
+      {
+        "mensaje": "Producto actualizado exitosamente",
+        "producto": {
+          "id": 3,
+          "nombre": "Teclado Mecánico RGB",
+          "precio": 99.99,
+          "fecha": "2025-11-13",
+          "categoria": {"id": 1, "nombre": "Electrónica"},
+          "usuario": {"id": 1, "email": "admin@test.com"}
+        }
+      }
+   
+   e) DELETE /api/producto/{id} - Eliminar producto
+      - URL: http://localhost:8000/api/producto/3
+      - Método: DELETE
+      - Autenticación: No requerida (desactivada para pruebas)
+      - Parámetro: id (integer)
+      - ParamConverter: Carga automática del objeto
+      
+      Características:
+      ✓ Eliminación física (no soft delete)
+      ✓ Confirmación con ID del producto eliminado
+      ✓ Advertencia sobre irreversibilidad en comentarios
+      
+      Respuestas:
+      - 200 OK: Producto eliminado exitosamente
+      - 404 Not Found: Producto no existe (manejo automático)
+      
+      Código HTTP: 200 OK | 404 Not Found
+      Comentarios: 33 líneas de documentación
+      
+      Ejemplo de respuesta (200):
+      {
+        "mensaje": "Producto eliminado exitosamente",
+        "id": 3
+      }
+   
+   Arquitectura del controlador:
+   - Route prefix: /api/producto
+   - Route name prefix: api_producto_
+   - Extends AbstractController
+   - Inyección de EntityManagerInterface
+   - Manual array conversion para evitar circular reference
+   - json_decode($request->getContent(), true) para parsear body
+   - isset() para validación de campos requeridos
+   - Response::HTTP_* para códigos de estado
+   - persist() y flush() para operaciones de base de datos
+   - JsonResponse para respuestas estructuradas
+   
+   Documentación en código:
+   - Clase: Comentario PHPDoc con listado de endpoints (30+ líneas)
+   - Cada método: PHPDoc completo con @Route, @param, @return
+   - Ejemplos de request/response en comentarios
+   - Explicación de códigos HTTP para cada caso
+   - Notas educativas sobre autenticación toggle
+   - Total: 253 líneas de comentarios profesionales
+   
+   Decisiones de diseño:
+   - POST sin autenticación: Facilita pruebas educativas
+   - DELETE sin autenticación: Facilita pruebas educativas
+   - PUT con autenticación: Demuestra implementación de seguridad
+   - Comentarios: Para producción, descomentar denyAccessUnlessGranted
+   - Serialización manual: Evita circular reference de Doctrine
+   - Actualización parcial en PUT: Mejor UX (PATCH-like behavior)
+
+2. ARCHIVO: README.md (ACTUALIZADO - +316 LÍNEAS)
+   
+   Nueva sección: "🚀 API REST para Productos (v1.23.0)"
+   
+   Contenido agregado:
+   
+   a) Tabla de endpoints:
+      - Listado de 5 endpoints con método HTTP
+      - URL completa de cada endpoint
+      - Descripción breve de funcionalidad
+      - Estado de autenticación (requerida/no requerida)
+   
+   b) Ejemplos de uso - Opción 1: cURL (Terminal)
+      - GET listar todos: curl http://localhost:8000/api/producto
+      - GET uno específico: curl http://localhost:8000/api/producto/1
+      - POST crear: curl -X POST con JSON body
+      - PUT actualizar: curl -X PUT con JSON body
+      - DELETE eliminar: curl -X DELETE
+      
+      Cada ejemplo incluye:
+      - Comando completo copiable
+      - Headers necesarios (Content-Type)
+      - Body JSON cuando aplica
+   
+   c) Ejemplos de uso - Opción 2: Postman/Thunder Client
+      - Instrucciones paso a paso
+      - Instalación de Thunder Client (extensión VS Code)
+      - Configuración de método, URL, headers, body
+      - Guía para enviar petición
+   
+   d) Ejemplos de uso - Opción 3: JavaScript Fetch
+      - Código JS para listar productos
+      - Código JS para crear producto
+      - Uso de fetch() API
+      - Manejo de promesas con .then()
+      - JSON.stringify() para body
+   
+   e) Respuestas JSON completas:
+      - Ejemplo de GET lista (200 OK)
+      - Ejemplo de GET uno (200 OK)
+      - Ejemplo de POST éxito (201 Created)
+      - Ejemplo de POST error JSON inválido (400)
+      - Ejemplo de POST error campos faltantes (400)
+      - Ejemplo de POST error categoría no existe (404)
+      - Ejemplo de PUT éxito (200 OK)
+      - Ejemplo de DELETE éxito (200 OK)
+      - Ejemplo de 404 Not Found
+   
+   f) Documentación técnica:
+      - Controlador: src/Controller/ProductoApiController.php
+      - Características implementadas (11 checkmarks)
+      - Códigos de estado HTTP documentados
+      - Notas de seguridad y autenticación
+      - Estructura JSON de objetos anidados
+   
+   g) Roadmap actualizado:
+      - "API REST con endpoints JSON" marcado como ✅ Completado en v1.23.0
+      - Checkmark visual para mejor UX
+      - Versión específica mencionada
+   
+   Total agregado: 316 líneas de documentación profesional
+
+CONCEPTOS APRENDIDOS:
+
+1. API RESTful en Symfony:
+   - Diseño de endpoints con verbos HTTP (GET, POST, PUT, DELETE)
+   - Route con prefijo /api para separar API de web tradicional
+   - JsonResponse para respuestas estructuradas
+   - Códigos HTTP apropiados (200, 201, 400, 404, 401)
+
+2. Manejo de JSON:
+   - json_decode($request->getContent(), true) para parsear request body
+   - JsonResponse automáticamente hace json_encode()
+   - Serialización manual para evitar circular reference
+   - Estructura de respuestas con "mensaje" y datos
+
+3. Validación de datos:
+   - isset() para verificar campos requeridos
+   - Validación de JSON válido con json_decode()
+   - Verificación de existencia de relaciones (categoria)
+   - Manejo de errores con mensajes descriptivos
+
+4. Códigos de estado HTTP:
+   - 200 OK: Operación exitosa (GET, PUT, DELETE)
+   - 201 Created: Recurso creado (POST)
+   - 400 Bad Request: Datos inválidos
+   - 404 Not Found: Recurso no existe
+   - 401 Unauthorized: No autenticado
+   - Response::HTTP_CREATED vs números mágicos
+
+5. Doctrine y Serialización:
+   - Circular reference: Error cuando Producto → Usuario → Productos
+   - Solución: Conversión manual a arrays
+   - ParamConverter: Carga automática de entidades desde parámetros
+   - persist() y flush() para operaciones de escritura
+
+6. Seguridad en APIs:
+   - denyAccessUnlessGranted() para control de acceso
+   - Autenticación con sesiones (cookies)
+   - Comentar/descomentar para toggle rápido
+   - Diferencia entre auth en POST/DELETE (testing) vs PUT (demo)
+
+7. Buenas prácticas:
+   - Actualización parcial en PUT (solo campos enviados)
+   - Mensajes de error descriptivos
+   - Comentarios profesionales extensos (253 líneas)
+   - Documentación con ejemplos reales
+   - Separación API/Web con prefijos de ruta
+
+COMANDOS EJECUTADOS:
+
+# Crear y commitear controlador API con comentarios
+git add src/Controller/ProductoApiController.php
+git commit -m "feat: Implementar API REST para productos con comentarios profesionales
+
+- Crear ProductoApiController con 5 endpoints JSON
+- GET /api/producto: Listar todos los productos
+- GET /api/producto/{id}: Obtener producto específico
+- POST /api/producto: Crear nuevo producto
+- PUT /api/producto/{id}: Actualizar producto
+- DELETE /api/producto/{id}: Eliminar producto
+- Validación exhaustiva con códigos HTTP apropiados
+- Serialización manual para evitar referencias circulares
+- 253 líneas de comentarios profesionales con ejemplos
+- Autenticación opcional para facilitar pruebas educativas"
+
+# Actualizar README con documentación API
+git add README.md
+git commit -m "docs: Agregar documentación completa de API REST en README
+
+- Añadir sección 'API REST para Productos' con 5 endpoints
+- Incluir ejemplos de uso con cURL, Postman y Fetch
+- Documentar códigos HTTP y respuestas JSON
+- Agregar guía de pruebas para desarrolladores
+- Actualizar roadmap: API REST completado en v1.23.0
+- 316 líneas de documentación profesional"
+
+# Subir cambios a GitHub
+git push origin main
+
+# Crear y subir tag de versión v1.23.0
+git tag -a v1.23.0 -m "Versión 1.23.0 - API REST para Productos
+
+Implementación completa de API REST con 5 endpoints JSON:
+
+Endpoints:
+- GET /api/producto → Listar todos los productos
+- GET /api/producto/{id} → Obtener producto específico  
+- POST /api/producto → Crear nuevo producto
+- PUT /api/producto/{id} → Actualizar producto existente
+- DELETE /api/producto/{id} → Eliminar producto
+
+Características:
+✅ Respuestas JSON estructuradas
+✅ Códigos HTTP apropiados (200, 201, 400, 404)
+✅ Validación exhaustiva de datos
+✅ Manejo de errores con mensajes descriptivos
+✅ Serialización manual para evitar referencias circulares
+✅ Actualización parcial (PATCH-like con PUT)
+✅ Comentarios profesionales en el código (253 líneas)
+✅ ParamConverter automático para objetos
+✅ Inyección de dependencias
+✅ Separación de responsabilidades
+
+Archivos modificados:
+- src/Controller/ProductoApiController.php (nuevo, 439 líneas)
+- README.md (actualizado con 316 líneas de documentación API)
+
+Documentación:
+- Ejemplos con cURL, Postman y JavaScript Fetch
+- Guía de pruebas para desarrolladores
+- Códigos de estado HTTP documentados
+- Estructura JSON de request/response
+- Notas de seguridad y autenticación"
+
+git push origin v1.23.0
+
+RESULTADO OBTENIDO:
+✅ API REST completa funcionando en http://localhost:8000/api/producto
+✅ 5 endpoints probados exitosamente
+✅ Documentación profesional en código (253 líneas)
+✅ Documentación profesional en README (316 líneas)
+✅ Ejemplos de uso con 3 herramientas (cURL, Postman, Fetch)
+✅ Respuestas JSON estructuradas y consistentes
+✅ Códigos HTTP apropiados para cada caso
+✅ Validación exhaustiva de datos
+✅ Manejo de errores descriptivos
+✅ Serialización manual sin referencias circulares
+✅ Autenticación opcional para pruebas educativas
+✅ Versión v1.23.0 publicada en GitHub
+
+PRÓXIMOS PASOS SUGERIDOS:
+- Implementar autenticación JWT para APIs modernas
+- Crear API para Usuario (CRUD completo)
+- Agregar paginación a GET /api/producto
+- Implementar filtros de búsqueda en API
+- Agregar validación con Symfony Validator en API
+- Documentar API con Swagger/OpenAPI
+- Crear tests unitarios para endpoints
+- Implementar rate limiting para seguridad
+- Agregar CORS headers para frontend externo
+- Crear versionado de API (/api/v1/producto)
+
+COMMITS RELACIONADOS:
+- 6181936: feat: Implementar API REST para productos con comentarios profesionales
+- ec09c88: docs: Agregar documentación completa de API REST en README
+- Tag v1.23.0: Versión completa con API REST
+
+================================================================================
 VERSIÓN v1.22.0 - DOCUMENTACIÓN COMPLETA Y REORGANIZACIÓN DE ARCHIVOS
 Fecha: 13 de noviembre de 2025, 10:30 PM
 ================================================================================
