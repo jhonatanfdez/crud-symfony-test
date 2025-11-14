@@ -11,6 +11,192 @@ Database: MySQL (crud_symfony)
 Frontend: Bootstrap 5.3.8 + Bootstrap Icons 1.11.3
 
 ================================================================================
+VERSIÓN v1.20.0 - CONTROL DE ACCESO ROLE_ADMIN PARA CATEGORÍAS
+Fecha: 13 de noviembre de 2025, 9:30 PM
+================================================================================
+
+OBJETIVO:
+Implementar un sistema de roles para que solo los usuarios con ROLE_ADMIN
+puedan crear, editar y eliminar categorías. Los usuarios con ROLE_USER solo
+pueden visualizar.
+
+PROBLEMA A RESOLVER:
+- Cualquier usuario autenticado podía crear/editar/eliminar categorías
+- No había control de permisos diferenciado
+- Necesidad de demostrar el uso de roles en Symfony
+
+IMPLEMENTACIÓN REALIZADA:
+
+1. CONTROLADOR: src/Controller/CategoriaController.php
+   
+   Método new():
+   - Agregado control: if (!$this->isGranted('ROLE_ADMIN'))
+   - Mensaje flash: 'Usted no tiene privilegios para esta acción'
+   - Redirección automática a app_categoria_index
+   
+   Método edit():
+   - Agregado control: if (!$this->isGranted('ROLE_ADMIN'))
+   - Mensaje flash: 'Usted no tiene privilegios para esta acción'
+   - Redirección automática a app_categoria_index
+   
+   Método delete():
+   - Agregado control: if (!$this->isGranted('ROLE_ADMIN'))
+   - Mensaje flash: 'Usted no tiene privilegios para esta acción'
+   - Redirección automática a app_categoria_index
+
+2. TEMPLATES - Ocultar botones para usuarios sin ROLE_ADMIN:
+   
+   templates/categoria/index.html.twig:
+   - Botón "Nueva Categoría": Envuelto en {% if is_granted('ROLE_ADMIN') %}
+   - Botones "Editar" y "Eliminar" en tabla: Envueltos en {% if is_granted('ROLE_ADMIN') %}
+   - Botón "Ver" siempre visible para todos los usuarios
+   
+   templates/categoria/show.html.twig:
+   - Botones "Editar" y "Eliminar": Envueltos en {% if is_granted('ROLE_ADMIN') %}
+   - Botón "Volver al listado" siempre visible
+
+3. DOCUMENTACIÓN CREADA:
+   
+   archivos_adicionales/ASIGNAR_ROL_ADMIN.md (NUEVO):
+   - Guía completa de asignación de roles
+   - 3 métodos diferentes:
+     * Método 1: Usando consola de Symfony (Recomendado)
+     * Método 2: Usando phpMyAdmin o MySQL Workbench
+     * Método 3: Usando terminal de MySQL
+   - Sección de verificación paso a paso
+   - Solución de problemas comunes
+   - Explicación técnica de is_granted()
+   - Ejemplos SQL completos
+   - Formato correcto del campo JSON roles
+
+FUNCIONALIDAD POR ROL:
+
+ROLE_USER (Usuario Normal):
+✅ Ver categorías (index, show)
+✅ Ver productos
+✅ Crear productos
+✅ Editar productos
+✅ Eliminar productos
+❌ Crear categorías
+❌ Editar categorías
+❌ Eliminar categorías
+
+ROLE_ADMIN (Administrador):
+✅ TODAS las acciones de ROLE_USER +
+✅ Crear categorías
+✅ Editar categorías
+✅ Eliminar categorías
+
+SEGURIDAD IMPLEMENTADA:
+
+1. Validación en Controlador:
+   - Control antes de procesar formularios
+   - Mensaje flash informativo
+   - Redirección automática
+
+2. Validación en Vista (Twig):
+   - Botones ocultos según permisos
+   - Previene intentos de acceso directo por URL
+   - Mejor experiencia de usuario
+
+3. Protección Doble:
+   - Backend: Controlador valida el acceso
+   - Frontend: Templates ocultan opciones no permitidas
+
+CÓMO ASIGNAR ROLE_ADMIN:
+
+Comando rápido (Symfony CLI):
+```bash
+php bin/console doctrine:query:sql "UPDATE user SET roles = '[\"ROLE_ADMIN\"]' WHERE email = 'admin@test.com'"
+```
+
+SQL directo:
+```sql
+UPDATE user SET roles = '["ROLE_ADMIN"]' WHERE email = 'admin@test.com';
+```
+
+IMPORTANTE: Cerrar sesión y volver a iniciar sesión para que los cambios surtan efecto.
+
+ARCHIVOS MODIFICADOS:
+- src/Controller/CategoriaController.php (3 métodos actualizados)
+- templates/categoria/index.html.twig (2 secciones)
+- templates/categoria/show.html.twig (1 sección)
+
+ARCHIVOS CREADOS:
+- archivos_adicionales/ASIGNAR_ROL_ADMIN.md (162 líneas)
+
+ESTADÍSTICAS:
+- Líneas añadidas: 324 insertions
+- Archivos modificados: 4
+- Archivos nuevos: 1
+- Controles de acceso: 3 (new, edit, delete)
+- Secciones Twig protegidas: 4
+
+PRUEBAS SUGERIDAS:
+
+1. Con usuario ROLE_USER:
+   - Acceder a /categoria → ✅ Funciona
+   - NO ver botón "Nueva Categoría" → ✅
+   - NO ver botones "Editar" y "Eliminar" → ✅
+   - Intentar acceder a /categoria/new por URL → Mensaje flash + redirección
+
+2. Con usuario ROLE_ADMIN:
+   - Acceder a /categoria → ✅ Funciona
+   - Ver botón "Nueva Categoría" → ✅
+   - Ver botones "Editar" y "Eliminar" → ✅
+   - Crear nueva categoría → ✅ Funciona
+   - Editar categoría existente → ✅ Funciona
+   - Eliminar categoría → ✅ Funciona
+
+BENEFICIOS:
+✅ Control granular de permisos
+✅ Seguridad mejorada
+✅ Mejor experiencia de usuario
+✅ Código reutilizable para otros módulos
+✅ Documentación completa para asignación de roles
+✅ Mensajes informativos claros
+✅ Doble validación (backend + frontend)
+
+COMPATIBILIDAD:
+- Symfony 7.1.* ✅
+- PHP 8.3.27 ✅
+- Bootstrap 5.3.8 ✅
+- MySQL ✅
+
+PRÓXIMOS PASOS SUGERIDOS:
+1. Implementar el mismo control en ProductoController
+2. Crear comando personalizado para asignar roles
+3. Implementar página de gestión de usuarios
+4. Agregar más roles (ROLE_EDITOR, ROLE_MODERATOR)
+5. Implementar Voters para lógica de permisos más compleja
+
+COMMIT: fc0eecc
+TAG: v1.20.0
+PUSH: ✅ Exitoso a origin/main
+
+MENSAJE DEL COMMIT:
+"v1.20.0: Control de acceso ROLE_ADMIN para Categorías
+
+Implementación:
+- Control de acceso en CategoriaController (new, edit, delete)
+- Verificación isGranted('ROLE_ADMIN') con mensaje flash
+- Redirección a index si usuario no tiene privilegios
+- Ocultar botones (Nueva, Editar, Eliminar) para usuarios sin ROLE_ADMIN
+- Templates actualizados: index, show con is_granted()
+
+Documentación:
+- Creado ASIGNAR_ROL_ADMIN.md con 3 métodos
+- Guía completa de asignación de roles
+- Troubleshooting y ejemplos SQL
+- Explicación técnica de is_granted()
+
+Archivos modificados:
+- src/Controller/CategoriaController.php
+- templates/categoria/index.html.twig
+- templates/categoria/show.html.twig
+- archivos_adicionales/ASIGNAR_ROL_ADMIN.md (nuevo)"
+
+================================================================================
 VERSIÓN v1.19.0 - REESTRUCTURACIÓN DEL REPOSITORIO GIT
 Fecha: 13 de noviembre de 2025, 9:10 PM
 ================================================================================

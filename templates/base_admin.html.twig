@@ -323,6 +323,35 @@
            con su contenido específico
         #}
         <main class="content-wrapper">
+            {# ====================================================================
+               MENSAJES FLASH - Notificaciones de acciones realizadas
+               ====================================================================
+               Tipos de mensajes:
+               - success: Operaciones exitosas (verde)
+               - error: Errores o permisos denegados (rojo)
+               - warning: Advertencias (amarillo)
+               - info: Información general (azul)
+            #}
+            <div class="container mt-4">
+                {% for type, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                            {% if type == 'success' %}
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                            {% elseif type == 'error' %}
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            {% elseif type == 'warning' %}
+                                <i class="bi bi-exclamation-circle-fill me-2"></i>
+                            {% elseif type == 'info' %}
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                            {% endif %}
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            
             {% block body %}{% endblock %}
         </main>
 

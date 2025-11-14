@@ -83,6 +83,9 @@ final class CategoriaController extends AbstractController
             // Ejecutar la inserción en la base de datos
             $entityManager->flush();
 
+            // Mensaje flash de éxito
+            $this->addFlash('success', 'La categoría ha sido creada exitosamente');
+
             // Redirigir al listado de categorías con código HTTP 303 (See Other)
             return $this->redirectToRoute('app_categoria_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -145,6 +148,9 @@ final class CategoriaController extends AbstractController
             // No es necesario persist() porque Doctrine ya está "rastreando" esta entidad
             $entityManager->flush();
 
+            // Mensaje flash de éxito
+            $this->addFlash('success', 'La categoría ha sido actualizada exitosamente');
+
             // Redirigir al listado de categorías
             return $this->redirectToRoute('app_categoria_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -185,6 +191,9 @@ final class CategoriaController extends AbstractController
             
             // Ejecutar la eliminación en la base de datos
             $entityManager->flush();
+
+            // Mensaje flash de éxito
+            $this->addFlash('success', 'La categoría ha sido eliminada exitosamente');
         }
 
         // Redirigir al listado de categorías (se elimine o no)

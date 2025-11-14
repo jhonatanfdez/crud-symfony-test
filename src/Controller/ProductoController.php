@@ -84,6 +84,9 @@ final class ProductoController extends AbstractController
             // Ejecutar la inserción en la base de datos
             $entityManager->flush();
 
+            // Mensaje flash de éxito
+            $this->addFlash('success', 'El producto ha sido creado exitosamente');
+
             // Redirigir al listado de productos
             return $this->redirectToRoute('app_producto_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -159,6 +162,9 @@ final class ProductoController extends AbstractController
             // No necesitamos persist() porque el producto ya existe
             $entityManager->flush();
 
+            // Mensaje flash de éxito
+            $this->addFlash('success', 'El producto ha sido actualizado exitosamente');
+
             // Redirigir al listado de productos
             return $this->redirectToRoute('app_producto_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -196,6 +202,9 @@ final class ProductoController extends AbstractController
             
             // Ejecutar la eliminación en la base de datos
             $entityManager->flush();
+
+            // Mensaje flash de éxito
+            $this->addFlash('success', 'El producto ha sido eliminado exitosamente');
         }
 
         // Redirigir al listado de productos (se elimine o no)
