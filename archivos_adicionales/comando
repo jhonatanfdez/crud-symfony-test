@@ -1,4 +1,322 @@
-CPCV REG ACT
+================================================================================
+COMANDOS Y ACRÓNIMOS - PROYECTO CRUD SYMFONY
+================================================================================
+
+CPCV REG ACT - Flujo completo de publicación de cambios
+================================================================================
+
+Significado del acrónimo:
+- C   = Commit (hacer commit de los cambios)
+- P   = Push (subir cambios a GitHub)
+- C   = Cambio de Versión (crear tag anotado)
+- V   = (parte de "Cambio de Versión")
+- REG = Registro de actividades (actualizar registro_actividades.txt)
+- ACT = Actualización (completar el ciclo con push final)
+
+Pasos del flujo CPCV REG ACT:
+1. Commit: git add -A && git commit -m "mensaje descriptivo"
+2. Push: git push origin main
+3. Cambio de Versión: git tag -a vX.Y.Z -m "descripción de la versión"
+4. Push del tag: git push origin vX.Y.Z
+5. Registro: Actualizar archivos_adicionales/registro_actividades.txt
+6. Actualización final: commit + push del registro actualizado
+
+Ejemplo completo:
+```bash
+# Paso 1: Commit de cambios
+git add -A
+git commit -m "feat: Implementar nueva funcionalidad"
+
+# Paso 2: Push
+git push origin main
+
+# Paso 3: Crear tag
+git tag -a v1.22.0 -m "Versión 1.22.0 - Nueva funcionalidad"
+
+# Paso 4: Push del tag
+git push origin v1.22.0
+
+# Paso 5: Actualizar registro_actividades.txt (editar archivo manualmente)
+
+# Paso 6: Commit y push final
+git add archivos_adicionales/registro_actividades.txt
+git commit -m "docs: Actualización registro_actividades.txt v1.22.0"
+git push origin main
+```
+
+================================================================================
+HISTORIAL DE VERSIONES
+================================================================================
+
+v1.22.0 - 13/nov/2025, 10:30 PM - Documentación Completa y Reorganización
+- README.md profesional completo estilo AquaPanel (650 líneas)
+- FORMULARIOS_GUIA.md movido a archivos_adicionales/
+- Comparativa Symfony vs otros frameworks
+- Roadmap educativo completo
+
+v1.21.0 - 13/nov/2025, 10:00 PM - Sistema de Mensajes Flash
+- 6 mensajes flash implementados (categorías y productos)
+- Sistema de visualización con colores (verde, rojo, amarillo, azul)
+- Iconos de Bootstrap Icons
+- Alertas dismissibles
+
+v1.20.0 - 13/nov/2025, 9:30 PM - Control de Acceso ROLE_ADMIN
+- Solo ROLE_ADMIN puede crear/editar/eliminar categorías
+- Validación en controlador y templates
+- ASIGNAR_ROL_ADMIN.md con 3 métodos de asignación
+
+v1.19.0 - 13/nov/2025, 9:00 PM - Reestructuración del Repositorio
+- Movido .git de /test1/ a /test1/crud-symfony/
+- 90 archivos reorganizados
+- GitHub sin carpeta extra
+
+v1.18.0 - Buscador de Productos
+- Búsqueda por nombre con QueryBuilder
+- Formulario GET con parámetro search
+
+v1.17.0 - Mensajes Flash en Productos
+- Flash messages para crear/editar/eliminar productos
+
+v1.16.0 - Validación de Errores en Formularios
+- Sistema completo de validación @Assert
+- Prevención de errores 500
+
+v1.15.0 - Bootstrap y Twig Form Theme
+- Configuración global de Bootstrap en formularios
+- form_themes: ['bootstrap_5_layout.html.twig']
+
+v1.14.0 - Protección de Rutas con Autenticación
+- #[IsGranted('IS_AUTHENTICATED_FULLY')]
+- Redirección automática al login
+
+================================================================================
+COMANDOS ÚTILES DE GIT
+================================================================================
+
+Ver estado actual:
+```bash
+git status
+```
+
+Ver historial de commits:
+```bash
+git log --oneline -10
+```
+
+Ver tags existentes:
+```bash
+git tag -l
+```
+
+Ver detalles de un tag:
+```bash
+git show v1.22.0
+```
+
+Ver diferencias antes de commit:
+```bash
+git diff
+```
+
+Ver archivos modificados:
+```bash
+git diff --name-only
+```
+
+Deshacer cambios no commiteados:
+```bash
+git restore archivo.php
+```
+
+Ver rama actual:
+```bash
+git branch
+```
+
+================================================================================
+COMANDOS SYMFONY ÚTILES
+================================================================================
+
+Crear entidad:
+```bash
+symfony console make:entity NombreEntidad
+```
+
+Crear migración:
+```bash
+symfony console make:migration
+```
+
+Ejecutar migraciones:
+```bash
+symfony console doctrine:migrations:migrate
+```
+
+Crear CRUD:
+```bash
+symfony console make:crud NombreEntidad
+```
+
+Crear formulario:
+```bash
+symfony console make:form NombreTipo
+```
+
+Limpiar caché:
+```bash
+symfony console cache:clear
+```
+
+Ver rutas:
+```bash
+symfony console debug:router
+```
+
+Crear usuario (si existe comando personalizado):
+```bash
+symfony console app:create-admin
+```
+
+Ejecutar consulta SQL:
+```bash
+symfony console doctrine:query:sql "UPDATE user SET roles = '[\"ROLE_ADMIN\"]' WHERE email = 'admin@test.com'"
+```
+
+Iniciar servidor:
+```bash
+symfony serve -d
+```
+
+Detener servidor:
+```bash
+symfony server:stop
+```
+
+Ver logs del servidor:
+```bash
+symfony server:log
+```
+
+================================================================================
+ESTRUCTURA DE COMMITS (Conventional Commits)
+================================================================================
+
+Tipos de commits:
+- feat:     Nueva funcionalidad
+- fix:      Corrección de errores
+- refactor: Refactorización de código
+- docs:     Cambios en documentación
+- style:    Cambios de formato (no afectan lógica)
+- test:     Añadir o modificar tests
+- chore:    Tareas de mantenimiento
+
+Ejemplos:
+```bash
+git commit -m "feat: Implementar buscador de productos"
+git commit -m "fix: Corregir validación de precio en ProductoType"
+git commit -m "docs: Actualizar README con instrucciones de instalación"
+git commit -m "refactor: Mejorar lógica de ProductoController"
+git commit -m "chore: Actualizar dependencias de Composer"
+```
+
+================================================================================
+VERSIONADO SEMVER
+================================================================================
+
+Formato: vMAJOR.MINOR.PATCH
+
+MAJOR (X.0.0): Cambios incompatibles con versiones anteriores
+MINOR (0.X.0): Nueva funcionalidad compatible con versiones anteriores
+PATCH (0.0.X): Correcciones de errores compatibles
+
+Ejemplos de este proyecto:
+- v1.22.0: Nueva funcionalidad (README completo) → MINOR
+- v1.21.0: Nueva funcionalidad (mensajes flash) → MINOR
+- v1.20.0: Nueva funcionalidad (roles) → MINOR
+
+Si se corrigiera un error en mensajes flash:
+- v1.21.1 → PATCH
+
+================================================================================
+ASIGNACIÓN DE ROLE_ADMIN
+================================================================================
+
+Opción 1 - Comando Symfony:
+```bash
+php bin/console doctrine:query:sql "UPDATE user SET roles = '[\"ROLE_ADMIN\"]' WHERE email = 'admin@test.com'"
+```
+
+Opción 2 - MySQL directo:
+```sql
+UPDATE user SET roles = '["ROLE_ADMIN"]' WHERE email = 'admin@test.com';
+```
+
+Opción 3 - phpMyAdmin:
+1. Ir a tabla `user`
+2. Editar registro del usuario
+3. Campo `roles`: `["ROLE_ADMIN"]`
+4. Guardar
+
+IMPORTANTE: Cerrar sesión y volver a iniciar para que los cambios surtan efecto.
+
+Verificar roles de un usuario:
+```sql
+SELECT email, roles FROM user WHERE email = 'admin@test.com';
+```
+
+================================================================================
+BÚSQUEDA Y FILTROS
+================================================================================
+
+Buscar en archivos del proyecto:
+```bash
+grep -r "texto_a_buscar" src/
+```
+
+Buscar solo en controladores:
+```bash
+grep -r "addFlash" src/Controller/
+```
+
+Buscar en templates:
+```bash
+grep -r "is_granted" templates/
+```
+
+Ver archivos modificados recientemente:
+```bash
+ls -lt src/Controller/
+```
+
+================================================================================
+NOTAS IMPORTANTES
+================================================================================
+
+1. SIEMPRE validar en el servidor (no solo HTML5)
+2. Usar CSRF protection en formularios de eliminación
+3. Hashear passwords con PasswordHasher
+4. Verificar permisos con isGranted() antes de acciones sensibles
+5. Usar mensajes flash para feedback al usuario
+6. Documentar cambios en registro_actividades.txt
+7. Seguir Conventional Commits para mensajes
+8. Crear tags anotados con descripciones detalladas
+9. Mantener README.md actualizado
+10. Organizar documentación en archivos_adicionales/
+
+================================================================================
+RECURSOS ADICIONALES EN archivos_adicionales/
+================================================================================
+
+- ASIGNAR_ROL_ADMIN.md: Guía completa de asignación de roles (162 líneas)
+- FORMULARIOS_GUIA.md: Guía completa de formularios Symfony (666 líneas)
+- contexto.txt: Plan educativo del proyecto
+- registro_actividades.txt: Changelog detallado de todas las versiones
+- comando: Este archivo con comandos y acrónimos
+
+================================================================================
+FIN DEL ARCHIVO
+================================================================================
+
 
 
 
