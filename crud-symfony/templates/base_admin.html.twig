@@ -1,21 +1,54 @@
+{# ============================================================================
+   PLANTILLA BASE PARA PANEL DE ADMINISTRACIÓN (Páginas Autenticadas)
+   ============================================================================
+   
+   Esta plantilla se usa para TODAS las páginas que requieren autenticación:
+   - Dashboard (/home)
+   - Listado de Categorías (/categoria)
+   - Listado de Productos (/producto)
+   - Formularios de creación y edición
+   - Vistas de detalles (show)
+   
+   Características:
+   - Navbar superior con menú de navegación
+   - Footer con información de copyright
+   - Bootstrap 5.3.8 + Bootstrap Icons 1.11.3
+   - Estilos personalizados con gradientes
+   - Responsive design (móvil, tablet, desktop)
+   - Animaciones suaves (fadeInUp)
+   - Scrollbar personalizado
+   
+   Las páginas públicas (login/register) usan base.html.twig
+#}
 <!DOCTYPE html>
 <html lang="es">
     <head>
+        {# Meta tags básicos #}
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        {# Título dinámico de la página #}
         <title>{% block title %}Panel Admin{% endblock %} - CRUD Symfony</title>
         
-        <!-- Favicon -->
+        {# Favicon - Icono de rayo (⚡) #}
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚡</text></svg>">
         
-        <!-- Bootstrap 5.3.8 -->
+        {# ========================================================================
+           BOOTSTRAP 5.3.8 - Framework CSS
+           ======================================================================== #}
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
         
-        <!-- Bootstrap Icons -->
+        {# ========================================================================
+           BOOTSTRAP ICONS 1.11.3 - Iconos vectoriales
+           Más de 2000 iconos disponibles
+           ======================================================================== #}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
         {% block stylesheets %}
         <style>
+            /* ====================================================================
+               VARIABLES CSS - Gradientes reutilizables
+               ==================================================================== */
             :root {
                 --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
@@ -23,14 +56,21 @@
                 --gradient-warning: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             }
             
+            /* ====================================================================
+               ESTILOS GLOBALES
+               ==================================================================== */
             body {
+                /* Fondo con gradiente suave gris */
                 background: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
                 min-height: 100vh;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             }
             
-            /* Navbar Personalizado */
+            /* ====================================================================
+               NAVBAR PERSONALIZADO
+               ==================================================================== */
             .navbar-custom {
+                /* Gradiente púrpura/azul en el navbar */
                 background: var(--gradient-primary);
                 box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             }
@@ -50,18 +90,22 @@
                 margin: 0 0.2rem;
             }
             
+            /* Hover en links del navbar */
             .navbar-custom .nav-link:hover {
                 background: rgba(255,255,255,0.2);
                 color: #fff !important;
                 transform: translateY(-2px);
             }
             
+            /* Link activo (página actual) */
             .navbar-custom .nav-link.active {
                 background: rgba(255,255,255,0.3);
                 color: #fff !important;
             }
             
-            /* Dropdown Menu Mejorado */
+            /* ====================================================================
+               DROPDOWN MENU MEJORADO
+               ==================================================================== */
             .dropdown-menu {
                 border: none;
                 box-shadow: 0 8px 25px rgba(0,0,0,0.15);
@@ -75,6 +119,7 @@
                 transition: all 0.2s ease;
             }
             
+            /* Hover en items del dropdown */
             .dropdown-item:hover {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 color: white;
@@ -85,7 +130,9 @@
                 margin: 0.5rem 0;
             }
             
-            /* Footer */
+            /* ====================================================================
+               FOOTER PERSONALIZADO
+               ==================================================================== */
             .footer-custom {
                 background: #2d3748;
                 color: #cbd5e0;
@@ -103,7 +150,9 @@
                 color: #63b3ed;
             }
             
-            /* Animaciones */
+            /* ====================================================================
+               ANIMACIONES - Efecto de entrada suave
+               ==================================================================== */
             @keyframes fadeInUp {
                 from {
                     opacity: 0;
@@ -115,11 +164,14 @@
                 }
             }
             
+            /* Aplicar animación al contenido principal */
             .content-wrapper {
                 animation: fadeInUp 0.6s ease;
             }
             
-            /* Scrollbar personalizado */
+            /* ====================================================================
+               SCROLLBAR PERSONALIZADO - Navegadores basados en Chromium
+               ==================================================================== */
             ::-webkit-scrollbar {
                 width: 10px;
             }
@@ -128,6 +180,7 @@
                 background: #f1f1f1;
             }
             
+            /* Barra de scroll con gradiente */
             ::-webkit-scrollbar-thumb {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 border-radius: 10px;
@@ -139,41 +192,54 @@
         </style>
         {% endblock %}
 
+        {# ========================================================================
+           JAVASCRIPT - Importación de módulos
+           ======================================================================== #}
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
     <body>
-        <!-- Navbar Superior -->
+        {# ====================================================================
+           NAVBAR SUPERIOR - Barra de navegación principal
+           ==================================================================== 
+           - sticky-top: Se queda fija al hacer scroll
+           - navbar-expand-lg: Se colapsa en pantallas pequeñas
+           - navbar-dark: Texto blanco para fondos oscuros
+        #}
         <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
             <div class="container-fluid">
-                <!-- Logo/Brand -->
+                {# Logo/Brand - Link al inicio #}
                 <a class="navbar-brand" href="{{ path('app_home') }}">
                     <i class="bi bi-lightning-charge-fill text-warning"></i>
                     CRUD Symfony
                 </a>
                 
-                <!-- Toggle Button para móvil -->
+                {# Toggle Button - Aparece solo en móvil para abrir/cerrar menú #}
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 
-                <!-- Menu Items -->
+                {# Menu Items - Se colapsa en móvil, se expande en desktop #}
                 <div class="collapse navbar-collapse" id="navbarMain">
-                    <!-- Menú Principal -->
+                    {# Menú Principal - Lado izquierdo del navbar #}
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        {# Link a Dashboard/Inicio #}
                         <li class="nav-item">
+                            {# Clase 'active' si la ruta actual empieza con 'app_home' #}
                             <a class="nav-link {{ app.request.get('_route') starts with 'app_home' ? 'active' : '' }}" 
                                href="{{ path('app_home') }}">
                                 <i class="bi bi-house-door-fill"></i> Inicio
                             </a>
                         </li>
+                        {# Link a Categorías #}
                         <li class="nav-item">
                             <a class="nav-link {{ app.request.get('_route') starts with 'app_categoria' ? 'active' : '' }}" 
                                href="{{ path('app_categoria_index') }}">
                                 <i class="bi bi-folder-fill"></i> Categorías
                             </a>
                         </li>
+                        {# Link a Productos #}
                         <li class="nav-item">
                             <a class="nav-link {{ app.request.get('_route') starts with 'app_producto' ? 'active' : '' }}" 
                                href="{{ path('app_producto_index') }}">
@@ -182,9 +248,16 @@
                         </li>
                     </ul>
                     
-                    <!-- Usuario y Logout -->
+                    {# ================================================================
+                       DROPDOWN DE USUARIO - Lado derecho del navbar
+                       ================================================================
+                       Muestra:
+                       - Icono de usuario con email (parte antes del @)
+                       - Menú desplegable con perfil, roles, configuración, logout
+                    #}
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
+                            {# Botón del dropdown con nombre de usuario #}
                             <a class="nav-link dropdown-toggle d-flex align-items-center" 
                                href="#" 
                                role="button" 
@@ -192,19 +265,24 @@
                                 <i class="bi bi-person-circle me-2" style="font-size: 1.5rem;"></i>
                                 <div class="d-flex flex-column align-items-start">
                                     <small style="font-size: 0.75rem; opacity: 0.8;">Bienvenido</small>
+                                    {# Muestra solo la parte antes del @ del email #}
                                     <span style="font-size: 0.9rem;">{{ app.user.email|split('@')[0] }}</span>
                                 </div>
                             </a>
+                            {# Menú desplegable #}
                             <ul class="dropdown-menu dropdown-menu-end">
+                                {# Encabezado con email completo #}
                                 <li>
                                     <h6 class="dropdown-header">
                                         <i class="bi bi-person-badge"></i> {{ app.user.email }}
                                     </h6>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
+                                {# Mostrar rol del usuario #}
                                 <li>
                                     <span class="dropdown-item-text">
                                         <i class="bi bi-shield-check"></i> Rol: 
+                                        {# Verificar si tiene rol de admin #}
                                         {% if 'ROLE_ADMIN' in app.user.roles %}
                                             <span class="badge bg-warning text-dark">Administrador</span>
                                         {% else %}
@@ -213,6 +291,7 @@
                                     </span>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
+                                {# Links de perfil y configuración (placeholder, sin implementar) #}
                                 <li>
                                     <a class="dropdown-item" href="#">
                                         <i class="bi bi-person"></i> Mi Perfil
@@ -224,6 +303,7 @@
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
+                                {# Cerrar sesión - Usa la ruta app_logout del security.yaml #}
                                 <li>
                                     <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
                                         <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
@@ -236,15 +316,24 @@
             </div>
         </nav>
 
-        <!-- Contenido Principal -->
+        {# ====================================================================
+           CONTENIDO PRINCIPAL
+           ==================================================================== 
+           Cada página (index, show, new, edit) sobrescribe este bloque
+           con su contenido específico
+        #}
         <main class="content-wrapper">
             {% block body %}{% endblock %}
         </main>
 
-        <!-- Footer -->
+        {# ====================================================================
+           FOOTER - Pie de página con información
+           ==================================================================== 
+        #}
         <footer class="footer-custom mt-5">
             <div class="container">
                 <div class="row">
+                    {# Columna 1: Información del sistema #}
                     <div class="col-md-6 mb-3 mb-md-0">
                         <h5 class="fw-bold">
                             <i class="bi bi-lightning-charge-fill text-warning"></i> CRUD Symfony
@@ -256,6 +345,7 @@
                             <i class="bi bi-database"></i> Doctrine ORM
                         </p>
                     </div>
+                    {# Columna 2: Enlaces rápidos #}
                     <div class="col-md-3 mb-3 mb-md-0">
                         <h6 class="fw-bold">Enlaces Rápidos</h6>
                         <ul class="list-unstyled">
@@ -263,15 +353,18 @@
                             <li><a href="{{ path('app_producto_index') }}"><i class="bi bi-box-seam"></i> Productos</a></li>
                         </ul>
                     </div>
+                    {# Columna 3: Información de fecha/hora #}
                     <div class="col-md-3">
                         <h6 class="fw-bold">Información</h6>
                         <ul class="list-unstyled">
+                            {# Filtro 'date' de Twig para formatear fechas #}
                             <li><i class="bi bi-calendar"></i> {{ "now"|date("Y") }}</li>
                             <li><i class="bi bi-clock"></i> {{ "now"|date("H:i") }}</li>
                         </ul>
                     </div>
                 </div>
                 <hr class="my-3" style="border-color: rgba(255,255,255,0.1);">
+                {# Copyright #}
                 <div class="text-center">
                     <p class="small mb-0">
                         © {{ "now"|date("Y") }} CRUD Symfony. Desarrollado con 
@@ -282,10 +375,19 @@
             </div>
         </footer>
 
-        <!-- Bootstrap Bundle JS -->
+        {# ====================================================================
+           BOOTSTRAP BUNDLE JS
+           ==================================================================== 
+           Incluye Popper.js para dropdowns, tooltips, modals
+        #}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
         
-        <!-- Script para marcar link activo -->
+        {# ====================================================================
+           SCRIPT PERSONALIZADO - Scroll suave
+           ==================================================================== 
+           Cuando se hace clic en un link con hash (#section),
+           hace scroll suave en lugar de saltar bruscamente
+        #}
         <script>
             // Animación suave al scroll
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {

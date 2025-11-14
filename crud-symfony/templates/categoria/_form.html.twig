@@ -1,3 +1,28 @@
+{# ============================================================================
+   FORMULARIO PARCIAL DE CATEGORÍA - Reutilizable para new y edit
+   ============================================================================
+   
+   Este template parcial se incluye desde:
+   - categoria/new.html.twig (crear nueva categoría)
+   - categoria/edit.html.twig (editar categoría existente)
+   
+   Parámetros recibidos:
+   - {{ form }}: Objeto FormView generado por CategoriaType
+   - {{ button_label }}: Texto del botón ("Crear Categoría" o "Actualizar")
+   - {{ button_class }}: Clases CSS del botón ("btn btn-primary" o "btn btn-success")
+   
+   Funciones Twig usadas:
+   - form_start(form): Genera <form method="post" ...> con CSRF token automático
+   - form_widget(form): Renderiza todos los campos del formulario con Bootstrap
+   - form_end(form): Cierra el tag </form>
+   
+   Campos generados automáticamente por CategoriaType:
+   - nombre: TextType (se renderiza como <input type="text" class="form-control">)
+   
+   Bootstrap:
+   Los campos usan automáticamente las clases de Bootstrap 5 gracias a:
+   config/packages/twig.yaml -> form_themes: ['bootstrap_5_layout.html.twig']
+#}
 {{ form_start(form) }}
     {{ form_widget(form) }}
     <button class="{{ button_class|default('btn btn-primary') }}">

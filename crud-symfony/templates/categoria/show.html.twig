@@ -1,3 +1,26 @@
+{# ============================================================================
+   DETALLES DE CATEGORÍA - Vista de información completa
+   ============================================================================
+   
+   Ruta: /categoria/{id}
+   Controlador: CategoriaController::show()
+   Método HTTP: GET
+   Requiere: Autenticación
+   
+   Funcionalidades:
+   - Muestra detalles completos de una categoría específica
+   - Campos mostrados: ID, Nombre
+   - Botones de acción: Volver, Editar, Eliminar
+   - Tabla responsive con diseño Bootstrap
+   - Iconos de Bootstrap Icons
+   
+   Variables recibidas:
+   - {{ categorium }}: Entidad Categoria con los datos a mostrar
+   
+   Nota:
+   El nombre de la variable es 'categorium' (en lugar de 'categoria')
+   porque el maker de Symfony usa la forma singular en latín.
+#}
 {% extends 'base_admin.html.twig' %}
 
 {% block title %}Categoría - {{ categorium.nombre }}{% endblock %}

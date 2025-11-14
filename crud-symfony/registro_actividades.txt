@@ -1,0 +1,315 @@
+================================================================================
+REGISTRO DE ACTIVIDADES - PROYECTO CRUD SYMFONY
+================================================================================
+
+Proyecto: CRUD Symfony con Autenticación
+Autor: Jhonatan Fernandez (jhonatanfdez)
+Repositorio: https://github.com/jhonatanfdez/crud-symfony-test
+Framework: Symfony 7.1.*
+PHP: 8.3.27
+Database: MySQL (crud_symfony)
+Frontend: Bootstrap 5.3.8 + Bootstrap Icons 1.11.3
+
+================================================================================
+VERSIÓN v1.18.0 - DOCUMENTACIÓN EXHAUSTIVA
+Fecha: 13 de noviembre de 2025
+================================================================================
+
+OBJETIVO:
+Agregar comentarios exhaustivos y profesionales a TODOS los archivos del proyecto
+para facilitar el aprendizaje y mantenimiento del código.
+
+ARCHIVOS DOCUMENTADOS:
+
+1. CONTROLADORES (3 archivos):
+   - src/Controller/CategoriaController.php
+     * PHPDoc en todos los métodos (index, new, show, edit, delete)
+     * Comentarios inline explicando EntityManager, flush(), persist()
+     * Documentación de parámetros de formularios
+     * Explicación de tokens CSRF
+
+   - src/Controller/ProductoController.php
+     * PHPDoc completo en 5 métodos CRUD
+     * Comentarios sobre denyAccessUnlessGranted()
+     * Explicación de asignación automática de usuario
+     * Parámetros del formulario documentados (show_user, is_edit)
+
+   - src/Controller/HomeController.php
+     * Documentación de métodos index() y root()
+     * Explicación del cálculo de estadísticas
+     * Comentarios sobre redirección basada en autenticación
+
+2. ENTIDADES (3 archivos):
+   - src/Entity/Categoria.php
+     * PHPDoc en propiedades y métodos
+     * Documentación de relaciones OneToMany
+     * Explicación de ArrayCollection
+     * Comentarios sobre sincronización bidireccional
+
+   - src/Entity/Producto.php
+     * PHPDoc extenso en todas las propiedades
+     * Documentación del callback @PrePersist
+     * Explicación de DECIMAL(10,2) para precio
+     * Comentarios sobre relaciones ManyToOne
+
+   - src/Entity/User.php
+     * ~280 líneas de documentación añadidas
+     * Interfaces UserInterface y PasswordAuthenticatedUserInterface explicadas
+     * Métodos getUserIdentifier(), getRoles(), eraseCredentials() documentados
+     * Explicación del hash de contraseñas
+     * ROLE_USER por defecto documentado
+
+3. FORMULARIOS (2 archivos):
+   - src/Form/CategoriaType.php
+     * PHPDoc en buildForm() y configureOptions()
+     * Explicación de auto-detección de tipos
+     * Comentarios sobre data_class
+
+   - src/Form/ProductoType.php
+     * Ya tenía documentación extensa de v1.17.0
+     * Detalles sobre TextType, NumberType, EntityType
+     * Explicación de constraints, help, label_attr
+
+4. REPOSITORIOS (2 archivos):
+   - src/Repository/CategoriaRepository.php
+     * PHPDoc en constructor y findByNombre()
+     * Explicación de QueryBuilder
+     * Documentación del patrón LIKE para búsquedas
+
+   - src/Repository/ProductoRepository.php
+     * Documentación idéntica a CategoriaRepository
+     * Métodos heredados de ServiceEntityRepository explicados
+
+5. ARCHIVOS DE CONFIGURACIÓN (2 archivos):
+   - config/routes.yaml
+     * Comentarios YAML explicando routing por atributos
+     * Ejemplo de RedirectController
+     * Documentación de parámetros de ruta
+
+   - config/packages/twig.yaml
+     * Explicación de form_themes (bootstrap_5_layout.html.twig)
+     * Documentación de strict_variables
+     * file_name_pattern explicado
+
+6. TEMPLATES BASE (2 archivos):
+   - templates/base.html.twig
+     * ~60 líneas de comentarios Twig
+     * Explicación de bloques, Bootstrap CDN, favicon
+     * Propósito: páginas públicas (login, register)
+     * Gradiente de fondo documentado
+
+   - templates/base_admin.html.twig
+     * ~150 líneas de comentarios Twig añadidos
+     * Propósito: páginas autenticadas
+     * Documentación de navbar, dropdown, footer
+     * Explicación de variables CSS (gradientes)
+     * Comentarios sobre animaciones fadeInUp
+     * Scrollbar personalizado documentado
+
+7. TEMPLATES HOME (1 archivo):
+   - templates/home/index.html.twig
+     * Comentario de encabezado explicando dashboard
+     * Muestra estadísticas y enlaces rápidos
+     * Características documentadas
+
+8. TEMPLATES CATEGORÍA (6 archivos):
+   - templates/categoria/index.html.twig
+     * Comentario explicando búsqueda y listado
+     * Variables {{ categorias }} y {{ searchTerm }} documentadas
+
+   - templates/categoria/new.html.twig
+     * Comentarios sobre creación de categorías
+     * Parámetros button_label y button_class explicados
+
+   - templates/categoria/edit.html.twig
+     * Documentación de formulario de edición
+     * Variables {{ categorium }} explicadas
+
+   - templates/categoria/show.html.twig
+     * Comentarios sobre vista de detalles
+     * Nota sobre el nombre 'categorium'
+
+   - templates/categoria/_form.html.twig
+     * ~35 líneas de comentarios
+     * form_start(), form_widget(), form_end() explicados
+     * Bootstrap automático documentado
+
+   - templates/categoria/_delete_form.html.twig
+     * ~25 líneas de comentarios
+     * CSRF token explicado
+     * Flujo de eliminación documentado paso a paso
+
+9. TEMPLATES PRODUCTO (6 archivos):
+   - templates/producto/index.html.twig
+     * Similar a categoria/index con detalles de producto
+     * Formato de precio y fecha documentados
+
+   - templates/producto/new.html.twig
+     * Comentarios sobre asignación automática de usuario
+     * Callback @PrePersist mencionado
+
+   - templates/producto/edit.html.twig
+     * Parámetros show_user e is_edit explicados
+
+   - templates/producto/show.html.twig
+     * Relaciones ManyToOne documentadas
+     * Filtro number_format() explicado
+
+   - templates/producto/_form.html.twig
+     * ~40 líneas de documentación
+     * Referencia a FORMULARIOS_GUIA.md
+     * Campos avanzados documentados
+
+   - templates/producto/_delete_form.html.twig
+     * Seguridad (CSRF, autenticación) documentada
+     * Proceso de eliminación paso a paso
+
+10. TEMPLATES SEGURIDAD (2 archivos):
+    - templates/security/login.html.twig
+      * ~45 líneas de comentarios añadidos
+      * Variables {{ error }}, {{ last_username }} explicadas
+      * Proceso de autenticación documentado
+      * Diseño y características detalladas
+
+    - templates/registration/register.html.twig
+      * ~50 líneas de documentación
+      * RegistrationFormType y validaciones explicadas
+      * UserPasswordHasher documentado
+      * Proceso completo de registro paso a paso
+      * Seguridad (hash, CSRF, UniqueEntity) documentada
+
+TOTAL DE ARCHIVOS COMENTADOS: 29 archivos
+
+ESTADÍSTICAS:
+- PHPDoc blocks añadidos: ~100
+- Comentarios inline: ~300
+- Comentarios Twig: ~400
+- Líneas de documentación agregadas: ~1500+
+
+ESTILO DE COMENTARIOS:
+- Idioma: Español (para audiencia hispanohablante)
+- PHPDoc: @param, @return, descripciones detalladas
+- Inline: Explicaciones de lógica de negocio y características de Symfony
+- Twig: {# #} con propósito, variables, funcionalidades, características
+
+BENEFICIOS:
+✅ Código autodocumentado y fácil de entender
+✅ Facilita el aprendizaje de Symfony para principiantes
+✅ Mejora el mantenimiento a largo plazo
+✅ Proporciona ejemplos de buenas prácticas
+✅ Documenta decisiones de diseño
+✅ Explica características avanzadas (CSRF, validaciones, relaciones)
+
+ARCHIVOS NO MODIFICADOS:
+- src/Form/CategoriaSelectType.php (ya tenía documentación completa de v1.17.0)
+- FORMULARIOS_GUIA.md (guía de 600+ líneas, sin cambios)
+
+COMPATIBILIDAD:
+- Symfony 7.1.* ✅
+- PHP 8.3.27 ✅
+- Bootstrap 5.3.8 ✅
+- Sin errores de sintaxis ✅
+
+PRÓXIMOS PASOS SUGERIDOS:
+1. Crear tests unitarios y funcionales
+2. Agregar paginación en listados
+3. Implementar sistema de roles avanzado (ROLE_ADMIN)
+4. Agregar validaciones personalizadas
+5. Implementar búsqueda avanzada con filtros
+
+================================================================================
+VERSIÓN v1.17.0 - MEJORA DE FORMULARIOS
+Fecha: 13 de noviembre de 2025, 8:35 PM
+================================================================================
+
+OBJETIVO:
+Demostrar TODAS las propiedades y opciones disponibles en formularios Symfony
+para propósitos educativos.
+
+CAMBIOS REALIZADOS:
+
+1. src/Form/ProductoType.php (MEJORADO):
+   - Campo 'nombre': TextType con label, label_attr, attr, placeholder, help, help_attr, constraints
+   - Campo 'precio': NumberType con scale, html5, attr (step, min), constraints (Positive, LessThanOrEqual)
+   - Campo 'categoria': EntityType con configuración completa
+   - Campo 'fecha': DateType con widget='single_text', label_attr, help_attr
+   - Campo 'user': EntityType con configuración condicional (show_user)
+   - configureOptions: setAllowedTypes para validar tipos de opciones
+
+2. src/Form/CategoriaSelectType.php (NUEVO):
+   - Custom field type reutilizable
+   - Extiende AbstractType
+   - getParent() retorna EntityType
+   - Query builder personalizado con orderBy
+   - PHPDoc completo
+   - Bootstrap 5 classes
+
+3. FORMULARIOS_GUIA.md (NUEVO):
+   - Guía completa de 600+ líneas
+   - 10 secciones detalladas
+   - Tipos de campos (10+)
+   - Opciones comunes (10+)
+   - Validaciones (8+)
+   - Integración con Bootstrap
+   - Ejemplos prácticos
+
+ARCHIVOS MODIFICADOS:
+- src/Form/ProductoType.php (130 líneas, +80)
+- src/Form/CategoriaSelectType.php (NUEVO, 48 líneas)
+- FORMULARIOS_GUIA.md (NUEVO, 600+ líneas)
+- ProductoController.php (parámetros show_user, is_edit)
+
+LÍNEAS AÑADIDAS: ~1304 insertions
+
+COMMIT: 700cf1f
+TAG: v1.17.0
+PUSH: ✅ Exitoso a origin/main
+
+================================================================================
+VERSIÓN v1.16.0 - REDISEÑO LOGIN Y REGISTRO
+Fecha: 13 de noviembre de 2025, 8:12 PM
+================================================================================
+
+OBJETIVO:
+Modernizar las vistas de login y registro con un diseño más estético usando
+Bootstrap 5 y gradientes.
+
+CAMBIOS REALIZADOS:
+
+1. templates/base.html.twig (MEJORADO):
+   - Fondo con gradiente: linear-gradient(135deg, #667eea 0%, #764ba2 100%)
+   - min-height: 100vh para pantalla completa
+   - Sin navbar ni footer (diseño minimalista para páginas públicas)
+   - Bootstrap 5.3.8 desde CDN
+   - Bootstrap Icons 1.11.3
+
+2. templates/security/login.html.twig (REDISEÑADO):
+   - Card centrado vertical y horizontalmente
+   - Icono bi-person-circle grande (4rem)
+   - Placeholders en campos (tu@email.com, ********)
+   - Botón con gradiente y efecto hover
+   - Alert dismissible para errores
+   - Link a registro con diseño mejorado
+   - Footer con copyright dentro del card
+
+3. templates/registration/register.html.twig (REDISEÑADO):
+   - Diseño consistente con login.html.twig
+   - Icono bi-person-plus-fill
+   - Card con padding amplio (p-5)
+   - Campos con iconos (envelope, lock, check-circle)
+   - Mensajes de error por campo
+   - Link a login para usuarios existentes
+
+ARCHIVOS MODIFICADOS:
+- templates/base.html.twig
+- templates/security/login.html.twig (~120 líneas)
+- templates/registration/register.html.twig (~110 líneas)
+- templates/base_admin.html.twig (sin cambios, ya existía)
+
+LÍNEAS AÑADIDAS: ~380 insertions
+
+COMMIT: 962c4c2
+TAG: v1.16.0
+PUSH: ✅ Exitoso a origin/main
+
+================================================================================

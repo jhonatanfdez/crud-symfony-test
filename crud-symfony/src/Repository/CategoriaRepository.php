@@ -7,10 +7,30 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Repositorio de la entidad Categoría
+ * 
+ * Esta clase maneja todas las consultas personalizadas a la base de datos
+ * relacionadas con la entidad Categoria.
+ * 
+ * Extiende ServiceEntityRepository que proporciona métodos básicos como:
+ * - find($id) - Buscar por ID
+ * - findAll() - Obtener todos los registros
+ * - findBy(['campo' => 'valor']) - Buscar por criterios
+ * - findOneBy(['campo' => 'valor']) - Buscar un solo registro
+ * 
  * @extends ServiceEntityRepository<Categoria>
+ * @package App\Repository
  */
 class CategoriaRepository extends ServiceEntityRepository
 {
+    /**
+     * Constructor del repositorio
+     * 
+     * Registra este repositorio para trabajar con la entidad Categoria.
+     * Symfony lo inyecta automáticamente donde sea necesario.
+     * 
+     * @param ManagerRegistry $registry - Registro de gestores de entidades de Doctrine
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Categoria::class);

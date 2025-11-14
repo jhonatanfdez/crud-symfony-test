@@ -1,3 +1,28 @@
+{# ============================================================================
+   EDITAR PRODUCTO - Formulario de edición
+   ============================================================================
+   
+   Ruta: /producto/{id}/edit
+   Controlador: ProductoController::edit()
+   Método HTTP: GET (mostrar formulario), POST (procesar actualización)
+   Requiere: Autenticación (IS_AUTHENTICATED)
+   
+   Funcionalidades:
+   - Formulario precargado con datos existentes del producto
+   - Campo 'usuario' visible en modo edición (show_user=true)
+   - Validación automática (NotBlank, Positive, etc.)
+   - Redirección a /producto después de actualizar
+   - Mensaje flash de éxito
+   - Botón eliminar (con confirmación modal)
+   - Botón volver al listado
+   
+   Variables recibidas:
+   - {{ producto }}: Entidad Producto a editar
+   
+   Incluye:
+   - producto/_form.html.twig con parámetros is_edit y show_user
+   - producto/_delete_form.html.twig (botón de eliminación con CSRF)
+#}
 {% extends 'base_admin.html.twig' %}
 
 {% block title %}Editar Producto - {{ producto.nombre }}{% endblock %}

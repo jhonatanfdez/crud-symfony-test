@@ -1,3 +1,44 @@
+{# ============================================================================
+   LOGIN - Página de inicio de sesión
+   ============================================================================
+   
+   Ruta: /login
+   Controlador: SecurityController::login()
+   Método HTTP: GET (mostrar formulario), POST (procesar login)
+   Acceso: Público (no requiere autenticación)
+   
+   Diseño:
+   - Usa base.html.twig (sin navbar, fondo con gradiente)
+   - Card centrado verticalmente (min-height: 100vh)
+   - Gradiente púrpura/azul de fondo
+   - Bootstrap 5.3.8 + Bootstrap Icons
+   - Responsive design
+   
+   Funcionalidades:
+   - Formulario con campos: Email y Password
+   - Checkbox "Recuérdame" (cookie de 30 días)
+   - Mensajes de error automáticos si credenciales incorrectas
+   - Link a página de registro
+   - Icono de usuario grande (bi-person-circle)
+   
+   Características:
+   - Placeholders en campos
+   - Autofocus en campo email
+   - Autocomplete habilitado
+   - Botón con gradiente y efecto hover
+   - Alert dismissible para errores
+   
+   Variables Twig:
+   - {{ error }}: Objeto con error.messageKey si login falló
+   - {{ last_username }}: Último email ingresado (persistencia)
+   - {{ csrf_token('authenticate') }}: Token CSRF para seguridad
+   
+   Proceso:
+   1. Usuario ingresa email y password
+   2. Symfony valida credenciales (security.yaml)
+   3. Si éxito: Redirige a /home (dashboard)
+   4. Si falla: Recarga /login con mensaje de error
+#}
 {% extends 'base.html.twig' %}
 
 {% block title %}Iniciar Sesión{% endblock %}

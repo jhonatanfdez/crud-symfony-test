@@ -1,1 +1,5 @@
 CPCV REG ACT
+
+
+
+ahora vamos a implementar una sola cosa mas que solo el rol ADMIN pueda crear y editar nuevos productos, quiero enseñarle a las personas que comando deben usar para que se desaparezca la opción de crear una nueva categoria, y tambien validar en en el controlador de la categoria si un usuario de rol USER esta accediendo a la funcion, que lo redireccione al index de la categoria y le muestre un mensaje flash que diga usted no tiene privilegios para esta acción. 

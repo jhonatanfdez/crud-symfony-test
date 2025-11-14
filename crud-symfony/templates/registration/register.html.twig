@@ -1,3 +1,47 @@
+{# ============================================================================
+   REGISTRO - Página de creación de cuenta
+   ============================================================================
+   
+   Ruta: /register
+   Controlador: RegistrationController::register()
+   Método HTTP: GET (mostrar formulario), POST (procesar registro)
+   Acceso: Público (no requiere autenticación)
+   
+   Diseño:
+   - Usa base.html.twig (sin navbar, fondo con gradiente)
+   - Card centrado con padding superior/inferior
+   - Gradiente púrpura/azul consistente con login
+   - Bootstrap 5.3.8 + Bootstrap Icons
+   - Responsive design (col-md-6 col-lg-5)
+   
+   Funcionalidades:
+   - Formulario de registro generado por RegistrationFormType
+   - Campos: Email, Password, Checkbox "Acepto términos"
+   - Validación automática: NotBlank, Email, Length, PasswordStrength
+   - Hash automático de contraseña (UserPasswordHasher)
+   - Asignación de ROLE_USER automática
+   - Mensajes de error por campo
+   - Link a página de login para usuarios existentes
+   - Icono bi-person-plus-fill
+   
+   Variables Twig:
+   - {{ registrationForm }}: FormView con campos email, plainPassword, agreeTerms
+   - {{ registrationForm.vars.errors }}: Errores generales del formulario
+   - {{ form_errors(campo) }}: Errores específicos de cada campo
+   
+   Proceso:
+   1. Usuario completa formulario (email, password, acepta términos)
+   2. Symfony valida datos (RegistrationFormType + Assert annotations)
+   3. Si válido: Crea usuario, hashea password, persiste en DB
+   4. Loguea automáticamente con UserAuthenticator
+   5. Redirige a /home (dashboard)
+   6. Si inválido: Muestra errores en formulario
+   
+   Seguridad:
+   - Password hasheado con algoritmo 'auto' (bcrypt/argon2)
+   - CSRF token automático en form_start()
+   - Validación de email único (UniqueEntity en User.php)
+#}
 {% extends 'base.html.twig' %}
 
 {% block title %}Registro{% endblock %}

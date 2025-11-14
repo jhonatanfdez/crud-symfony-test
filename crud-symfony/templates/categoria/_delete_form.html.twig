@@ -1,3 +1,31 @@
+{# ============================================================================
+   FORMULARIO DE ELIMINACIÓN DE CATEGORÍA
+   ============================================================================
+   
+   Este formulario se incluye desde:
+   - categoria/edit.html.twig (dentro del card de edición)
+   - categoria/show.html.twig (en la sección de botones)
+   
+   Variables requeridas:
+   - {{ categorium }}: Entidad Categoria a eliminar
+   - {{ categorium.id }}: ID usado en la ruta y el CSRF token
+   
+   Seguridad:
+   - Método: POST (no GET para prevenir eliminación accidental)
+   - CSRF Token: 'delete' ~ categorium.id (protección contra ataques CSRF)
+   - Confirmación JavaScript: onsubmit="return confirm(...)"
+   
+   Ruta de acción:
+   - app_categoria_delete -> /categoria/{id}
+   - Método DELETE en el controlador
+   
+   Flujo:
+   1. Usuario hace clic en "Eliminar"
+   2. JavaScript muestra confirmación nativa del navegador
+   3. Si confirma, envía POST a /categoria/{id}
+   4. Controlador verifica CSRF token
+   5. Elimina categoría y redirige a index
+#}
 <form method="post" 
       action="{{ path('app_categoria_delete', {'id': categorium.id}) }}" 
       style="display:inline;"

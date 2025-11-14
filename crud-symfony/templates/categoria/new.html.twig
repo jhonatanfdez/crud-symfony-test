@@ -1,3 +1,23 @@
+{# ============================================================================
+   NUEVA CATEGORÍA - Formulario de creación
+   ============================================================================
+   
+   Ruta: /categoria/new
+   Controlador: CategoriaController::new()
+   Método HTTP: GET (mostrar formulario), POST (procesar creación)
+   Requiere: Autenticación
+   
+   Funcionalidades:
+   - Formulario para crear nueva categoría
+   - Validación automática (NotBlank, Length)
+   - Redirección a /categoria después de crear
+   - Mensaje flash de éxito
+   - Botón volver al listado
+   
+   Incluye:
+   - categoria/_form.html.twig (formulario reutilizable)
+   - button_label y button_class pasados como parámetros
+#}
 {% extends 'base_admin.html.twig' %}
 
 {% block title %}Nueva Categoría{% endblock %}

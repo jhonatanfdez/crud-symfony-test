@@ -1,3 +1,34 @@
+{# ============================================================================
+   FORMULARIO PARCIAL DE PRODUCTO - Reutilizable para new y edit
+   ============================================================================
+   
+   Este template parcial se incluye desde:
+   - producto/new.html.twig (crear nuevo producto)
+   - producto/edit.html.twig (editar producto existente con is_edit=true)
+   
+   Parámetros recibidos:
+   - {{ form }}: Objeto FormView generado por ProductoType
+   - {{ button_label }}: Texto del botón ("Crear Producto" o "Actualizar")
+   - {{ button_class }}: Clases CSS del botón ("btn btn-primary" o "btn btn-success")
+   
+   Funciones Twig usadas:
+   - form_start(form): Genera <form method="post" ...> con CSRF token
+   - form_widget(form): Renderiza todos los campos automáticamente
+   - form_end(form): Cierra el formulario
+   
+   Campos generados por ProductoType:
+   - nombre: TextType con label, placeholder, help, constraints
+   - precio: NumberType con scale=2, html5, validaciones
+   - categoria: EntityType (dropdown con categorías ordenadas A-Z)
+   - fecha: DateType con widget='single_text' (input type="date")
+   - user: EntityType (solo visible en edit si show_user=true)
+   
+   Características avanzadas:
+   - Todos los campos tienen label_attr, attr, help, help_attr
+   - Validaciones: NotBlank, Length, Positive, LessThanOrEqual
+   - Bootstrap 5 aplicado automáticamente
+   - Consulta FORMULARIOS_GUIA.md para más detalles
+#}
 {{ form_start(form) }}
     {{ form_widget(form) }}
     <button class="{{ button_class|default('btn btn-primary') }}">

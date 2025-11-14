@@ -1,3 +1,27 @@
+{# ============================================================================
+   EDITAR CATEGORÍA - Formulario de edición
+   ============================================================================
+   
+   Ruta: /categoria/{id}/edit
+   Controlador: CategoriaController::edit()
+   Método HTTP: GET (mostrar formulario), POST (procesar actualización)
+   Requiere: Autenticación
+   
+   Funcionalidades:
+   - Formulario precargado con datos existentes de la categoría
+   - Validación automática (NotBlank, Length)
+   - Redirección a /categoria después de actualizar
+   - Mensaje flash de éxito
+   - Botón eliminar (con confirmación modal)
+   - Botón volver al listado
+   
+   Variables recibidas:
+   - {{ categorium }}: Entidad Categoria a editar
+   
+   Incluye:
+   - categoria/_form.html.twig (formulario reutilizable)
+   - categoria/_delete_form.html.twig (botón de eliminación)
+#}
 {% extends 'base_admin.html.twig' %}
 
 {% block title %}Editar Categoría - {{ categorium.nombre }}{% endblock %}

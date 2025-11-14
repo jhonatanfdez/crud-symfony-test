@@ -95,17 +95,42 @@ final class ProductoController extends AbstractController
         ]);
     }
 
+    /**
+     * Muestra los detalles de un producto específico
+     * 
+     * El parámetro {id} en la ruta se convierte automáticamente en un objeto Producto
+     * gracias al ParamConverter de Symfony. Si no existe, devuelve error 404.
+     * Requiere autenticación para acceder.
+     * 
+     * @param Producto $producto - El producto a mostrar (cargado automáticamente por su ID)
+     * @return Response - Respuesta HTTP con la vista de detalles
+     */
     #[Route('/{id}', name: 'app_producto_show', methods: ['GET'])]
     public function show(Producto $producto): Response
     {
         // Verificar que el usuario esté autenticado antes de ver detalles
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         
+        // Renderizar la vista de detalles pasándole el producto
         return $this->render('producto/show.html.twig', [
             'producto' => $producto,
         ]);
     }
 
+    /**
+     * Edita un producto existente
+     * 
+     * Este método maneja tanto la visualización del formulario de edición (GET)
+     * como el procesamiento de los datos modificados (POST).
+     * Muestra el campo de usuario para permitir cambiar el responsable del producto.
+     * Muestra el campo de fecha pero deshabilitado (solo lectura).
+     * Requiere autenticación para acceder.
+     * 
+     * @param Request $request - Objeto que contiene los datos del formulario
+     * @param Producto $producto - El producto a editar (cargado automáticamente)
+     * @param EntityManagerInterface $entityManager - Gestor de entidades de Doctrine
+     * @return Response - Respuesta HTTP (formulario o redirección)
+     */
     #[Route('/{id}/edit', name: 'app_producto_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Producto $producto, EntityManagerInterface $entityManager): Response
     {
@@ -113,10 +138,12 @@ final class ProductoController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         
         // Crear el formulario CON el campo user visible (show_user = true)
+        // y CON el campo fecha visible pero deshabilitado (is_edit = true)
         // Esto permite que en la edición se pueda cambiar el usuario asignado al producto
-        // El formulario automáticamente cargará el usuario actual del producto
+        // pero NO se pueda modificar la fecha de creación
         $form = $this->createForm(ProductoType::class, $producto, [
-            'show_user' => true, 'is_edit' => true   // Mostrar el campo user en edición
+            'show_user' => true,  // Mostrar el campo user en edición
+            'is_edit' => true     // Mostrar el campo fecha deshabilitado
         ]);
         
         // Procesar la petición del formulario
@@ -126,29 +153,43 @@ final class ProductoController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Como el campo user está mapeado normalmente en el formulario,
             // Symfony automáticamente actualiza el usuario del producto
-            // No necesitamos hacer nada manual aquí
+            // El campo fecha NO se actualiza porque está deshabilitado
             
             // Guardar los cambios en la base de datos
+            // No necesitamos persist() porque el producto ya existe
             $entityManager->flush();
 
             // Redirigir al listado de productos
             return $this->redirectToRoute('app_producto_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        // Mostrar el formulario de edición
+        // Si el formulario NO fue enviado o tiene errores, mostrar la vista de edición
         return $this->render('producto/edit.html.twig', [
             'producto' => $producto,
             'form' => $form,
         ]);
     }
 
+    /**
+     * Elimina un producto existente
+     * 
+     * Este método solo acepta peticiones POST para evitar eliminaciones accidentales.
+     * Incluye protección CSRF para prevenir ataques de falsificación de peticiones.
+     * Requiere autenticación para acceder.
+     * 
+     * @param Request $request - Objeto que contiene el token CSRF
+     * @param Producto $producto - El producto a eliminar (cargado automáticamente)
+     * @param EntityManagerInterface $entityManager - Gestor de entidades de Doctrine
+     * @return Response - Redirección al listado de productos
+     */
     #[Route('/{id}', name: 'app_producto_delete', methods: ['POST'])]
     public function delete(Request $request, Producto $producto, EntityManagerInterface $entityManager): Response
     {
         // Verificar que el usuario esté autenticado antes de permitir eliminar
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         
-        // Verificar el token CSRF para seguridad (previene ataques)
+        // Verificar que el token CSRF es válido para evitar ataques de falsificación
+        // El token debe coincidir con el generado en el formulario de eliminación
         if ($this->isCsrfTokenValid('delete'.$producto->getId(), $request->getPayload()->getString('_token'))) {
             // Marcar el producto para eliminación
             $entityManager->remove($producto);
@@ -157,7 +198,7 @@ final class ProductoController extends AbstractController
             $entityManager->flush();
         }
 
-        // Redirigir al listado de productos
+        // Redirigir al listado de productos (se elimine o no)
         return $this->redirectToRoute('app_producto_index', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -1,3 +1,27 @@
+{# ============================================================================
+   LISTADO DE CATEGORÍAS - Vista principal del módulo Categorías
+   ============================================================================
+   
+   Ruta: /categoria
+   Controlador: CategoriaController::index()
+   Requiere: Autenticación
+   
+   Funcionalidades:
+   - Búsqueda en tiempo real por nombre de categoría
+   - Tabla responsive con todas las categorías
+   - Botón "Nueva Categoría" (va a /categoria/new)
+   - Acciones: Ver detalles, Editar, Eliminar
+   - Mensaje si no hay categorías o no hay resultados de búsqueda
+   
+   Variables recibidas del controlador:
+   - {{ categorias }}: Array de entidades Categoria
+   - {{ searchTerm }}: Término de búsqueda actual (puede ser null)
+   
+   Características:
+   - Persistencia del término de búsqueda en el campo
+   - Botón "Limpiar búsqueda" aparece solo si hay término activo
+   - Formulario GET (búsqueda se refleja en URL: ?search=término)
+#}
 {% extends 'base_admin.html.twig' %}
 
 {% block title %}Categorías{% endblock %}

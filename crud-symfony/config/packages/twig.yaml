@@ -1,8 +1,33 @@
+# ============================================================================
+# CONFIGURACIÓN DE TWIG - Motor de Plantillas
+# ============================================================================
+# Twig es el motor de plantillas de Symfony para generar HTML.
+# Este archivo configura cómo Twig procesa las vistas.
+
 twig:
+    # ========================================================================
+    # PATRÓN DE ARCHIVOS
+    # ========================================================================
+    # Solo los archivos con extensión .twig serán procesados por Twig
     file_name_pattern: '*.twig'
+    
+    # ========================================================================
+    # TEMAS DE FORMULARIOS
+    # ========================================================================
+    # Define el tema visual para los formularios generados automáticamente.
+    # 'bootstrap_5_layout.html.twig' hace que los formularios usen estilos
+    # de Bootstrap 5 (form-control, form-label, etc.)
     form_themes:
         - 'bootstrap_5_layout.html.twig'
 
+# ============================================================================
+# CONFIGURACIÓN PARA ENTORNO DE PRUEBAS (TEST)
+# ============================================================================
+# Esta sección solo se aplica cuando se ejecutan tests (phpunit)
 when@test:
     twig:
+        # strict_variables: true
+        # Si una variable no existe en la plantilla, Twig lanzará un error
+        # en lugar de solo mostrar un valor vacío.
+        # Esto ayuda a detectar errores en los tests.
         strict_variables: true

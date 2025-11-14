@@ -1,13 +1,44 @@
+# ============================================================================
+# CONFIGURACIÓN DE RUTAS - Symfony 7.1
+# ============================================================================
+# Este archivo define las rutas de la aplicación.
+# Symfony carga automáticamente las rutas definidas en los controladores
+# usando atributos PHP (#[Route]).
+
+# ============================================================================
+# CARGA AUTOMÁTICA DE CONTROLADORES
+# ============================================================================
+# Esta configuración le dice a Symfony que escanee todos los archivos en
+# src/Controller/ y registre las rutas definidas en los atributos #[Route]
 controllers:
     resource:
+        # Directorio donde están los controladores
         path: ../src/Controller/
+        
+        # Namespace base de los controladores
         namespace: App\Controller
+    
+    # Tipo 'attribute' significa que las rutas se definen con atributos PHP
+    # Ejemplo: #[Route('/producto', name: 'app_producto_index')]
     type: attribute
 
-# Redireccionar raíz a login
+# ============================================================================
+# RUTA PERSONALIZADA PARA /hola (EJEMPLO)
+# ============================================================================
+# Esta es una ruta personalizada que redirige /hola hacia el login.
+# Es un ejemplo de cómo definir rutas directamente en este archivo.
+# Normalmente, las rutas se definen en los controladores con atributos.
 index:
+    # Ruta que coincide: http://tu-dominio.com/hola
     path: /hola
+    
+    # Controlador especial de Symfony para redirecciones
     controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    
     defaults:
+        # Ruta a la que redirige (nombre de la ruta, no la URL)
         route: 'app_login'
+        
+        # permanent: false = Redirección temporal (código HTTP 302)
+        # permanent: true = Redirección permanente (código HTTP 301)
         permanent: false

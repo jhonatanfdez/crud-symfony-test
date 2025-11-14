@@ -1,3 +1,27 @@
+{# ============================================================================
+   DETALLES DE PRODUCTO - Vista de información completa
+   ============================================================================
+   
+   Ruta: /producto/{id}
+   Controlador: ProductoController::show()
+   Método HTTP: GET
+   Requiere: Autenticación (IS_AUTHENTICATED)
+   
+   Funcionalidades:
+   - Muestra detalles completos de un producto específico
+   - Campos mostrados: ID, Nombre, Precio, Categoría, Fecha, Usuario creador
+   - Precio formateado con 2 decimales: number_format(2, '.', ',')
+   - Fecha formateada: d/m/Y
+   - Link a la categoría asociada
+   - Botones de acción: Volver, Editar, Eliminar
+   - Tabla responsive con diseño Bootstrap
+   - Iconos y badges
+   
+   Variables recibidas:
+   - {{ producto }}: Entidad Producto con los datos a mostrar
+   - {{ producto.categoria }}: Relación ManyToOne con Categoria
+   - {{ producto.user }}: Relación ManyToOne con User
+#}
 {% extends 'base_admin.html.twig' %}
 
 {% block title %}Producto - {{ producto.nombre }}{% endblock %}

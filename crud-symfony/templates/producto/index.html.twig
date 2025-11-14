@@ -1,3 +1,30 @@
+{# ============================================================================
+   LISTADO DE PRODUCTOS - Vista principal del módulo Productos
+   ============================================================================
+   
+   Ruta: /producto
+   Controlador: ProductoController::index()
+   Requiere: Autenticación
+   
+   Funcionalidades:
+   - Búsqueda en tiempo real por nombre de producto
+   - Tabla responsive con todos los productos
+   - Botón "Nuevo Producto" (va a /producto/new)
+   - Muestra: Nombre, Categoría, Precio, Fecha, Usuario que lo creó
+   - Acciones: Ver detalles, Editar, Eliminar
+   - Mensaje si no hay productos o no hay resultados de búsqueda
+   
+   Variables recibidas del controlador:
+   - {{ productos }}: Array de entidades Producto
+   - {{ searchTerm }}: Término de búsqueda actual (puede ser null)
+   
+   Características:
+   - Persistencia del término de búsqueda en el campo
+   - Botón "Limpiar búsqueda" aparece solo si hay término activo
+   - Formulario GET (búsqueda se refleja en URL: ?search=término)
+   - Precio formateado con 2 decimales y símbolo $
+   - Fecha formateada: d/m/Y
+#}
 {% extends 'base_admin.html.twig' %}
 
 {% block title %}Productos{% endblock %}

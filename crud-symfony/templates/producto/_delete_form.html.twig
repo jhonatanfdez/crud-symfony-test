@@ -1,3 +1,33 @@
+{# ============================================================================
+   FORMULARIO DE ELIMINACIÓN DE PRODUCTO
+   ============================================================================
+   
+   Este formulario se incluye desde:
+   - producto/edit.html.twig (dentro del card de edición)
+   - producto/show.html.twig (en la sección de botones)
+   
+   Variables requeridas:
+   - {{ producto }}: Entidad Producto a eliminar
+   - {{ producto.id }}: ID usado en la ruta y el CSRF token
+   
+   Seguridad:
+   - Método: POST (no GET para evitar eliminaciones accidentales)
+   - CSRF Token: 'delete' ~ producto.id (protección contra Cross-Site Request Forgery)
+   - Confirmación JavaScript: onsubmit="return confirm(...)"
+   - Autenticación: Controlador verifica IS_AUTHENTICATED con denyAccessUnlessGranted()
+   
+   Ruta de acción:
+   - app_producto_delete -> /producto/{id}
+   - Método DELETE en el controlador
+   
+   Flujo:
+   1. Usuario hace clic en botón "Eliminar"
+   2. JavaScript muestra diálogo de confirmación del navegador
+   3. Si el usuario confirma, envía POST con CSRF token
+   4. Controlador valida token con isCsrfTokenValid()
+   5. Elimina producto de la base de datos
+   6. Redirige a /producto con mensaje flash
+#}
 <form method="post" action="{{ path('app_producto_delete', {'id': producto.id}) }}" onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ producto.id) }}">
     <button class="btn btn-danger">

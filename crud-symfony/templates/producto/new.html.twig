@@ -1,3 +1,30 @@
+{# ============================================================================
+   NUEVO PRODUCTO - Formulario de creación
+   ============================================================================
+   
+   Ruta: /producto/new
+   Controlador: ProductoController::new()
+   Método HTTP: GET (mostrar formulario), POST (procesar creación)
+   Requiere: Autenticación (IS_AUTHENTICATED)
+   
+   Funcionalidades:
+   - Formulario completo con todas las propiedades de ProductoType
+   - Usuario autenticado asignado automáticamente al producto
+   - Validación: NotBlank, Length, Positive, LessThanOrEqual
+   - Fecha actual asignada automáticamente (PrePersist)
+   - Redirección a /producto después de crear
+   - Mensaje flash de éxito
+   - Botón volver al listado
+   
+   Campos del formulario:
+   - Nombre (TextType, 3-255 caracteres)
+   - Precio (NumberType, decimal 2 posiciones, > 0)
+   - Categoría (EntityType, dropdown con categorías)
+   - Fecha (DateType, widget=single_text)
+   
+   Incluye:
+   - producto/_form.html.twig (formulario reutilizable)
+#}
 {% extends 'base_admin.html.twig' %}
 
 {% block title %}Nuevo Producto{% endblock %}

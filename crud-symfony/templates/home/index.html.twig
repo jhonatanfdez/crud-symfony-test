@@ -1,3 +1,25 @@
+{# ============================================================================
+   DASHBOARD / INICIO - Vista principal del panel de administración
+   ============================================================================
+   
+   Ruta: /home
+   Controlador: HomeController::index()
+   Requiere: Autenticación (IS_AUTHENTICATED)
+   
+   Muestra:
+   - Sección hero con bienvenida
+   - Estadísticas: Total de categorías y productos
+   - Cards con enlaces rápidos a Categorías y Productos
+   - Información del stack tecnológico (Symfony, Bootstrap, Doctrine)
+   - Últimos productos creados (tabla responsive)
+   
+   Características:
+   - Diseño con gradientes y animaciones
+   - Cards con hover effects
+   - Stats cards con números grandes
+   - Responsive design (Bootstrap Grid)
+   - Iconos de Bootstrap Icons
+#}
 {% extends 'base_admin.html.twig' %}
 
 {% block title %}Dashboard{% endblock %}
