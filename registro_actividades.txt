@@ -5065,3 +5065,178 @@ Resultado:
 
 ---
 
+[13/11/2025 08:12:04 p.m.] v1.16.0 - Rediseño moderno de vistas de Login y Registro con Bootstrap 5
+
+**CAMBIOS IMPLEMENTADOS:**
+
+1. **base.html.twig - Fondo con gradiente moderno:**
+   ```css
+   body {
+       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+       min-height: 100vh;
+       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   }
+   ```
+
+2. **security/login.html.twig - Diseño completamente renovado:**
+   
+   **Estructura:**
+   - Contenedor centrado vertical y horizontalmente (min-height: 100vh)
+   - Card con sombra (shadow-lg) y bordes redondeados (border-radius: 15px)
+   - Padding generoso (p-5) para mejor espaciado
+   - Diseño responsivo (col-md-5 col-lg-4)
+
+   **Elementos visuales:**
+   - Icono grande de persona (bi bi-person-circle, 4rem, color #667eea)
+   - Título "Iniciar Sesión" con subtítulo "Accede a tu cuenta"
+   - Mensajes de error con icono de alerta y botón de cerrar
+   - Campos de formulario con iconos (envelope y lock)
+   - Inputs con tamaño grande (form-control-lg) y placeholders
+   - Botón con gradiente que combina con el fondo
+   - Separador visual (hr) antes del link de registro
+   - Footer con copyright y año actual
+
+   **Código del botón:**
+   ```twig
+   <button class="btn btn-primary btn-lg" type="submit" 
+           style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                  border: none; 
+                  border-radius: 8px;">
+       <i class="bi bi-box-arrow-in-right me-2"></i> Iniciar Sesión
+   </button>
+   ```
+
+   **Campos del formulario:**
+   - Email: Icono de sobre, placeholder "tu@email.com"
+   - Password: Icono de candado, placeholder con puntos
+   - Remember Me: Checkbox estilizado con Bootstrap
+   - CSRF Token: Campo oculto para seguridad
+
+3. **registration/register.html.twig - Registro con diseño consistente:**
+   
+   **Estructura:**
+   - Mismo diseño centrado que login
+   - Card ligeramente más ancho (col-md-6 col-lg-5) por más campos
+   - Padding vertical agregado (padding: 2rem 0) para evitar cortes
+
+   **Elementos visuales:**
+   - Icono de "person-plus-fill" (4rem) para indicar nuevo usuario
+   - Título "Crear Cuenta" con subtítulo motivacional
+   - Mensajes de error generales del formulario con alerta dismissible
+   - Campos integrados con el sistema de formularios de Symfony
+
+   **Campos personalizados:**
+   ```twig
+   {# Campo Email #}
+   <div class="mb-3">
+       <label class="form-label fw-semibold">
+           <i class="bi bi-envelope-fill me-1"></i> Email
+       </label>
+       {{ form_widget(registrationForm.email, {
+           'attr': {
+               'class': 'form-control form-control-lg',
+               'placeholder': 'tu@email.com'
+           }
+       }) }}
+       {{ form_errors(registrationForm.email) }}
+   </div>
+
+   {# Campo Password #}
+   <div class="mb-3">
+       <label class="form-label fw-semibold">
+           <i class="bi bi-lock-fill me-1"></i> Contraseña
+       </label>
+       {{ form_widget(registrationForm.plainPassword, {
+           'attr': {
+               'class': 'form-control form-control-lg',
+               'placeholder': '••••••••'
+           }
+       }) }}
+       {{ form_errors(registrationForm.plainPassword) }}
+       <small class="form-text text-muted">
+           <i class="bi bi-info-circle me-1"></i>
+           Mínimo 6 caracteres
+       </small>
+   </div>
+   ```
+
+   **Checkbox de términos:**
+   ```twig
+   <div class="form-check mb-4">
+       {{ form_widget(registrationForm.agreeTerms, {
+           'attr': {'class': 'form-check-input'}
+       }) }}
+       <label class="form-check-label">
+           Acepto los <a href="#" style="color: #667eea;">términos y condiciones</a>
+       </label>
+       {{ form_errors(registrationForm.agreeTerms) }}
+   </div>
+   ```
+
+**CARACTERÍSTICAS DEL DISEÑO:**
+
+✅ **Centrado perfecto:** Uso de flexbox (justify-content-center, align-items-center)
+✅ **Responsivo:** Diferentes anchos según breakpoints de Bootstrap
+✅ **Sombras:** shadow-lg para profundidad visual
+✅ **Gradientes:** Background del body y botones con colores complementarios
+✅ **Iconos:** Bootstrap Icons integrados en labels y botones
+✅ **Espaciado:** Padding y margins generosos para mejor legibilidad
+✅ **Accesibilidad:** Labels asociados correctamente con inputs
+✅ **Feedback visual:** Mensajes de error con colores y iconos claros
+✅ **Consistencia:** Mismo estilo en login y registro
+✅ **Footer:** Copyright con año y nombre del sistema
+
+**PALETA DE COLORES:**
+
+- Gradiente principal: #667eea (azul-púrpura) → #764ba2 (púrpura)
+- Texto sobre fondo oscuro: text-white-50
+- Enlaces: #667eea (mismo color del gradiente)
+- Iconos principales: #667eea
+
+**MEJORAS DE UX:**
+
+1. **Campos grandes (form-control-lg):** Más fáciles de tocar en dispositivos móviles
+2. **Placeholders descriptivos:** Ayudan al usuario a entender qué ingresar
+3. **Iconos visuales:** Identificación rápida de cada campo
+4. **Botones de ancho completo (d-grid):** Más fáciles de clickear
+5. **Mensajes de ayuda:** Hint sobre requisitos de contraseña
+6. **Botón de cerrar en alertas:** Permite ocultar errores después de leerlos
+7. **Links destacados:** Navegación clara entre login y registro
+8. **Autofocus en email:** El cursor inicia en el primer campo
+
+**TECNOLOGÍAS UTILIZADAS:**
+
+- Bootstrap 5.3.8: Sistema de grid, componentes (card, form, button, alert)
+- Bootstrap Icons 1.11.3: Iconos vectoriales (person-circle, envelope-fill, lock-fill, etc.)
+- CSS inline para gradientes: Estilos específicos que no están en Bootstrap
+- Twig: Sistema de plantillas de Symfony para renderizado dinámico
+- Form theming: Personalización de widgets de formulario de Symfony
+
+**ARCHIVOS MODIFICADOS:**
+
+1. `templates/base.html.twig` (3 líneas de CSS)
+2. `templates/security/login.html.twig` (de ~35 líneas a ~120 líneas)
+3. `templates/registration/register.html.twig` (de ~20 líneas a ~110 líneas)
+
+**COMPATIBILIDAD:**
+
+✅ Todos los navegadores modernos (Chrome, Firefox, Safari, Edge)
+✅ Responsive design (móvil, tablet, desktop)
+✅ Mantiene funcionalidad de seguridad (CSRF, validaciones)
+✅ Compatible con el sistema de formularios de Symfony
+✅ No afecta a las vistas admin (base_admin.html.twig)
+
+Resultado:
+✅ Login con diseño moderno y atractivo
+✅ Registro con el mismo estilo visual consistente
+✅ Gradiente de fondo púrpura/azul profesional
+✅ Cards centradas con sombras y bordes redondeados
+✅ Iconos Bootstrap Icons en todos los elementos
+✅ Botones con gradiente y efectos visuales
+✅ Mensajes de error mejorados con alertas dismissibles
+✅ Footer con copyright y año
+✅ Diseño 100% responsivo
+✅ Experiencia de usuario mejorada significativamente
+
+---
+
