@@ -11,6 +11,65 @@ Database: MySQL (crud_symfony)
 Frontend: Bootstrap 5.3.8 + Bootstrap Icons 1.11.3
 
 ================================================================================
+REORGANIZACIÓN DE ARCHIVOS - ESTRUCTURA DEL PROYECTO
+Fecha: 13 de noviembre de 2025, 9:00 PM
+================================================================================
+
+OBJETIVO:
+Organizar y centralizar archivos de documentación en una carpeta dedicada
+para mejorar la estructura del proyecto.
+
+CAMBIOS REALIZADOS:
+
+1. CREADA CARPETA: archivos_adicionales/
+   - Ubicación: crud-symfony/archivos_adicionales/
+   - Propósito: Almacenar archivos de documentación y notas del proyecto
+
+2. ARCHIVOS MOVIDOS A archivos_adicionales/:
+   - comando (desde /test1/)
+   - contexto.txt (desde /test1/)
+   - registro_actividades.txt (desde crud-symfony/)
+
+3. ARCHIVOS MOVIDOS:
+   - README.md → crud-symfony/ (raíz del proyecto)
+
+4. ARCHIVOS DUPLICADOS ELIMINADOS:
+   - /test1/registro_actividades.txt (eliminado)
+
+5. ESTRUCTURA FINAL DEL PROYECTO:
+   ```
+   test1/
+   └── crud-symfony/
+       ├── .git/                          (repositorio Git principal)
+       ├── archivos_adicionales/
+       │   ├── comando
+       │   ├── contexto.txt
+       │   └── registro_actividades.txt
+       ├── README.md                      (raíz del proyecto)
+       ├── src/
+       ├── templates/
+       ├── config/
+       ├── vendor/
+       └── ... (resto del proyecto Symfony)
+   ```
+
+BENEFICIOS:
+✅ Mejor organización del proyecto
+✅ Archivos de documentación centralizados
+✅ Estructura más limpia y profesional
+✅ Fácil acceso a notas y comandos útiles
+✅ Separación clara entre código y documentación
+
+ESTADÍSTICAS:
+- Archivos reorganizados: 5
+- Insertions: 49
+- Deletions: 5607 (debido a reorganizaciones)
+
+COMMIT: f91ec59
+MENSAJE: "Reorganización: Archivos movidos a archivos_adicionales/"
+PUSH: ✅ Exitoso a origin/main
+
+================================================================================
 ORGANIZACIÓN DE ARCHIVOS - RESTRUCTURACIÓN DEL PROYECTO
 Fecha: 13 de noviembre de 2025, 9:00 PM
 ================================================================================
