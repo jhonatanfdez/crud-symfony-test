@@ -464,6 +464,137 @@ git tag v1.0.0
 
 ---
 
+## 🌟 Extras Avanzados (Si hay tiempo)
+
+### 9.1 Mejoras en Formularios (Opcional - 3 min)
+
+**Agregar validaciones y opciones en `src/Form/ProductoType.php`:**
+```php
+use Symfony\Component\Validator\Constraints as Assert;
+
+public function buildForm(FormBuilderInterface $builder, array $options): void
+{
+    $builder
+        ->add('nombre', TextType::class, [
+            'label' => 'Nombre del Producto',
+            'attr' => [
+                'class' => 'form-control',
+                'placeholder' => 'Ej: Laptop Dell XPS 15'
+            ],
+            'help' => 'Máximo 150 caracteres',
+            'constraints' => [
+                new Assert\NotBlank(),
+                new Assert\Length(['max' => 150])
+            ]
+        ])
+        ->add('precio', NumberType::class, [
+            'label' => 'Precio',
+            'scale' => 2,
+            'attr' => [
+                'class' => 'form-control',
+                'step' => '0.01',
+                'min' => '0'
+            ],
+            'constraints' => [
+                new Assert\Positive(),
+                new Assert\LessThanOrEqual(999999)
+            ]
+        ])
+        ->add('fecha', DateType::class, [
+            'required' => false,
+            'widget' => 'single_text',
+            'label' => 'Fecha (opcional)',
+            'attr' => ['class' => 'form-control']
+        ])
+        ->add('categoria', EntityType::class, [
+            'class' => Categoria::class,
+            'choice_label' => 'nombre',
+            'label' => 'Categoría',
+            'attr' => ['class' => 'form-control']
+        ])
+    ;
+}
+```
+
+### 9.2 API REST Simple (Opcional - 4 min)
+
+**Crear `src/Controller/ProductoApiController.php`:**
+```php
+<?php
+
+namespace App\Controller;
+
+use App\Repository\ProductoRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Annotation\Route;
+
+#[Route('/api/producto')]
+class ProductoApiController extends AbstractController
+{
+    #[Route('', name: 'api_producto_index', methods: ['GET'])]
+    public function index(ProductoRepository $productoRepository): JsonResponse
+    {
+        $productos = $productoRepository->findAll();
+        $data = [];
+        
+        foreach ($productos as $producto) {
+            $data[] = [
+                'id' => $producto->getId(),
+                'nombre' => $producto->getNombre(),
+                'precio' => $producto->getPrecio(),
+                'categoria' => [
+                    'id' => $producto->getCategoria()->getId(),
+                    'nombre' => $producto->getCategoria()->getNombre()
+                ]
+            ];
+        }
+        
+        return $this->json($data);
+    }
+    
+    #[Route('/{id}', name: 'api_producto_show', methods: ['GET'])]
+    public function show(int $id, ProductoRepository $productoRepository): JsonResponse
+    {
+        $producto = $productoRepository->find($id);
+        
+        if (!$producto) {
+            return $this->json(['error' => 'Producto no encontrado'], 404);
+        }
+        
+        $data = [
+            'id' => $producto->getId(),
+            'nombre' => $producto->getNombre(),
+            'precio' => $producto->getPrecio(),
+            'fecha' => $producto->getFecha()?->format('Y-m-d'),
+            'categoria' => [
+                'id' => $producto->getCategoria()->getId(),
+                'nombre' => $producto->getCategoria()->getNombre()
+            ]
+        ];
+        
+        return $this->json($data);
+    }
+}
+```
+
+**Probar API:**
+```bash
+# Listar todos los productos
+curl http://localhost:8000/api/producto
+
+# Ver un producto específico
+curl http://localhost:8000/api/producto/1
+```
+
+**Commit extras:**
+```bash
+git add .
+git commit -m "Mejoras en formularios y API REST básica"
+```
+
+---
+
 ## 🎯 Resumen del Curso
 
 ### Lo que construimos:
@@ -476,24 +607,27 @@ git tag v1.0.0
 ✅ Interfaz Bootstrap 5  
 ✅ Asignación automática de usuario  
 ✅ Fecha automática en productos  
+✅ **BONUS:** Validaciones en formularios y API REST básica
 
 ### Conceptos cubiertos:
 - MVC Pattern
 - ORM (Doctrine)
 - Relaciones de base de datos (ManyToOne)
 - Autenticación y Autorización
-- Formularios Symfony
+- Formularios Symfony con validaciones
 - Twig Templates
 - Migrations
 - Routing
 - Dependency Injection
+- API REST con JSON
+- HTTP Status Codes
 
 ### Próximos pasos (fuera del curso):
-- Validaciones de formularios
 - Mensajes flash
 - Paginación
 - Búsqueda y filtros
-- API REST
+- API REST completa (POST, PUT, DELETE)
+- Autenticación API (JWT)
 - Tests automatizados
 - Deploy en producción
 
