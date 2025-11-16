@@ -207,35 +207,56 @@ git commit -m "Sistema de autenticación completo"
 ## 5. Entidades del Negocio
 **⏱️ Tiempo: 8 minutos**
 
-### 5.1 Entidad Categoria
+### 5.1 Crear Todas las Entidades
 
+**Entidad Categoria:**
 ```bash
 php bin/console make:entity Categoria
-# nombre: string, 100, no
-# Add more fields? no
+```
+Campos a crear:
+- `nombre`: string, 100, no
 
+**Entidad Producto:**
+```bash
+php bin/console make:entity Producto
+```
+Campos a crear:
+- `nombre`: string, 150, no
+- `precio`: decimal (precision: 10, scale: 2), no
+- `fecha`: datetime, yes (nullable)
+- `categoria`: relation
+  - Tipo: ManyToOne
+  - Clase relacionada: Categoria
+  - ¿Nullable? no
+  - ¿Mapear el otro lado? yes (productos)
+- `user`: relation
+  - Tipo: ManyToOne
+  - Clase relacionada: User
+  - ¿Nullable? yes
+  - ¿Mapear el otro lado? no
+
+### 5.2 Generar y Ejecutar Migraciones
+
+```bash
+# Generar archivo de migración
 php bin/console make:migration
+
+# Revisar el archivo generado en /migrations
+
+# Ejecutar migración
 php bin/console doctrine:migrations:migrate
 ```
 
-### 5.2 Entidad Producto
-
+**Verificar tablas creadas:**
 ```bash
-php bin/console make:entity Producto
-# nombre: string, 150, no
-# precio: decimal (10,2), no
-# fecha: datetime, yes
-# categoria: relation, ManyToOne, Categoria, no, yes
-# user: relation, ManyToOne, User, yes, no
-
-php bin/console make:migration
-php bin/console doctrine:migrations:migrate
+php bin/console doctrine:schema:validate
+# Debe mostrar: [OK] The database schema is in sync with the mapping files.
 ```
 
 **Commit:**
 ```bash
 git add .
-git commit -m "Entidades Categoria y Producto creadas"
+git commit -m "Entidades Categoria y Producto creadas con relaciones"
 ```
 
 ---
