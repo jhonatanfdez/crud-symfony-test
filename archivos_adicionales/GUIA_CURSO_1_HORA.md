@@ -11,8 +11,8 @@
 1. [Preparación del Entorno (10 min)](#1-preparación-del-entorno)
 2. [Creación del Proyecto (5 min)](#2-creación-del-proyecto)
 3. [Configuración de Base de Datos (5 min)](#3-configuración-de-base-de-datos)
-4. [Sistema de Autenticación (10 min)](#4-sistema-de-autenticación)
-5. [Entidades del Negocio (8 min)](#5-entidades-del-negocio)
+4. [Creación de Todas las Entidades (10 min)](#4-creación-de-todas-las-entidades)
+5. [Sistema de Autenticación (8 min)](#5-sistema-de-autenticación)
 6. [Controladores Base (7 min)](#6-controladores-base)
 7. [CRUD Automático (8 min)](#7-crud-automático)
 8. [Mejoras Visuales y Funcionales (7 min)](#8-mejoras-visuales-y-funcionales)
@@ -142,10 +142,10 @@ git commit -m "Configuración de base de datos MySQL"
 
 ---
 
-## 4. Sistema de Autenticación
+## 4. Creación de Todas las Entidades
 **⏱️ Tiempo: 10 minutos**
 
-### 4.1 Crear Entidad User
+### 4.1 Entidad User (Autenticación)
 
 ```bash
 php bin/console make:user
@@ -155,14 +155,65 @@ php bin/console make:user
 # ✓ yes (password hashing)
 ```
 
-### 4.2 Migración de User
+### 4.2 Entidad Categoria
 
 ```bash
+php bin/console make:entity Categoria
+```
+Campos a crear:
+- `nombre`: string, 100, no
+
+### 4.3 Entidad Producto
+
+```bash
+php bin/console make:entity Producto
+```
+Campos a crear:
+- `nombre`: string, 150, no
+- `precio`: decimal (precision: 10, scale: 2), no
+- `fecha`: datetime, yes (nullable)
+- `categoria`: relation
+  - Tipo: ManyToOne
+  - Clase relacionada: Categoria
+  - ¿Nullable? no
+  - ¿Mapear el otro lado? yes (productos)
+- `user`: relation
+  - Tipo: ManyToOne
+  - Clase relacionada: User
+  - ¿Nullable? yes
+  - ¿Mapear el otro lado? no
+
+### 4.4 Generar y Ejecutar Migraciones
+
+```bash
+# Generar archivo de migración con TODAS las entidades
 php bin/console make:migration
+
+# Revisar el archivo generado en /migrations
+# Debe incluir tablas: user, categoria, producto
+
+# Ejecutar migración
 php bin/console doctrine:migrations:migrate
 ```
 
-### 4.3 Sistema de Login
+**Verificar tablas creadas:**
+```bash
+php bin/console doctrine:schema:validate
+# Debe mostrar: [OK] The database schema is in sync with the mapping files.
+```
+
+**Commit:**
+```bash
+git add .
+git commit -m "Entidades creadas: User, Categoria y Producto"
+```
+
+---
+
+## 5. Sistema de Autenticación
+**⏱️ Tiempo: 8 minutos**
+
+### 5.1 Sistema de Login
 
 ```bash
 php bin/console make:auth
@@ -172,7 +223,7 @@ php bin/console make:auth
 # ✓ yes (logout route)
 ```
 
-### 4.4 Sistema de Registro
+### 5.2 Sistema de Registro
 
 ```bash
 php bin/console make:registration-form
@@ -180,7 +231,7 @@ php bin/console make:registration-form
 # ✓ yes (auto authenticate)
 ```
 
-### 4.5 Mejorar Rutas de Login/Registro
+### 5.3 Mejorar Rutas de Login/Registro
 
 **`templates/security/login.html.twig`:**
 ```twig
@@ -201,63 +252,6 @@ git commit -m "Sistema de autenticación completo"
 ```
 
 **⚡ DEMO:** Registrar usuario y hacer login
-
----
-
-## 5. Entidades del Negocio
-**⏱️ Tiempo: 8 minutos**
-
-### 5.1 Crear Todas las Entidades
-
-**Entidad Categoria:**
-```bash
-php bin/console make:entity Categoria
-```
-Campos a crear:
-- `nombre`: string, 100, no
-
-**Entidad Producto:**
-```bash
-php bin/console make:entity Producto
-```
-Campos a crear:
-- `nombre`: string, 150, no
-- `precio`: decimal (precision: 10, scale: 2), no
-- `fecha`: datetime, yes (nullable)
-- `categoria`: relation
-  - Tipo: ManyToOne
-  - Clase relacionada: Categoria
-  - ¿Nullable? no
-  - ¿Mapear el otro lado? yes (productos)
-- `user`: relation
-  - Tipo: ManyToOne
-  - Clase relacionada: User
-  - ¿Nullable? yes
-  - ¿Mapear el otro lado? no
-
-### 5.2 Generar y Ejecutar Migraciones
-
-```bash
-# Generar archivo de migración
-php bin/console make:migration
-
-# Revisar el archivo generado en /migrations
-
-# Ejecutar migración
-php bin/console doctrine:migrations:migrate
-```
-
-**Verificar tablas creadas:**
-```bash
-php bin/console doctrine:schema:validate
-# Debe mostrar: [OK] The database schema is in sync with the mapping files.
-```
-
-**Commit:**
-```bash
-git add .
-git commit -m "Entidades Categoria y Producto creadas con relaciones"
-```
 
 ---
 
