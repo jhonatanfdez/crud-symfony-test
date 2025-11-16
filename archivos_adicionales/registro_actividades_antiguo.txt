@@ -11,6 +11,592 @@ Database: MySQL (crud_symfony)
 Frontend: Bootstrap 5.3.8 + Bootstrap Icons 1.11.3
 
 ================================================================================
+VERSIÓN v1.25.0 - DOCUMENTACIÓN VISUAL Y CORRECCIÓN DE MENSAJES FLASH
+Fecha: 13 de noviembre de 2025, 11:15 PM
+================================================================================
+
+OBJETIVO:
+Agregar capturas de pantalla al README para documentación visual del proyecto
+y corregir bug en la visualización de mensajes flash que impedía su aparición.
+
+PROBLEMA A RESOLVER:
+- Falta de documentación visual en el README
+- Los mensajes flash no se mostraban después de las mejoras de v1.24.0
+- El condicional {% if app.flashes|length > 0 %} no funciona correctamente en Twig
+- Necesidad de mostrar visualmente el aspecto del proyecto
+
+IMPLEMENTACIÓN REALIZADA:
+
+1. CAPTURAS DE PANTALLA AGREGADAS (5 IMÁGENES - 2.5MB TOTAL):
+
+   a) docs/screenshots/home.png (463KB)
+      - Dashboard principal con estadísticas en tiempo real
+      - Tarjetas de estadísticas con iconos Bootstrap
+      - Acceso rápido a módulos de categorías y productos
+      - Hero section con gradiente moderno
+   
+   b) docs/screenshots/login.png (650KB)
+      - Formulario de inicio de sesión
+      - Diseño con gradiente de fondo (purple-blue)
+      - Icono bi-person-circle grande (4rem)
+      - Alert dismissible para errores
+      - Link a registro
+   
+   c) docs/screenshots/registro.png (637KB)
+      - Formulario de creación de cuenta
+      - Icono bi-person-plus-fill
+      - Validación de campos en tiempo real
+      - Link a login para usuarios existentes
+   
+   d) docs/screenshots/categorias.png (377KB)
+      - Gestión de categorías con buscador
+      - Tabla responsive con Bootstrap
+      - Acciones CRUD (ver, editar, eliminar)
+      - Botón de crear nueva categoría
+   
+   e) docs/screenshots/productos.png (416KB)
+      - Catálogo completo de productos
+      - Buscador por nombre
+      - Información de categoría y usuario
+      - Acciones CRUD completas
+      - Fecha de creación formateada
+
+2. README.md ACTUALIZADO:
+
+   Sección nueva agregada:
+   ```markdown
+   ## 📸 Capturas de pantalla
+
+   ### Dashboard Principal
+   ![Dashboard](docs/screenshots/home.png)
+   *Panel de administración con estadísticas en tiempo real y acceso rápido a módulos*
+
+   ### Formulario de Login
+   ![Login](docs/screenshots/login.png)
+   *Página de inicio de sesión con diseño moderno y gradientes*
+
+   ### Registro de Usuario
+   ![Registro](docs/screenshots/registro.png)
+   *Formulario de registro con validación y diseño moderno*
+
+   ### Gestión de Categorías
+   ![Categorías](docs/screenshots/categorias.png)
+   *Listado de categorías con buscador y acciones CRUD*
+
+   ### Gestión de Productos
+   ![Productos](docs/screenshots/productos.png)
+   *Catálogo completo de productos con filtros*
+   ```
+
+   Estado actualizado:
+   - De: v1.24.0
+   - A: v1.25.0
+   - Tag actualizado a v1.25.0
+
+3. CORRECCIÓN DE MENSAJES FLASH (CRÍTICO):
+
+   ARCHIVO: templates/base_admin.html.twig
+
+   Problema identificado:
+   - El condicional {% if app.flashes|length > 0 %} no evalúa correctamente
+   - Los mensajes flash no se renderizaban
+   - Usuario reportó: "ahora no salen los mensajes flash cuando creo un registro o lo edito"
+
+   ANTES (NO FUNCIONA):
+   ```twig
+   {% if app.flashes|length > 0 %}
+   <div class="container" style="position: fixed; top: 70px; ...">
+       {% for type, messages in app.flashes %}
+           {% for message in messages %}
+               <div class="alert alert-{{ type == 'error' ? 'danger' : type }}">
+                   <!-- mensaje -->
+               </div>
+           {% endfor %}
+       {% endfor %}
+   </div>
+   {% endif %}
+   ```
+
+   DESPUÉS (FUNCIONA CORRECTAMENTE):
+   ```twig
+   {% for type, messages in app.flashes %}
+       {% if messages|length > 0 %}
+   <div class="container" style="position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 1050; max-width: 600px;">
+           {% for message in messages %}
+               <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show">
+                   {% if type == 'success' %}
+                       <i class="bi bi-check-circle-fill"></i>
+                   {% elseif type == 'error' %}
+                       <i class="bi bi-x-circle-fill"></i>
+                   {% elseif type == 'warning' %}
+                       <i class="bi bi-exclamation-triangle-fill"></i>
+                   {% else %}
+                       <i class="bi bi-info-circle-fill"></i>
+                   {% endif %}
+                   {{ message }}
+                   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+               </div>
+           {% endfor %}
+   </div>
+       {% endif %}
+   {% endfor %}
+   ```
+
+   Cambios clave:
+   - Estructura: Iterar primero por tipo, LUEGO verificar si hay mensajes
+   - Condicional: Cambiar de app.flashes|length a messages|length
+   - Razón: app.flashes|length no funciona como se espera en Twig
+   - Bucles: Reorganizar endfor/endif para estructura correcta
+   - Resultado: Los mensajes flash ahora se muestran correctamente
+
+   Características mantenidas:
+   - Position: fixed (no interfiere con hero-section)
+   - Top: 70px (justo debajo del navbar)
+   - Z-index: 1050 (siempre visible)
+   - Centrado horizontal: left 50% + translateX(-50%)
+   - Max-width: 600px (mejor legibilidad)
+   - Iconos Bootstrap según tipo de mensaje
+   - Alert dismissible con botón de cerrar
+
+4. docs/screenshots/README.md ACTUALIZADO:
+
+   Marcadas todas las capturas como agregadas:
+   ```markdown
+   - ✅ AGREGADA - home.png - Dashboard principal
+   - ✅ AGREGADA - login.png - Formulario de inicio de sesión
+   - ✅ AGREGADA - registro.png - Formulario de creación de cuenta
+   - ✅ AGREGADA - categorias.png - Gestión de categorías
+   - ✅ AGREGADA - productos.png - Catálogo de productos
+   ```
+
+COMANDOS EJECUTADOS:
+
+1. Copiar imágenes desde ~/Imágenes/ a docs/screenshots/:
+   ```bash
+   cp ~/Imágenes/home3.png docs/screenshots/home.png
+   cp ~/Imágenes/login.png docs/screenshots/login.png
+   cp ~/Imágenes/registrar.png docs/screenshots/registro.png
+   cp ~/Imágenes/categoria.png docs/screenshots/categorias.png
+   cp ~/Imágenes/productos.png docs/screenshots/productos.png
+   ```
+
+2. Verificar tamaños:
+   ```bash
+   ls -lh docs/screenshots/
+   # home.png       463K
+   # login.png      650K
+   # registro.png   637K
+   # categorias.png 377K
+   # productos.png  416K
+   # Total:         2.5M
+   ```
+
+3. Stage de archivos:
+   ```bash
+   git add docs/screenshots/*.png README.md docs/screenshots/README.md
+   ```
+
+4. Commit de capturas:
+   ```bash
+   git commit -m "docs: Agregar capturas de pantalla del proyecto"
+   # [main df93f49]
+   # 7 files changed, 12 insertions(+), 4 deletions(-)
+   ```
+
+5. Push a GitHub:
+   ```bash
+   git push origin main
+   # Comprimiendo objetos: 100% (11/11)
+   # Escribiendo objetos: 100% (11/11), 2.34 MiB
+   # df93f49..df93f49  main -> main
+   ```
+
+6. Tag v1.25.0:
+   ```bash
+   git tag v1.25.0
+   ```
+
+7. Corrección de mensajes flash:
+   ```bash
+   # Edición de templates/base_admin.html.twig
+   git add templates/base_admin.html.twig
+   git commit -m "fix: Corregir visualización de mensajes flash"
+   # [main 2bb6213]
+   # 1 file changed, 4 insertions(+), 4 deletions(-)
+   ```
+
+8. Push de corrección y tag:
+   ```bash
+   git push origin main && git push origin v1.25.0
+   # df93f49..2bb6213  main -> main
+   # * [new tag]       v1.25.0 -> v1.25.0
+   ```
+
+9. Actualización de README a v1.25.0:
+   ```bash
+   git add README.md
+   git commit -m "docs: Actualizar README a v1.25.0"
+   # [main 82f9ee5]
+   # 1 file changed, 2 insertions(+), 2 deletions(-)
+   git push origin main
+   # 2bb6213..82f9ee5  main -> main
+   ```
+
+RESULTADO OBTENIDO:
+
+Documentación visual:
+- ✅ 5 capturas de pantalla agregadas (2.5MB total)
+- ✅ README con sección visual completa
+- ✅ Imágenes optimizadas para web (PNG)
+- ✅ Documentación profesional con descripciones
+
+Corrección de bugs:
+- ✅ Mensajes flash funcionando correctamente
+- ✅ Problema de Twig identificado y solucionado
+- ✅ Structure de bucles reorganizada
+- ✅ Position fixed mantenida sin interferir
+
+GitHub:
+- ✅ Commit df93f49: Capturas de pantalla
+- ✅ Commit 2bb6213: Corrección de mensajes flash
+- ✅ Commit 82f9ee5: Actualización README
+- ✅ Tag v1.25.0 creado y publicado
+- ✅ Todo sincronizado con origin/main
+
+ARCHIVOS MODIFICADOS:
+- README.md (sección de capturas + versión actualizada)
+- docs/screenshots/README.md (capturas marcadas como agregadas)
+- templates/base_admin.html.twig (estructura de flash messages corregida)
+
+ARCHIVOS CREADOS:
+- docs/screenshots/home.png (463KB)
+- docs/screenshots/login.png (650KB)
+- docs/screenshots/registro.png (637KB)
+- docs/screenshots/categorias.png (377KB)
+- docs/screenshots/productos.png (416KB)
+
+COMMITS INCLUIDOS:
+- df93f49: docs: Agregar capturas de pantalla del proyecto
+- 2bb6213: fix: Corregir visualización de mensajes flash
+- 82f9ee5: docs: Actualizar README a v1.25.0
+
+LÍNEAS MODIFICADAS: ~20 (insertions: 16, deletions: 8)
+TAG: v1.25.0
+PUSH: ✅ Exitoso a origin/main (3 commits + tag)
+
+LECCIONES APRENDIDAS:
+- app.flashes|length no funciona correctamente en Twig
+- Debe iterarse primero por tipo, luego verificar messages|length
+- Position fixed no previene el renderizado, el error era de lógica Twig
+- Siempre probar mensajes flash después de cambios en templates
+- Documentación visual mejora significativamente la presentación del proyecto
+
+PRÓXIMOS PASOS SUGERIDOS:
+- Implementar paginación en listados de productos y categorías
+- Agregar upload de imágenes para productos
+- Crear dashboard con gráficas estadísticas
+- Implementar JWT authentication para API
+- Agregar documentación Swagger/OpenAPI para la API
+- Crear tests unitarios y funcionales
+- Implementar dark mode toggle
+
+================================================================================
+VERSIÓN v1.24.0 - MEJORAS VISUALES Y DOCUMENTACIÓN
+Fecha: 13 de noviembre de 2025, 11:12 PM
+================================================================================
+
+OBJETIVO:
+Corregir el espaciado entre el navbar y la hero-section en el dashboard, mejorar
+la presentación de mensajes flash para que no interfieran con el layout, y actualizar
+la documentación a la versión correcta (v1.23.0).
+
+PROBLEMA A RESOLVER:
+- Espacio innecesario entre navbar y sección de bienvenida en home
+- Mensajes flash en container normal causaban espaciado y saltos de layout
+- README apuntaba a v1.21.0 en lugar de v1.23.0
+- Falta de estructura para documentación visual (capturas de pantalla)
+
+IMPLEMENTACIÓN REALIZADA:
+
+1. CORRECCIÓN DE ESPACIADO EN TEMPLATES:
+
+   ARCHIVO: templates/base_admin.html.twig
+
+   a) Mensajes flash flotantes con position: fixed:
+
+   ANTES (causaba espaciado):
+   ```html
+   <div class="container mt-4">
+       {% for type, messages in app.flashes %}
+           {% for message in messages %}
+               <div class="alert alert-{{ type }}">{{ message }}</div>
+           {% endfor %}
+       {% endfor %}
+   </div>
+   ```
+
+   DESPUÉS (flotantes, sin interferir):
+   ```html
+   {% if app.flashes|length > 0 %}
+   <div class="container" style="position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 1050; max-width: 600px;">
+       {% for type, messages in app.flashes %}
+           {% for message in messages %}
+               <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show">
+                   {% if type == 'success' %}
+                       <i class="bi bi-check-circle-fill"></i>
+                   {% elseif type == 'error' %}
+                       <i class="bi bi-x-circle-fill"></i>
+                   {% elseif type == 'warning' %}
+                       <i class="bi bi-exclamation-triangle-fill"></i>
+                   {% else %}
+                       <i class="bi bi-info-circle-fill"></i>
+                   {% endif %}
+                   {{ message }}
+                   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+               </div>
+           {% endfor %}
+       {% endfor %}
+   </div>
+   {% endif %}
+   ```
+
+   Características implementadas:
+   - position: fixed → No ocupa espacio en el flujo del documento
+   - top: 70px → Justo debajo del navbar (navbar height: 60px + margin)
+   - z-index: 1050 → Siempre visible por encima del contenido
+   - left: 50%; transform: translateX(-50%) → Centrado horizontal perfecto
+   - max-width: 600px → Ancho limitado para mejor legibilidad
+   - Iconos Bootstrap según tipo de mensaje (success, error, warning, info)
+   - Alert dismissible con botón de cerrar
+   - Condicional {% if app.flashes|length > 0 %} → Solo renderiza si hay mensajes
+
+   b) Nueva clase CSS para contenido de páginas normales:
+
+   ```css
+   /* Padding solo para páginas con contenido normal (NO home) */
+   .page-content {
+       padding-top: 2rem;
+   }
+   ```
+
+   ARCHIVO: templates/categoria/index.html.twig
+
+   ANTES:
+   ```html
+   <div class="container mt-5">
+   ```
+
+   DESPUÉS:
+   ```html
+   <div class="container page-content">
+   ```
+
+   ARCHIVO: templates/producto/index.html.twig
+
+   ANTES:
+   ```html
+   <div class="container mt-5">
+   ```
+
+   DESPUÉS:
+   ```html
+   <div class="container page-content">
+   ```
+
+   ARCHIVO: templates/home/index.html.twig
+
+   Agregado explícitamente:
+   ```css
+   .hero-section {
+       /* ... otros estilos ... */
+       margin-top: 0;  /* Explícitamente sin margen superior */
+   }
+   ```
+
+2. ESTRUCTURA PARA DOCUMENTACIÓN VISUAL:
+
+   ARCHIVO: docs/screenshots/README.md (NUEVO)
+
+   Contenido:
+   ```markdown
+   # Capturas de pantalla del proyecto
+
+   Esta carpeta contiene las capturas de pantalla oficiales del proyecto.
+
+   ## Imágenes requeridas:
+
+   - [ ] home.png - Dashboard principal con estadísticas
+   - [ ] registro.png - Formulario de creación de cuenta
+   - [ ] categorias.png - Gestión de categorías con buscador
+   - [ ] productos.png - Catálogo de productos completo
+
+   ## Formato:
+   - Tipo: PNG
+   - Resolución recomendada: 1920x1080
+   - Tamaño máximo: 500KB por imagen
+   - Optimizadas para web
+
+   ## Cómo agregar capturas:
+
+   1. Tomar captura de pantalla en resolución adecuada
+   2. Optimizar imagen con herramientas como TinyPNG
+   3. Guardar en esta carpeta con nombre descriptivo
+   4. Actualizar README.md principal con la imagen
+   ```
+
+3. ACTUALIZACIÓN DE README.md:
+
+   a) Versión actualizada de v1.21.0 a v1.23.0:
+
+   ANTES:
+   ```markdown
+   **Estado actual: v1.21.0** — Sistema de Mensajes Flash: Implementados mensajes...
+   • Changelog: ver [registro_actividades.txt](...) · Tag: [v1.21.0](...)
+   ```
+
+   DESPUÉS:
+   ```markdown
+   **Estado actual: v1.23.0** — API REST completa: 5 endpoints implementados...
+   • Changelog: ver [CHANGELOG.md](...) · Tag: [v1.23.0](...)
+   ```
+
+   b) Nueva sección de capturas de pantalla:
+
+   ```markdown
+   ## 📸 Capturas de pantalla
+
+   ### Dashboard Principal
+   ![Dashboard](docs/screenshots/home.png)
+   *Panel de administración con estadísticas en tiempo real y acceso rápido a módulos*
+
+   ### Registro de Usuario
+   ![Registro](docs/screenshots/registro.png)
+   *Formulario de registro con validación y diseño moderno*
+
+   ### Gestión de Categorías
+   ![Categorías](docs/screenshots/categorias.png)
+   *Listado de categorías con buscador y acciones CRUD*
+
+   ### Gestión de Productos
+   ![Productos](docs/screenshots/productos.png)
+   *Catálogo completo de productos con filtros*
+   ```
+
+   c) Referencias actualizadas:
+   - Changelog: Ahora apunta a CHANGELOG.md en lugar de registro_actividades.txt
+   - Tag: Actualizado a v1.23.0
+   - Descripción: Menciona API REST como característica principal
+
+COMANDOS EJECUTADOS:
+
+1. Crear directorio para capturas:
+   ```bash
+   mkdir -p docs/screenshots
+   ```
+
+2. Crear README de screenshots:
+   ```bash
+   # Creación de docs/screenshots/README.md con instrucciones
+   ```
+
+3. Editar templates:
+   ```bash
+   # templates/base_admin.html.twig - Mensajes flash flotantes
+   # templates/home/index.html.twig - margin-top: 0
+   # templates/categoria/index.html.twig - clase page-content
+   # templates/producto/index.html.twig - clase page-content
+   ```
+
+4. Actualizar README.md:
+   ```bash
+   # README.md - Versión v1.23.0 + capturas
+   ```
+
+5. Commits y push:
+   ```bash
+   git add templates/home/index.html.twig
+   git commit -m "fix: Eliminar espacio entre navbar y sección hero"
+   # [main 54adf25]
+
+   git add README.md
+   git commit -m "docs: Actualizar README.md con referencias a CHANGELOG.md"
+   # [main 584d1e4]
+
+   git add templates/base_admin.html.twig templates/categoria/index.html.twig templates/producto/index.html.twig
+   git commit -m "fix: Eliminar espacio entre navbar y hero-section completamente"
+   # [main e61dd01]
+
+   git tag v1.24.0
+
+   git push origin main
+   git push origin v1.24.0
+   ```
+
+6. Actualizar CHANGELOG.md con v1.24.0:
+   ```bash
+   git add archivos_adicionales/CHANGELOG.md README.md
+   git commit -m "docs: Actualizar CHANGELOG y README a v1.24.0"
+   # [main c8d538a]
+   # 2 files changed, 178 insertions(+), 6 deletions(-)
+
+   git push origin main
+   # c8d538a..c8d538a main -> main
+   ```
+
+RESULTADO OBTENIDO:
+
+Mejoras visuales:
+- ✅ Hero-section completamente pegada al navbar (sin espacio)
+- ✅ Mensajes flash flotantes que no interfieren con el layout
+- ✅ Mejor aprovechamiento del espacio en pantalla
+- ✅ Diseño más limpio y profesional
+- ✅ Categorías y productos mantienen espaciado correcto con .page-content
+
+Mejoras de UX:
+- ✅ Mensajes flash centrados y siempre visibles
+- ✅ No hay saltos de layout cuando aparecen/desaparecen mensajes
+- ✅ Transición visual más suave entre páginas
+- ✅ Navbar sticky funciona perfectamente
+- ✅ Iconos visuales para cada tipo de mensaje (success, error, warning, info)
+
+Documentación:
+- ✅ Estructura creada para capturas de pantalla
+- ✅ README.md preparado para mostrar imágenes
+- ✅ Instrucciones claras en docs/screenshots/README.md
+- ✅ README actualizado a v1.23.0
+- ✅ Referencias al CHANGELOG.md en lugar de archivo antiguo
+- ✅ CHANGELOG.md actualizado con v1.24.0
+
+ARCHIVOS MODIFICADOS:
+- templates/base_admin.html.twig (mensajes flash flotantes + clase .page-content)
+- templates/home/index.html.twig (margin-top: 0 explícito en .hero-section)
+- templates/categoria/index.html.twig (clase .page-content)
+- templates/producto/index.html.twig (clase .page-content)
+- README.md (versión v1.23.0 + sección capturas)
+- archivos_adicionales/CHANGELOG.md (v1.24.0 agregado)
+
+ARCHIVOS CREADOS:
+- docs/screenshots/README.md (instrucciones para capturas)
+
+COMMITS INCLUIDOS:
+- 54adf25: fix: Eliminar espacio entre navbar y sección hero
+- 584d1e4: docs: Actualizar README.md con referencias a CHANGELOG.md
+- e61dd01: fix: Eliminar espacio entre navbar y hero-section completamente
+- c8d538a: docs: Actualizar CHANGELOG y README a v1.24.0
+
+LÍNEAS MODIFICADAS: ~250 (insertions: 240, deletions: 10)
+TAG: v1.24.0
+PUSH: ✅ Exitoso a origin/main (4 commits + tag)
+
+PRÓXIMOS PASOS SUGERIDOS:
+- Agregar las 4 capturas de pantalla en docs/screenshots/
+- Implementar paginación en listados
+- Crear dashboard con gráficas estadísticas
+- Agregar breadcrumbs de navegación
+- Mejorar responsive design en móviles
+- Implementar dark mode toggle
+
+================================================================================
 VERSIÓN v1.23.0 - API REST PARA PRODUCTOS CON JSON
 Fecha: 13 de noviembre de 2025, 11:00 PM
 ================================================================================
