@@ -95,9 +95,16 @@ Documentación completa del desarrollo del proyecto CRUD Symfony.
 ---
 
 <a id='1-comando-ejecutado-git-init'></a>
-## 1. Comando ejecutado: git init
+## 1. Comando ejecutado
 **📅 Fecha:** 12/11/2025 09:17:05 p.m.
 
+
+
+**📝 Comando:**
+
+```bash
+git init
+```
 
 ¿Qué se busca?
 - Inicializar un repositorio Git en el directorio del proyecto
@@ -259,9 +266,16 @@ Symfony es la mejor opción cuando:
 ---
 
 <a id='6-comando-ejecutado-symfony-new-crud-symfony---version71---webapp'></a>
-## 6. Comando ejecutado: symfony new crud-symfony --version="7.1.*" --webapp
+## 6. Comando ejecutado
 **📅 Fecha:** 12/11/2025 09:27:35 p.m.
 
+
+
+**📝 Comando:**
+
+```bash
+symfony new crud-symfony --version="7.1.*" --webapp
+```
 
 ¿Qué se busca?
 - Crear un nuevo proyecto Symfony con la versión 7.1
@@ -286,9 +300,16 @@ Dependencias principales instaladas:
 ---
 
 <a id='7-comando-ejecutado-rm--rf-homejhonatanycrisescritoriotest1crud-symfonygit'></a>
-## 7. Comando ejecutado: rm -rf /home/jhonatanycris/Escritorio/test1/crud-symfony/.git
+## 7. Comando ejecutado
 **📅 Fecha:** 12/11/2025 09:28:35 p.m.
 
+
+
+**📝 Comando:**
+
+```bash
+rm -rf /home/jhonatanycris/Escritorio/test1/crud-symfony/.git
+```
 
 ¿Qué se busca?
 - Eliminar el repositorio Git que Symfony creó automáticamente en el proyecto crud-symfony
@@ -334,9 +355,16 @@ Resultado:
 ---
 
 <a id='9-comando-ejecutado-symfony-serverstart'></a>
-## 9. Comando ejecutado: symfony server:start
+## 9. Comando ejecutado
 **📅 Fecha:** 12/11/2025 09:31:40 p.m.
 
+
+
+**📝 Comando:**
+
+```bash
+symfony server:start
+```
 
 ¿Qué se busca?
 - Iniciar el servidor de desarrollo local de Symfony
@@ -358,9 +386,16 @@ Nota importante:
 ---
 
 <a id='10-comando-ejecutado-git-commit--m-servidor-symfony-iniciado---registro-actualizado'></a>
-## 10. Comando ejecutado: git commit -m "Servidor Symfony iniciado - registro actualizado"
+## 10. Comando ejecutado
 **📅 Fecha:** 12/11/2025 09:34:16 p.m.
 
+
+
+**📝 Comando:**
+
+```bash
+git commit -m "Servidor Symfony iniciado - registro actualizado"
+```
 
 ¿Qué se busca?
 - Guardar los cambios realizados en el registro de actividades
@@ -630,9 +665,16 @@ Esta separación hace el código más limpio, testeable y mantenible.
 ---
 
 <a id='17-comando-ejecutado-php-binconsole-makeauth'></a>
-## 17. Comando ejecutado: php bin/console make:auth
+## 17. Comando ejecutado
 **📅 Fecha:** 12/11/2025 09:56:13 p.m.
 
+
+
+**📝 Comando:**
+
+```bash
+php bin/console make:auth
+```
 
 Preguntas y respuestas durante la ejecución:
 
@@ -736,9 +778,16 @@ Resultado:
 ---
 
 <a id='19-comando-ejecutado-php-binconsole-makeregistration-form'></a>
-## 19. Comando ejecutado: php bin/console make:registration-form
+## 19. Comando ejecutado
 **📅 Fecha:** 12/11/2025 10:01:32 p.m.
 
+
+
+**📝 Comando:**
+
+```bash
+php bin/console make:registration-form
+```
 
 Preguntas y respuestas durante la ejecución:
 
@@ -904,9 +953,16 @@ Resultado:
 ---
 
 <a id='23-comando-ejecutado-php-binconsole-makeentity-categoria'></a>
-## 23. Comando ejecutado: php bin/console make:entity Categoria
+## 23. Comando ejecutado
 **📅 Fecha:** 12/11/2025 10:11:27 p.m.
 
+
+
+**📝 Comando:**
+
+```bash
+php bin/console make:entity Categoria
+```
 
 Preguntas y respuestas durante la ejecución:
 
@@ -945,9 +1001,16 @@ Próximo paso:
 ---
 
 <a id='24-comando-ejecutado-php-binconsole-makecontroller-homecontroller'></a>
-## 24. Comando ejecutado: php bin/console make:controller HomeController
+## 24. Comando ejecutado
 **📅 Fecha:** 12/11/2025 10:17:07 p.m.
 
+
+
+**📝 Comando:**
+
+```bash
+php bin/console make:controller HomeController
+```
 
 ¿Qué se busca?
 - Crear una página de inicio (home) para la aplicación
@@ -1162,9 +1225,16 @@ Próximo paso:
 ---
 
 <a id='31-comando-ejecutado-php-binconsole-makeentity-producto'></a>
-## 31. Comando ejecutado: php bin/console make:entity Producto
+## 31. Comando ejecutado
 **📅 Fecha:** 13/11/2025 03:30:37 p.m.
 
+
+
+**📝 Comando:**
+
+```bash
+php bin/console make:entity Producto
+```
 
 Preguntas y respuestas durante la ejecución:
 
@@ -1611,9 +1681,16 @@ Próximo paso:
 ---
 
 <a id='40-comando-ejecutado-php-binconsole-makecrud-categoria'></a>
-## 40. Comando ejecutado: php bin/console make:crud Categoria
+## 40. Comando ejecutado
 **📅 Fecha:** 13/11/2025 04:03:58 p.m.
 
+
+
+**📝 Comando:**
+
+```bash
+php bin/console make:crud Categoria
+```
 
 Preguntas y respuestas durante la ejecución:
 
@@ -1775,9 +1852,16 @@ Próximo paso:
 ---
 
 <a id='43-comando-ejecutado-php-binconsole-makecrud-producto'></a>
-## 43. Comando ejecutado: php bin/console make:crud Producto
+## 43. Comando ejecutado
 **📅 Fecha:** 13/11/2025 04:10:56 p.m.
 
+
+
+**📝 Comando:**
+
+```bash
+php bin/console make:crud Producto
+```
 
 Preguntas y respuestas durante la ejecución:
 
