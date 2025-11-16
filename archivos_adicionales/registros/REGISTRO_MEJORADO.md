@@ -151,11 +151,25 @@ Resultado:
 
 **📝 Comandos:**
 
-# Para Linux:
+**Linux/macOS:**
+```bash
+# Con curl:
 curl -sS https://get.symfony.com/cli/installer | bash
 
 # O con wget:
 wget https://get.symfony.com/cli/installer -O - | bash
+```
+
+**Windows:**
+```bash
+# Con Scoop (recomendado):
+scoop install symfony-cli
+
+# O descargar el instalador desde:
+# https://github.com/symfony-cli/symfony-cli/releases
+# Ejecutar el archivo .exe descargado
+```
+
 ---
 
 <a id='4-explicacin-de-carpetas-importantes'></a>
@@ -163,25 +177,37 @@ wget https://get.symfony.com/cli/installer -O - | bash
 **📅 Fecha:** 12/11/2025 09:22:46 p.m.
 
 
-Estructura del proyecto Symfony:
+### 📁 Estructura del proyecto Symfony
 
-/bin/           - Ejecutables del proyecto (console)
-/config/        - Archivos de configuración (routes, services, packages)
-/migrations/    - Migraciones de base de datos
-/public/        - Punto de entrada web (index.php) y archivos públicos (CSS, JS, imágenes)
-/src/
-    /Controller/    - Controladores
-    /Entity/        - Entidades de Doctrine (modelos)
-    /Form/          - Clases de formularios
-    /Repository/    - Repositorios para consultas a la base de datos
-/templates/     - Plantillas Twig
-/var/           - Archivos temporales (cache, logs)
-/vendor/        - Dependencias de Composer
+**Directorios principales:**
 
-Archivos importantes:
-- .env          - Variables de entorno (configuración de base de datos)
-- composer.json - Dependencias del proyecto
-- symfony.lock  - Versiones bloqueadas de las recetas de Symfony
+| Carpeta | Descripción |
+|---------|-------------|
+| `/bin/` | Ejecutables del proyecto (console) |
+| `/config/` | Archivos de configuración (routes, services, packages) |
+| `/migrations/` | Migraciones de base de datos |
+| `/public/` | Punto de entrada web (index.php) y archivos públicos (CSS, JS, imágenes) |
+| `/templates/` | Plantillas Twig |
+| `/var/` | Archivos temporales (cache, logs) |
+| `/vendor/` | Dependencias de Composer |
+
+**Subdirectorios de `/src/`:**
+
+| Carpeta | Descripción |
+|---------|-------------|
+| `/Controller/` | Controladores |
+| `/Entity/` | Entidades de Doctrine (modelos) |
+| `/Form/` | Clases de formularios |
+| `/Repository/` | Repositorios para consultas a la base de datos |
+
+**Archivos importantes:**
+
+| Archivo | Descripción |
+|---------|-------------|
+| `.env` | Variables de entorno (configuración de base de datos) |
+| `composer.json` | Dependencias del proyecto |
+| `symfony.lock` | Versiones bloqueadas de las recetas de Symfony |
+
 ---
 
 <a id='5-por-qu-elegir-symfony-sobre-laravel-o-drupal'></a>
